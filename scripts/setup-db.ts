@@ -42,20 +42,30 @@ async function main() {
     }
   }
 
+  // Helper to create collection with error details
+  async function createCollection(data: Record<string, unknown>) {
+    try {
+      return await pb.collections.create(data);
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: unknown } };
+      console.error('Collection create failed. Details:', JSON.stringify(e.response?.data, null, 2));
+      throw err;
+    }
+  }
+
   // ---- product_categories ----
   if (!await collectionExists('product_categories')) {
     console.log('Creating product_categories...');
     await pb.collections.create({
       name: 'product_categories',
       type: 'base',
-      schema: [
+      fields: [
         { name: 'name', type: 'text', required: true },
-        { name: 'slug', type: 'text', required: true, options: { pattern: '^[a-z0-9-]+$' } },
+        { name: 'slug', type: 'text', required: true, pattern: '^[a-z0-9-]+$' },
         { name: 'description', type: 'text' },
-        { name: 'default_price', type: 'number', options: { min: 0 } },
-        { name: 'sort_order', type: 'number', options: { min: 0 } },
+        { name: 'default_price', type: 'number', min: 0 },
+        { name: 'sort_order', type: 'number', min: 0 },
       ],
-      indexes: ['CREATE UNIQUE INDEX idx_cat_slug ON product_categories (slug)'],
     });
     console.log('  Created product_categories');
   } else {
@@ -65,34 +75,24 @@ async function main() {
   // ---- products ----
   if (!await collectionExists('products')) {
     console.log('Creating products...');
-    await pb.collections.create({
+    const catColl = await pb.collections.getOne('product_categories');
+    await createCollection({
       name: 'products',
       type: 'base',
-      schema: [
+      fields: [
         { name: 'sku', type: 'text', required: true },
         { name: 'title', type: 'text', required: true },
         { name: 'short_title', type: 'text' },
-        { name: 'category', type: 'relation', required: true, options: { collectionId: '', maxSelect: 1 } },
-        { name: 'retail_price', type: 'number', required: true, options: { min: 0 } },
+        { name: 'category', type: 'relation', required: true, collectionId: catColl.id, maxSelect: 1 },
+        { name: 'retail_price', type: 'number', required: true, min: 0 },
         { name: 'size', type: 'text' },
-        { name: 'image', type: 'file', options: { maxSelect: 1, maxSize: 5242880, mimeTypes: ['image/jpeg', 'image/png', 'image/webp'] } },
+        { name: 'image', type: 'file', maxSelect: 1, maxSize: 5242880, mimeTypes: ['image/jpeg', 'image/png', 'image/webp'] },
         { name: 'image_url', type: 'url' },
         { name: 'description', type: 'text' },
         { name: 'is_active', type: 'bool' },
-        { name: 'sort_order', type: 'number', options: { min: 0 } },
+        { name: 'sort_order', type: 'number', min: 0 },
       ],
-      indexes: ['CREATE UNIQUE INDEX idx_product_sku ON products (sku)'],
     });
-    // Fix the category relation to point to product_categories
-    const productsColl = await pb.collections.getOne('products');
-    const catColl = await pb.collections.getOne('product_categories');
-    const schema = productsColl.schema.map((f: Record<string, unknown>) => {
-      if (f.name === 'category') {
-        return { ...f, options: { collectionId: catColl.id, maxSelect: 1, cascadeDelete: false } };
-      }
-      return f;
-    });
-    await pb.collections.update(productsColl.id, { schema });
     console.log('  Created products');
   } else {
     console.log('  products already exists, skipping');
@@ -104,7 +104,7 @@ async function main() {
     await pb.collections.create({
       name: 'customers',
       type: 'auth',
-      schema: [
+      fields: [
         { name: 'business_name', type: 'text', required: true },
         { name: 'contact_name', type: 'text', required: true },
         { name: 'phone', type: 'text' },
@@ -114,8 +114,8 @@ async function main() {
         { name: 'zip', type: 'text' },
         { name: 'website', type: 'url' },
         { name: 'notes', type: 'text' },
-        { name: 'status', type: 'select', options: { values: ['active', 'inactive', 'pending'], maxSelect: 1 } },
-        { name: 'discount_tier', type: 'select', options: { values: ['auto', 'tier1', 'tier2', 'tier3'], maxSelect: 1 } },
+        { name: 'status', type: 'select', values: ['active', 'inactive', 'pending'], maxSelect: 1 },
+        { name: 'discount_tier', type: 'select', values: ['auto', 'tier1', 'tier2', 'tier3'], maxSelect: 1 },
         { name: 'square_customer_id', type: 'text' },
       ],
       options: {
@@ -137,8 +137,8 @@ async function main() {
     await pb.collections.create({
       name: 'contacts',
       type: 'base',
-      schema: [
-        { name: 'customer', type: 'relation', required: true, options: { collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true } },
+      fields: [
+        { name: 'customer', type: 'relation', required: true, collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true },
         { name: 'name', type: 'text', required: true },
         { name: 'email', type: 'email' },
         { name: 'phone', type: 'text' },
@@ -158,10 +158,10 @@ async function main() {
     await pb.collections.create({
       name: 'discount_tiers',
       type: 'base',
-      schema: [
+      fields: [
         { name: 'name', type: 'text', required: true },
-        { name: 'min_order_amount', type: 'number', required: true, options: { min: 0 } },
-        { name: 'discount_percent', type: 'number', required: true, options: { min: 0, max: 100 } },
+        { name: 'min_order_amount', type: 'number', required: true, min: 0 },
+        { name: 'discount_percent', type: 'number', required: true, min: 0, max: 100 },
         { name: 'description', type: 'text' },
         { name: 'is_active', type: 'bool' },
       ],
@@ -178,15 +178,15 @@ async function main() {
     await pb.collections.create({
       name: 'orders',
       type: 'base',
-      schema: [
+      fields: [
         { name: 'order_number', type: 'text', required: true },
-        { name: 'customer', type: 'relation', required: true, options: { collectionId: customersColl.id, maxSelect: 1, cascadeDelete: false } },
-        { name: 'status', type: 'select', required: true, options: { values: ['pending_payment', 'payment_received', 'being_fulfilled', 'shipped', 'delivered', 'follow_up'], maxSelect: 1 } },
-        { name: 'payment_method', type: 'select', options: { values: ['square', 'invoice'], maxSelect: 1 } },
-        { name: 'subtotal', type: 'number', options: { min: 0 } },
-        { name: 'discount_percent', type: 'number', options: { min: 0, max: 100 } },
-        { name: 'discount_amount', type: 'number', options: { min: 0 } },
-        { name: 'total', type: 'number', options: { min: 0 } },
+        { name: 'customer', type: 'relation', required: true, collectionId: customersColl.id, maxSelect: 1, cascadeDelete: false },
+        { name: 'status', type: 'select', required: true, values: ['pending_payment', 'payment_received', 'being_fulfilled', 'shipped', 'delivered', 'follow_up'], maxSelect: 1 },
+        { name: 'payment_method', type: 'select', values: ['square', 'invoice'], maxSelect: 1 },
+        { name: 'subtotal', type: 'number', min: 0 },
+        { name: 'discount_percent', type: 'number', min: 0, max: 100 },
+        { name: 'discount_amount', type: 'number', min: 0 },
+        { name: 'total', type: 'number', min: 0 },
         { name: 'square_payment_id', type: 'text' },
         { name: 'square_checkout_id', type: 'text' },
         { name: 'invoice_terms', type: 'text' },
@@ -198,7 +198,6 @@ async function main() {
         { name: 'follow_up_sent', type: 'bool' },
         { name: 'notes', type: 'text' },
       ],
-      indexes: ['CREATE UNIQUE INDEX idx_order_number ON orders (order_number)'],
     });
     console.log('  Created orders');
   } else {
@@ -213,12 +212,12 @@ async function main() {
     await pb.collections.create({
       name: 'order_items',
       type: 'base',
-      schema: [
-        { name: 'order', type: 'relation', required: true, options: { collectionId: ordersColl.id, maxSelect: 1, cascadeDelete: true } },
-        { name: 'product', type: 'relation', required: true, options: { collectionId: productsColl.id, maxSelect: 1, cascadeDelete: false } },
-        { name: 'quantity', type: 'number', required: true, options: { min: 1 } },
-        { name: 'unit_price', type: 'number', required: true, options: { min: 0 } },
-        { name: 'line_total', type: 'number', required: true, options: { min: 0 } },
+      fields: [
+        { name: 'order', type: 'relation', required: true, collectionId: ordersColl.id, maxSelect: 1, cascadeDelete: true },
+        { name: 'product', type: 'relation', required: true, collectionId: productsColl.id, maxSelect: 1, cascadeDelete: false },
+        { name: 'quantity', type: 'number', required: true, min: 1 },
+        { name: 'unit_price', type: 'number', required: true, min: 0 },
+        { name: 'line_total', type: 'number', required: true, min: 0 },
       ],
     });
     console.log('  Created order_items');
@@ -234,10 +233,10 @@ async function main() {
     await pb.collections.create({
       name: 'curated_products',
       type: 'base',
-      schema: [
-        { name: 'customer', type: 'relation', required: true, options: { collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true } },
-        { name: 'product', type: 'relation', required: true, options: { collectionId: productsColl.id, maxSelect: 1, cascadeDelete: true } },
-        { name: 'sort_order', type: 'number', options: { min: 0 } },
+      fields: [
+        { name: 'customer', type: 'relation', required: true, collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true },
+        { name: 'product', type: 'relation', required: true, collectionId: productsColl.id, maxSelect: 1, cascadeDelete: true },
+        { name: 'sort_order', type: 'number', min: 0 },
       ],
     });
     console.log('  Created curated_products');
@@ -253,9 +252,9 @@ async function main() {
     await pb.collections.create({
       name: 'favorites',
       type: 'base',
-      schema: [
-        { name: 'customer', type: 'relation', required: true, options: { collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true } },
-        { name: 'product', type: 'relation', required: true, options: { collectionId: productsColl.id, maxSelect: 1, cascadeDelete: true } },
+      fields: [
+        { name: 'customer', type: 'relation', required: true, collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true },
+        { name: 'product', type: 'relation', required: true, collectionId: productsColl.id, maxSelect: 1, cascadeDelete: true },
       ],
     });
     console.log('  Created favorites');
@@ -271,13 +270,13 @@ async function main() {
     await pb.collections.create({
       name: 'invoices',
       type: 'base',
-      schema: [
-        { name: 'order', type: 'relation', required: true, options: { collectionId: ordersColl.id, maxSelect: 1, cascadeDelete: false } },
-        { name: 'customer', type: 'relation', required: true, options: { collectionId: customersColl.id, maxSelect: 1, cascadeDelete: false } },
+      fields: [
+        { name: 'order', type: 'relation', required: true, collectionId: ordersColl.id, maxSelect: 1, cascadeDelete: false },
+        { name: 'customer', type: 'relation', required: true, collectionId: customersColl.id, maxSelect: 1, cascadeDelete: false },
         { name: 'invoice_number', type: 'text', required: true },
-        { name: 'amount', type: 'number', options: { min: 0 } },
+        { name: 'amount', type: 'number', min: 0 },
         { name: 'due_date', type: 'date' },
-        { name: 'status', type: 'select', options: { values: ['draft', 'sent', 'paid', 'overdue', 'cancelled'], maxSelect: 1 } },
+        { name: 'status', type: 'select', values: ['draft', 'sent', 'paid', 'overdue', 'cancelled'], maxSelect: 1 },
         { name: 'square_invoice_id', type: 'text' },
         { name: 'square_payment_id', type: 'text' },
         { name: 'paid_date', type: 'date' },
@@ -285,7 +284,6 @@ async function main() {
         { name: 'sent_date', type: 'date' },
         { name: 'notes', type: 'text' },
       ],
-      indexes: ['CREATE UNIQUE INDEX idx_invoice_number ON invoices (invoice_number)'],
     });
     console.log('  Created invoices');
   } else {
@@ -299,9 +297,9 @@ async function main() {
     await pb.collections.create({
       name: 'communications',
       type: 'base',
-      schema: [
-        { name: 'customer', type: 'relation', required: true, options: { collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true } },
-        { name: 'type', type: 'select', options: { values: ['call', 'email', 'meeting', 'note', 'order_placed', 'payment_received', 'shipped', 'follow_up'], maxSelect: 1 } },
+      fields: [
+        { name: 'customer', type: 'relation', required: true, collectionId: customersColl.id, maxSelect: 1, cascadeDelete: true },
+        { name: 'type', type: 'select', values: ['call', 'email', 'meeting', 'note', 'order_placed', 'payment_received', 'shipped', 'follow_up'], maxSelect: 1 },
         { name: 'subject', type: 'text' },
         { name: 'content', type: 'text' },
         { name: 'date', type: 'date' },
