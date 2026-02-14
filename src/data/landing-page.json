@@ -1,0 +1,67 @@
+{
+  "hero": {
+    "image": "/images/brand/general/Maximus-1.jpg",
+    "tagline": "Fantastic Handmade Goods",
+    "subtitle": "Imitated by many. Duplicated by none."
+  },
+  "productLines": [
+    {
+      "name": "Leather",
+      "href": "/leather",
+      "description": "Iconic steampunk masks, leather masquerade masks, and plague doctor masks \u2014 imitated by many but duplicated by none.",
+      "image": "/images/brand/leather/plague-doctor-hero.jpg",
+      "circles": [
+        {
+          "name": "Plague Doctor",
+          "image": "/images/brand/general/Maximus-1.jpg"
+        },
+        {
+          "name": "Steampunk",
+          "image": "/images/brand/general/Sentinel.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Art Glass",
+      "href": "/glass",
+      "description": "Stained glass style, lead free suncatchers, ornaments, and custom pieces made from your photos.",
+      "image": "/images/brand/glass/glass-hero.jpg",
+      "circles": [
+        {
+          "name": "Sun Catcher",
+          "image": "/images/brand/glass/sun-catchers/hummingbird-sun-catcher.jpg"
+        },
+        {
+          "name": "Ornament",
+          "image": "/images/brand/glass/ornaments/peacock-ornament.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Paper Art",
+      "href": "/paper",
+      "description": "Intricate hand-cut paper art pieces. Delicate, detailed, and designed to delight.",
+      "image": "/images/brand/paper/paper-art-hero.jpg",
+      "circles": [
+        {
+          "name": "Butterfly",
+          "image": "/images/brand/paper/butterfly/butterflies-paper-cut.jpg"
+        },
+        {
+          "name": "Lighthouse",
+          "image": "/images/brand/paper/lighthouse/lighthouse-paper-cut.jpg"
+        }
+      ]
+    }
+  ],
+  "featuredIn": [
+    { "name": "Forbes", "image": "/images/brand/general/Forbes-1.png" },
+    { "name": "Vice", "image": "/images/brand/general/vice-1.png" },
+    { "name": "Rolling Stone", "image": "/images/brand/general/rollling-stone.jpg" },
+    { "name": "Vogue", "image": "/images/brand/general/vogue-black-on-white-circle-black-writing.png" },
+    { "name": "Make Magazine", "image": "/images/brand/general/Make-transparent.png" },
+    { "name": "LA Opera", "image": "/images/brand/general/LA-Opera-1.png" },
+    { "name": "Monterey Bay Aquarium", "image": "/images/brand/general/Monterey-Bay-Aquarium-1.png" },
+    { "name": "Nissan", "image": "/images/brand/general/Nissan-1.png" }
+  ]
+}

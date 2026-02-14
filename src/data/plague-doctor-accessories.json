@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Plague Doctor Top Hat",
+    "slug": "plague-doctor-top-hat",
+    "year": 2013,
+    "description": "Created in 2013, The Plague Doctor Top Hat is based on the hat in the 1656 engraving by Paul Furst. It has a wide brim that slopes downward, and a short crown that is wider at the top than the bottom. Traditionally hats that are wider at the top than the bottom are shaped on hat blocks that break down into several pieces. A single block could not be removed from the finished crown, but the multiple smaller pieces can be extracted one at a time. Each hat is hand formed and hand sewn.",
+    "heroImage": "/images/brand/plague-doctor/Hat-alone-new-background-2.png",
+    "images": [
+      "/images/brand/plague-doctor/Hat-alone-new-background-2.png",
+      "/images/brand/plague-doctor/Hat-bottom.png",
+      "/images/brand/plague-doctor/hat-1.jpg",
+      "/images/brand/general/new-top-hats.jpg"
+    ],
+    "etsyUrl": "https://www.etsy.com/listing/1020182439/plague-doctor-hat"
+  },
+  {
+    "name": "Plague Doctor Hood",
+    "slug": "plague-doctor-hood",
+    "year": 2013,
+    "description": "In addition to a long-beaked mask, the plague doctor's traditional costume is often worn with a wide-brimmed physician's hat and mantle. An alternative to the hat is a classic hood, a garment widely worn in medieval Europe, including the middle of the 14th century when the Black Death devastated the population, killing an estimated 25 million people. The hood covers the entire head and shoulders, protecting against inclement weather. Referencing contemporary images of hoods in paintings and engravings, Tom designed his leather plague doctor hood in 2013 to be worn with any of his plague doctor masks. It is constructed of a heavy garment cowhide, soft to the touch and comfortable to wear.",
+    "heroImage": "/images/brand/plague-doctor/Hood-Maximus-brown.jpg",
+    "images": [
+      "/images/brand/plague-doctor/Hood-Maximus-brown.jpg",
+      "/images/brand/plague-doctor/Hood-black-w-Maximus-1-scaled.jpg",
+      "/images/brand/plague-doctor/plague_doctor_hood_by_tombanwell_d6n8of1-fullview.jpg",
+      "/images/brand/plague-doctor/Schnabel-in-Hood-1.png"
+    ],
+    "etsyUrl": "https://www.etsy.com/shop/banwelldesigns?search_query=hood"
+  },
+  {
+    "name": "Plague Doctor Costume",
+    "slug": "plague-doctor-costume",
+    "year": 2013,
+    "description": "The complete plague doctor costume includes mask, hat, mantle, and staff with winged topper. Each piece is handcrafted from premium leather and designed to work together as a complete ensemble.",
+    "heroImage": "/images/brand/plague-doctor/Plague-Doctor-Costume-Maximus-mask-Tom-Banwell-Designs.jpeg",
+    "images": [
+      "/images/brand/plague-doctor/Plague-Doctor-Costume-Maximus-mask-Tom-Banwell-Designs.jpeg"
+    ],
+    "etsyUrl": "https://www.etsy.com/shop/banwelldesigns?search_query=costume"
+  },
+  {
+    "name": "The Mantle",
+    "slug": "the-mantle",
+    "year": 2017,
+    "description": "In addition to a long-beaked mask, the plague doctor's traditional costume is often worn with a wide-brimmed physician's hat and mantle. Introduced in 2017, The Mantle is one of the plague doctor accessories created by Tom Banwell (along with the hat, staff and pouch).",
+    "heroImage": "/images/brand/plague-doctor/Mantle-2.png",
+    "images": [
+      "/images/brand/plague-doctor/Mantle-2.png",
+      "/images/brand/plague-doctor/Mantle.png"
+    ],
+    "etsyUrl": "https://www.etsy.com/listing/1072238301/plague-doctor-mantle-capelette-shoulder"
+  },
+  {
+    "name": "The Galileo Pouch",
+    "slug": "the-galileo-pouch",
+    "year": 2017,
+    "description": "Introduced in 2017, The Galileo Pouch is one of the plague doctor accessories created by Tom Banwell (along with the hat, staff and mantle).",
+    "heroImage": "/images/brand/accessories/Dark-Brown-Resume-8.5-%C3%97-8.5-in-26.png",
+    "images": [
+      "/images/brand/accessories/Dark-Brown-Resume-8.5-%C3%97-8.5-in-26.png"
+    ],
+    "etsyUrl": "https://www.etsy.com/shop/banwelldesigns?search_query=galileo+pouch"
+  },
+  {
+    "name": "Winged Staff Topper",
+    "slug": "winged-staff-topper",
+    "year": 2017,
+    "description": "The Winged Staff Topper completes the plague doctor costume ensemble. A handcrafted winged hourglass topper designed to sit atop a walking staff or cane.",
+    "heroImage": "/images/brand/accessories/Dark-Brown-Resume-8.5-%C3%97-8.5-in-18.png",
+    "images": [
+      "/images/brand/accessories/Dark-Brown-Resume-8.5-%C3%97-8.5-in-18.png"
+    ],
+    "etsyUrl": "https://www.etsy.com/listing/1062861632/plague-doctor-staff-and-winged-hourglass"
+  }
+]

@@ -1,0 +1,397 @@
+BANWELL DESIGNS - COMPLETE CSS DESIGN REFERENCE
+Extracted from archived banwelldesigns.com (January 2023)
+===============================================================
+
+=== FILE 1: post-706-global-kit.css (Elementor Global Kit) ===
+This is the MASTER design system with all color/typography variables.
+
+--- GLOBAL COLOR PALETTE ---
+--e-global-color-primary:     #FFFFFF        (White - primary text on dark backgrounds)
+--e-global-color-secondary:   #F3F5F8        (Light gray - secondary text/backgrounds)
+--e-global-color-text:        #FFFFFF        (White - body text on dark backgrounds)
+--e-global-color-accent:      #F74646        (Bright red - accent/hover color)
+--e-global-color-c696dce:     #FFFFFF        (White)
+--e-global-color-14ef391:     #C8D5DC        (Light blue-gray)
+--e-global-color-764183d:     #F9FAFD        (Near-white)
+--e-global-color-d6cea4e:     #FFFFFF        (White - used for button fill, footer bg)
+--e-global-color-86b4fcd:     #02010100      (Transparent/near-black with alpha 0 - button hover bg)
+--e-global-color-57c8da2:     #000000CC      (Black 80% opacity - overlay)
+
+--- GLOBAL TYPOGRAPHY SYSTEM ---
+ALL fonts use "Poppins" family, Sans-serif fallback
+
+Typography "Primary" (H1/Main Headings):
+  font-family: "Poppins", Sans-serif
+  font-size: 65px (desktop) / 45px (tablet) / 28px (mobile)
+  font-weight: 600 (semibold)
+  text-transform: none
+  font-style: normal
+  text-decoration: none
+  line-height: 1.2em (desktop/tablet) / 1.1em (mobile)
+  letter-spacing: 0px
+
+Typography "Secondary" (H2/Subheadings):
+  font-family: "Poppins", Sans-serif
+  font-size: 36px (desktop) / 25px (tablet) / 20px (mobile)
+  font-weight: 600
+  text-transform: capitalize
+  line-height: 1.1em
+  letter-spacing: 0px
+
+Typography "Text" (Body Text):
+  font-family: "Poppins", Sans-serif
+  font-size: 16px (desktop) / 14px (tablet/mobile)
+  font-weight: 300 (light)
+  text-transform: none
+  line-height: 1.5em
+  letter-spacing: 0px
+
+Typography "Accent" (Buttons/Nav/Labels):
+  font-family: "Poppins", Sans-serif
+  font-size: 16px (desktop) / 14px (tablet/mobile)
+  font-weight: 400 (regular)
+  text-transform: capitalize
+  line-height: 1em
+  letter-spacing: 0px
+
+Typography "392b9e0" (H4/Card Headings):
+  font-family: "Poppins", Sans-serif
+  font-size: 22px (desktop) / 18px (mobile)
+  font-weight: 600
+  text-transform: capitalize
+  line-height: 1.2em
+  letter-spacing: 0px
+
+Typography "c05b693" (Subtitle/Description):
+  font-family: "Poppins", Sans-serif
+  font-size: 22px (desktop) / 14px (tablet/mobile)
+  font-weight: 300
+  text-transform: none
+  line-height: 1.5em
+  letter-spacing: 0px
+
+Typography "6558fb1" (Uppercase Label/Eyebrow):
+  font-family: "Poppins", Sans-serif
+  font-size: 16px (desktop) / 14px (tablet/mobile)
+  font-weight: 300
+  text-transform: UPPERCASE
+  line-height: 1.5em
+  letter-spacing: 10px (wide-spaced!)
+
+Typography "92bce3b" (Italic Accent):
+  font-family: "Poppins", Sans-serif
+  font-size: 16px (desktop) / 14px (tablet/mobile)
+  font-weight: 400
+  text-transform: capitalize
+  font-style: ITALIC
+  text-decoration: UNDERLINE
+  line-height: 1em
+
+Typography "b2deeae" (Large Display):
+  font-family: "Poppins", Sans-serif
+  font-size: 85px (desktop) / 65px (tablet) / 48px (mobile)
+  font-weight: 600
+  line-height: 1em
+
+Typography "fb1a3e0" (Hero/Jumbo):
+  font-family: "Poppins", Sans-serif
+  font-size: 200px (desktop) / 145px (tablet) / 100px (mobile)
+  font-weight: 600
+  line-height: 1.2em (desktop) / 1em (mobile)
+
+Typography "397e168" (Italic Caption):
+  font-family: "Poppins", Sans-serif
+  font-size: 16px (desktop) / 14px (tablet)
+  font-weight: 400
+  text-transform: capitalize
+  font-style: italic
+  line-height: 1.3em
+
+Typography "d786817" (Same as Primary):
+  font-family: "Poppins", Sans-serif
+  font-size: 65px / 45px / 28px
+  font-weight: 600
+  line-height: 1.2em / 1.1em
+
+--- SITE-LEVEL SETTINGS ---
+Body/Kit:
+  color: #FFFFFF (white text)
+  background-color: #000000 (black)
+  background-image: textured pattern (Untitled-2.png)
+  background-position: center center
+  background-repeat: no-repeat
+  background-size: 100% auto
+  background-attachment: fixed (desktop only)
+
+Tablet background: textured-black-background (different image)
+Mobile background: background-long-scaled.jpg
+
+Page transition: #FFBC7D (warm orange)
+Container max-width: 1140px (desktop) / 1024px (tablet) / 767px (mobile)
+Widget spacing: 20px
+
+--- HEADER ---
+  background-color: #000000 (solid black)
+  Logo width: 274px
+  Nav link color: #FFFFFF
+  Mobile menu toggle icon: #C30000 (dark red)
+  Nav font: Accent typography (Poppins 16px, 400 weight, capitalize)
+
+--- FOOTER ---
+  background-color: #FFFFFF (var d6cea4e)
+  Copyright text: white, Text typography
+
+
+=== FILE 2: global-elementor.css (Global Widget Defaults) ===
+These define Elementor widget styling defaults.
+
+Headings (.elementor-heading-title): Primary typography, white
+Text Editor: Text typography, white
+Buttons (.elementor-button):
+  font: Accent typography (Poppins 16px, 400 weight, capitalize)
+  background-color: var(--e-global-color-accent) = #F74646 (bright red)
+Dividers: secondary color (#F3F5F8)
+Testimonials: Text typography for content, Primary for name
+Star Ratings: default color
+Tabs: Primary for title, accent for active
+Forms: accent color buttons, text color labels
+Nav Menu: Primary typography, text color
+Gallery Title: Primary typography
+
+
+=== FILE 3: post-2264-homepage.css (Homepage-Specific Styles) ===
+
+--- PRODUCT IMAGE CIRCLES ---
+  border-style: solid
+  border-width: 5px
+  border-color: #C30000 (dark red)
+  border-radius: 100px (fully circular)
+  box-shadow: 10px 10px 2px 0px rgba(0,0,0,0.5)
+
+--- VIDEO CONTAINER ---
+  border-style: solid
+  border-width: 7px (desktop) / 6px (tablet) / 4px (mobile)
+  border-color: #C30000
+  border-radius: 122px (desktop) / 38px (tablet/mobile)
+
+--- WHITE SECTIONS ---
+Multiple sections use:
+  background-color: #FFFFFF
+  transition: background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s
+
+--- "WELCOME" SECTION HEADING ---
+  color: #000000 (black text on white background)
+  font: Primary typography (Poppins 65px semibold)
+  container margin: 16px all sides
+
+--- SUBTITLE IN WELCOME ---
+  color: #000000
+  font: c05b693 typography (Poppins 22px, 300 weight)
+  container margin: 0px 100px 50px 100px
+  container padding: 0% 30% (horizontal centering)
+
+--- "EXPLORE" HERO SECTION ---
+  overflow: hidden
+  margin-top: 12% (desktop) / 25% (tablet) / 35% (mobile)
+  padding: 0% 8%
+  Heading: #FFFFFF, Primary typography
+  Subtitle: #FFFFFF, c05b693 typography
+  Subtitle padding: 0% 25% horizontal
+
+--- PRODUCT GALLERY ---
+  Gallery item padding: 30px gap
+  Image border-style: solid, color #000000
+  Image border-radius: 8px
+  Caption: center aligned, 392b9e0 typography (22px semibold capitalize)
+  Gallery top margin: 5%
+
+--- MAIN CTA BUTTON ---
+  fill/color: #FFFFFF (var d6cea4e)
+  background-color: #A22020 (dark crimson/maroon)
+  border: 1px solid #FFFFFF
+  border-radius: 100px (pill shape)
+  padding: 16px 35px
+  HOVER:
+    color: #F74646 (var accent - bright red)
+    background-color: #02010100 (var 86b4fcd - transparent!)
+
+--- TESTIMONIALS SECTION ---
+  background-color: #F3F5F8 (light gray)
+  padding: 1% 8% 4% 8%
+  Section heading bg: #F3F5F8
+  Heading: #000000 (black), Primary typography
+  Heading margin-top: 55px
+  Testimonial text: left-aligned, #000000
+  Avatar: 63px x 63px, border-radius 50px (circular)
+  Star rating: 23px
+  Testimonial name: Accent typography
+
+--- IMAGE CAPTION (under products) ---
+  color: #FFFFFF
+
+--- SECTION NEGATIVE MARGINS (overlapping) ---
+  Some sections: margin-top: -50px, margin-bottom: -50px
+
+
+=== FILE 4: post-3277-plague-doctor.css (Plague Doctor Product Page) ===
+
+--- PRODUCT DESCRIPTION ---
+  text-align: center
+  Heading: #FFFFFF, c05b693 typography (22px, 300 weight)
+  container margin-top: -10px
+
+--- ADD TO CART / CTA BUTTON ---
+  fill/color: #FFFFFF (var d6cea4e)
+  background-color: #A22020 (dark crimson)
+  border: 1px solid #FFFFFF
+  border-radius: 100px (pill shape)
+  padding: 16px 60px (wider than homepage button)
+  HOVER:
+    color: #F74646 (accent red)
+    background-color: transparent (#02010100)
+  container margin: -8% 10% 7% 0%
+
+--- PRODUCT HERO IMAGE ---
+  max-width: 64%
+
+--- SECTION DIVIDERS ---
+  border-style: solid
+  color: #FFFFFF
+  border-width: 3.7px
+  separator width: 82%
+  margin: 0 auto (centered)
+  padding: 15px top/bottom
+
+--- GALLERY GRIDS ---
+Gallery "18cf1d24" (Main product gallery):
+  Item padding: 18px gap
+  Image border-radius: 8px
+  Caption: center, #FFFFFF, 392b9e0 typography (22px semibold capitalize)
+  Container margin-top: 5%
+
+Gallery "9df0fd1" and "a2beb46" (Side galleries):
+  Item padding: 0px (no gap)
+  Image border-radius: 8px
+  Caption: center, #FFFFFF, 392b9e0 typography
+  Container margin: 5% 15% 0% 15%
+
+--- SPACERS ---
+  Various: 30px, 78px spacer sizes
+
+--- TEXT HEADINGS ON PAGE ---
+  All text-align: center
+
+--- COLUMN WIDTHS ---
+  Main content column: 66.629%
+  Side column: 33.282%
+
+
+=== FILE 5: post-2591-the-furst.css (The Furst Product Page) ===
+
+--- ADD TO CART BUTTON ---
+  background-color: #7E0F0F (dark wine/burgundy red)
+
+--- PRODUCT TITLE ---
+  text-align: center
+  color: #FFFFFF
+
+--- PRODUCT SUBTITLE ---
+  text-align: center
+  color: #FFFFFF
+
+--- OVERLAPPING IMAGES ---
+  Left overlap: margin-right: -207px (desktop) / -100px (tablet) / 0 (mobile)
+  Right overlap: margin-left: -207px (desktop) / -100px (tablet) / 0 (mobile)
+
+--- SECTION DIVIDERS (same pattern as Plague Doctor) ---
+  border-style: solid
+  color: #FFFFFF
+  border-width: 3.7px
+  separator width: 82%
+  centered, padding 15px
+
+--- MAIN PRODUCT GALLERY ---
+  Gallery item padding: 96px gap (large!)
+  Image border-radius: 25px
+  Caption: display: none (hidden)
+
+--- SECONDARY GALLERY ---
+  Gallery item padding: 15px gap
+  Image border-radius: 25px
+  Caption: center, #FFFFFF
+
+--- BOTTOM GALLERY ---
+  Gallery item padding: 100px gap
+  Image border-radius: 31px
+  Caption: center, #FFFFFF
+  Container margin: 27px all sides
+
+--- BUY BUTTONS (Multiple sections) ---
+  Various buy buttons use these background colors:
+  #7E0F0F (first button - dark wine)
+  #962525 (middle buttons - medium crimson)
+  #930303 (later buttons - deep red)
+
+--- SPACERS ---
+  Consistent 50px spacing between sections
+  One 10px spacer
+
+--- COLUMN WIDTHS ---
+  Various asymmetric layouts:
+  67.982% / 31.931%
+  54.298% / 45.658%
+  57.718% / 42.238%
+  57.981% / 41.932%
+  58.684% / 41.272%
+
+
+=== CSS HERO FILE ===
+NOT FOUND in Wayback Machine archive. This file was not captured.
+
+
+===============================================================
+DESIGN SUMMARY - KEY VALUES FOR RECREATION
+===============================================================
+
+COLOR PALETTE:
+  Primary Background:  #000000 (pure black)
+  Primary Text:        #FFFFFF (white)
+  Accent Red:          #F74646 (bright red - hover states, links)
+  Button Red:          #A22020 (dark crimson - CTA buttons)
+  Dark Wine Red:       #7E0F0F (The Furst buttons)
+  Deep Red:            #930303 (alternate buttons)
+  Medium Crimson:      #962525 (alternate buttons)
+  Border Red:          #C30000 (image borders, mobile toggle)
+  Light Gray BG:       #F3F5F8 (testimonial/review sections)
+  Near White:          #F9FAFD
+  Light Blue-Gray:     #C8D5DC
+  Page Transition:     #FFBC7D (warm orange)
+  Dark Overlay:        #000000CC (80% black)
+  Button Hover BG:     transparent (#02010100)
+
+FONTS:
+  EVERYTHING uses "Poppins" (Google Font)
+  Weights used: 300 (light body), 400 (regular/nav), 600 (semibold headings)
+
+BUTTON STYLE (PRIMARY CTA):
+  background: #A22020
+  color: #FFFFFF
+  border: 1px solid #FFFFFF
+  border-radius: 100px (pill)
+  padding: 16px 35px (standard) or 16px 60px (wide)
+  font: Poppins 16px, 400 weight, capitalize
+  hover: color #F74646, bg transparent
+
+IMAGE STYLE:
+  Product circles: 5px solid #C30000 border, 100px radius, drop shadow
+  Gallery items: 8px border-radius (small) or 25-31px (large)
+  Gallery gaps: 15-30px (tight) or 96-100px (spacious)
+
+SECTION DIVIDERS:
+  3.7px solid white line, 82% width, centered
+
+LAYOUT:
+  Max container: 1140px
+  Section padding: typically 8% horizontal
+  Widget spacing: 20px
+  Sections often overlap with negative margins (-50px)

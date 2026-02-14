@@ -1,0 +1,58 @@
+{
+  "title": "Stained Glass",
+  "subtitle": "Lead-free stained glass style pieces made with real glass. Textured on the front, smooth and glossy on the back. Made one by one in our small shop in Northern California.",
+  "categories": [
+    {
+      "name": "Sun Catchers",
+      "slug": "sun-catchers",
+      "image": "/images/brand/glass/sun-catchers/hero.jpg",
+      "video": "/images/brand/glass/sun-catchers/hero.mp4",
+      "description": "Stained glass style window hangings made with real glass. Available in 6\", 10\", 12\", and 15\" sizes. Lead-free, made of one piece of glass with texture, transparent stains, and opaque pigments. Includes decorative chain for hanging.",
+      "images": [
+        { "src": "/images/brand/glass/sun-catchers/sun-catcher-1.jpg", "alt": "Blooming lotus stained glass sun catcher" },
+        { "src": "/images/brand/glass/sun-catchers/sun-catcher-2.jpg", "alt": "Snowy owl stained glass sun catcher" },
+        { "src": "/images/brand/glass/sun-catchers/sun-catcher-3.jpg", "alt": "Butterfly stained glass sun catcher" }
+      ]
+    },
+    {
+      "name": "Ornaments",
+      "slug": "ornaments",
+      "image": "/images/brand/glass/ornaments/hero.jpg",
+      "description": "Stained glass style Christmas ornaments made with real glass. Lead-free, with texture, transparent stains, and opaque pigments applied to one piece of glass. Textured on the front, smooth and glossy on the back.",
+      "images": [
+        { "src": "/images/brand/glass/ornaments/ornament-1.jpg", "alt": "Sunflowers stained glass ornament" },
+        { "src": "/images/brand/glass/ornaments/ornament-2.jpg", "alt": "White stag stained glass ornament" },
+        { "src": "/images/brand/glass/ornaments/ornament-3.jpg", "alt": "Koala stained glass ornament" }
+      ]
+    },
+    {
+      "name": "Custom From Photo",
+      "slug": "custom-work",
+      "image": "/images/brand/glass/custom-work/hero.jpg",
+      "description": "Custom photo suncatchers made with real glass. Send us your photo and we create a stained glass style wall or window hanging from it. Available in multiple sizes.",
+      "images": [
+        { "src": "/images/brand/glass/custom-work/custom-1.webp", "alt": "Custom family photo to stained glass suncatcher" },
+        { "src": "/images/brand/glass/custom-work/custom-2.jpg", "alt": "Custom pet photo to stained glass suncatcher" },
+        { "src": "/images/brand/glass/custom-work/custom-3.jpg", "alt": "Custom wedding photo to stained glass suncatcher" }
+      ]
+    }
+  ],
+  "featuredWork": {
+    "heading": "Featured Glass Work",
+    "description": "Each piece is made with real glass, lead-free, with texture and transparent stains applied by hand. Made one by one in our small shop in Northern California.",
+    "images": [
+      "/images/brand/glass/featured-1.jpg",
+      "/images/brand/glass/featured-2.jpg",
+      "/images/brand/glass/featured-3.jpg"
+    ]
+  },
+  "recentProjects": [
+    { "type": "image", "src": "/images/brand/glass/recent/hummingbird-detail-1.webp", "alt": "Hummingbird sun catcher detail" },
+    { "type": "video", "src": "/images/brand/glass/recent/glass-showcase.mp4" },
+    { "type": "image", "src": "/images/brand/glass/recent/hummingbird-angle-1.webp", "alt": "Hummingbird sun catcher angle view" },
+    { "type": "image", "src": "/images/brand/glass/recent/mountain-chain.webp", "alt": "Mountain landscape sun catcher detail" },
+    { "type": "image", "src": "/images/brand/glass/recent/mountain-wide.webp", "alt": "Mountain landscape sun catcher wide" },
+    { "type": "image", "src": "/images/brand/glass/recent/mountain-sun-detail.webp", "alt": "Mountain sun detail close-up" }
+  ],
+  "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?section_id=glass"
+}

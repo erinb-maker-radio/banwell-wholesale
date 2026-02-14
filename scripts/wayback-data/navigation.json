@@ -1,0 +1,104 @@
+{
+  "brand": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "Plague Doctor",
+      "href": "/plague-doctor",
+      "children": [
+        {
+          "label": "The Furst",
+          "href": "/the-furst"
+        },
+        {
+          "label": "Dr. Beulenpest",
+          "href": "/dr-beulenpest"
+        },
+        {
+          "label": "The Ichabod",
+          "href": "/the-ichabod"
+        },
+        {
+          "label": "The Krankheit",
+          "href": "/the-krankheit"
+        },
+        {
+          "label": "The Maximus",
+          "href": "/the-maximus"
+        },
+        {
+          "label": "The Schnabel",
+          "href": "/the-schnabel"
+        },
+        {
+          "label": "The Stiltzkin",
+          "href": "/the-stiltzkin"
+        },
+        {
+          "label": "The Corax",
+          "href": "/the-corax"
+        },
+        {
+          "label": "The Icarus",
+          "href": "/the-icarus"
+        },
+        {
+          "label": "The Bubonis",
+          "href": "/the-bubonis"
+        },
+        {
+          "label": "The Jackdaw",
+          "href": "/the-jackdaw"
+        },
+        {
+          "label": "The Pestis",
+          "href": "/the-pestis"
+        },
+        {
+          "label": "The Miasma",
+          "href": "/the-miasma"
+        },
+        {
+          "label": "The Mantle",
+          "href": "/the-mantle"
+        },
+        {
+          "label": "The Galileo Pouch",
+          "href": "/the-galileo-pouch"
+        }
+      ]
+    },
+    {
+      "label": "Steampunk",
+      "href": "/steampunk"
+    },
+    {
+      "label": "Fashion Masks",
+      "href": "/fashion-masks"
+    },
+    {
+      "label": "Gallery",
+      "href": "/gallery"
+    },
+    {
+      "label": "About",
+      "href": "/about"
+    }
+  ],
+  "wholesale": [
+    {
+      "label": "Catalog",
+      "href": "/catalog"
+    },
+    {
+      "label": "Pricing",
+      "href": "/pricing"
+    },
+    {
+      "label": "Sign In",
+      "href": "/login"
+    }
+  ]
+}

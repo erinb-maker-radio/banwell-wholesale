@@ -1,107 +1,76 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import landingData from '@/data/landing-page.json';
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
     <div>
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-blue-900 to-blue-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold mb-6">
-              Wholesale Stained Glass-Style Products
-            </h1>
-            <p className="text-xl text-blue-100 mb-8">
-              Beautiful handcrafted ornaments, sun catchers, and more. Perfect for gift shops,
-              boutiques, and retail stores. Tiered wholesale pricing with discounts up to 55%.
-            </p>
-            <div className="flex space-x-4">
-              <Link
-                href="/catalog"
-                className="inline-flex items-center px-6 py-3 text-base font-medium rounded-lg bg-white text-blue-900 hover:bg-blue-50"
-              >
-                Browse Catalog
-              </Link>
-              <Link
-                href="/register"
-                className="inline-flex items-center px-6 py-3 text-base font-medium rounded-lg border-2 border-white text-white hover:bg-white/10"
-              >
-                Create Account
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Tier pricing overview */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-          Wholesale Pricing Tiers
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { tier: 'Tier 1', spend: '$400+', discount: '40% off', color: 'blue' },
-            { tier: 'Tier 2', spend: '$800+', discount: '50% off', color: 'purple' },
-            { tier: 'Tier 3', spend: '$1,200+', discount: '55% off', color: 'amber' },
-          ].map((t) => (
-            <div
-              key={t.tier}
-              className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 text-center"
-            >
-              <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.tier}</p>
-              <p className="text-4xl font-bold text-gray-900 mt-2">{t.discount}</p>
-              <p className="text-gray-500 mt-2">on orders {t.spend}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* ───────────────── HERO WITH COLLECTION CARDS ───────────────── */}
+      <section className="relative overflow-hidden py-4 md:py-6">
+        {/* Warm watercolor gradient background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: [
+              'radial-gradient(ellipse 80% 60% at 20% 40%, rgba(219,234,254,0.6) 0%, transparent 70%)',
+              'radial-gradient(ellipse 60% 80% at 80% 20%, rgba(191,219,254,0.4) 0%, transparent 60%)',
+              'radial-gradient(ellipse 90% 50% at 50% 90%, rgba(224,231,255,0.3) 0%, transparent 55%)',
+              'radial-gradient(ellipse 40% 40% at 10% 80%, rgba(199,210,254,0.2) 0%, transparent 50%)',
+              'radial-gradient(ellipse 50% 60% at 90% 70%, rgba(186,230,253,0.15) 0%, transparent 50%)',
+              'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+            ].join(', '),
+          }}
+        />
 
-      {/* Product categories */}
-      <div className="bg-gray-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Our Product Lines
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              { name: 'Glass Ornaments', price: '$35 retail', desc: 'Over 300 unique stained glass-style Christmas ornaments', href: '/catalog/glass-ornaments' },
-              { name: 'Glass Sun Catchers', price: '$72-$153 retail', desc: 'Window hangings available in 6", 10", 12", and 15" sizes', href: '/catalog/glass-sun-catchers' },
-              { name: 'Paper Cut Ornaments', price: '$15 retail', desc: 'Delicate paper cut style Christmas ornaments', href: '/catalog/paper-cut-ornaments' },
-              { name: 'Wooden Ornaments', price: '$35 retail', desc: 'Laser-cut wooden ornaments with stained glass styling', href: '/catalog/wooden-ornaments' },
-            ].map((cat) => (
+        {/* Content */}
+        <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col items-center justify-center">
+          {/* 3 Collection Cards */}
+          <div className="animate-fade-up-delay-1 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 w-full">
+            {landingData.productLines.map((line) => (
               <Link
-                key={cat.name}
-                href={cat.href}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 hover:shadow-md transition-shadow"
+                key={line.name}
+                href={line.href}
+                className="group relative block overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-500 aspect-[4/5] md:aspect-[3/4]"
               >
-                <h3 className="text-xl font-semibold text-gray-900">{cat.name}</h3>
-                <p className="text-blue-600 font-medium mt-1">{cat.price}</p>
-                <p className="text-gray-500 mt-2">{cat.desc}</p>
+                {/* Card background image */}
+                <Image
+                  src={line.image}
+                  alt={line.name}
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                />
+
+                {/* Bottom gradient for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 via-40% to-transparent" />
+
+                {/* Blue accent line at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+
+                {/* Content overlay */}
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                  <h3 className="text-white text-2xl md:text-3xl font-semibold tracking-wide mb-2">
+                    {line.name}
+                  </h3>
+                  <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-[320px] transition-colors duration-300 group-hover:text-white/80">
+                    {line.description}
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-white/50 text-sm tracking-wide transition-all duration-300 group-hover:text-blue-300 group-hover:gap-3">
+                    Explore
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* CTA */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Order?</h2>
-        <p className="text-gray-500 mb-8 max-w-2xl mx-auto">
-          Register for a wholesale account to access pricing, place orders, and manage your catalog.
-        </p>
-        <Link
-          href="/register"
-          className="inline-flex items-center px-8 py-3 text-base font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-        >
-          Create Wholesale Account
-        </Link>
-      </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm">Banwell Designs &middot; Wholesale Portal</p>
-        </div>
-      </footer>
     </div>
   );
 }

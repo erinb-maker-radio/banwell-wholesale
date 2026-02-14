@@ -1,0 +1,15 @@
+{
+  "title": "Steampunk",
+  "subtitle": "Iconic steampunk creations including gasmasks, rayguns, respirators, helmets, goggles and more.",
+  "images": [
+    { "src": "/images/brand/steampunk/Optiscope.jpg", "alt": "Optiscope", "name": "Optiscope" },
+    { "src": "/images/brand/steampunk/Ichabod.jpg", "alt": "Ichabod Steampunk Mask", "name": "Ichabod" },
+    { "src": "/images/brand/steampunk/Sentinel-2.jpg", "alt": "Sentinel", "name": "Sentinel" },
+    { "src": "/images/brand/steampunk/Miasma.jpg", "alt": "Miasma Steampunk Mask", "name": "Miasma" },
+    { "src": "/images/brand/steampunk/Lantern-City-Gaurd.jpg", "alt": "Lantern City Guard", "name": "Lantern City Guard" },
+    { "src": "/images/brand/general/Sentinel.jpg", "alt": "Sentinel Helmet", "name": "Sentinel Helmet" },
+    { "src": "/images/brand/general/golden-eye-exterobot.jpg", "alt": "Golden Eye Exterobot", "name": "Golden Eye Exterobot" },
+    { "src": "/images/brand/general/probiscus-exterobot.jpg", "alt": "Probiscus Exterobot", "name": "Probiscus Exterobot" }
+  ],
+  "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?section_id=5765020"
+}

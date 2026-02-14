@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Banwell Designs - Wholesale",
-  description: "Wholesale catalog and ordering for Banwell Designs stained glass-style products",
+  title: "Banwell Designs - Fantastic Handmade Goods",
+  description: "The original maker of modern, handmade leather plague doctor masks, steampunk creations, and stained glass products. Imitated by many, duplicated by none.",
 };
 
 export default function RootLayout({
@@ -17,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased bg-gray-50`}>
+    <html lang="en" style={{ background: '#000' }}>
+      <body className={`${poppins.className} antialiased bg-black min-h-screen`} style={{ background: '#000' }}>
         {children}
       </body>
     </html>

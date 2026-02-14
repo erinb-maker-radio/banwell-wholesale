@@ -1,0 +1,54 @@
+{
+  "title": "Paper Art",
+  "subtitle": "Intricate hand-made paper art pieces. Delicate, detailed, and designed to delight.",
+  "items": [
+    {
+      "name": "Butterfly",
+      "slug": "butterfly",
+      "image": "/images/brand/paper/butterfly/hero.jpg",
+      "description": "Hand-cut paper butterflies with incredible detail and dimension. Each wing is individually crafted and layered for a stunning 3D effect.",
+      "images": [
+        { "src": "/images/brand/paper/butterfly/butterfly-1.jpg", "alt": "Butterflies paper cut art wall hanging" },
+        { "src": "/images/brand/paper/butterfly/butterfly-2.jpg", "alt": "Monarch butterflies paper cut ornament" },
+        { "src": "/images/brand/paper/butterfly/butterfly-3.jpg", "alt": "Corgi paper cut art wall hanging" }
+      ]
+    },
+    {
+      "name": "Lighthouse",
+      "slug": "lighthouse",
+      "image": "/images/brand/paper/lighthouse/hero.jpg",
+      "description": "Detailed paper lighthouses capturing the beauty and romance of coastal beacons. Multi-layered construction creates depth and shadow.",
+      "images": [
+        { "src": "/images/brand/paper/lighthouse/lighthouse-1.jpg", "alt": "Lighthouse by the sea paper cut ornament" },
+        { "src": "/images/brand/paper/lighthouse/lighthouse-2.jpg", "alt": "Raven paper cut art wall hanging" },
+        { "src": "/images/brand/paper/lighthouse/lighthouse-3.jpg", "alt": "Bald eagle paper cut ornament" }
+      ]
+    },
+    {
+      "name": "Cat",
+      "slug": "cat",
+      "image": "/images/brand/paper/cat/hero.jpg",
+      "description": "Charming paper art cats with personality and poise. Each piece captures feline grace through precision cutting and layering.",
+      "images": [
+        { "src": "/images/brand/paper/cat/cat-1.jpg", "alt": "Sleepy white cat paper cut art wall hanging" },
+        { "src": "/images/brand/paper/cat/cat-2.jpg", "alt": "Corgi paper cut art wall hanging" },
+        { "src": "/images/brand/paper/cat/cat-3.jpg", "alt": "Golden mushroom paper cut art wall hanging" }
+      ]
+    }
+  ],
+  "featuredWork": {
+    "heading": "Featured Paper Art",
+    "description": "A showcase of our most intricate and beloved paper art creations.",
+    "images": [
+      "/images/brand/paper/featured-1.jpg",
+      "/images/brand/paper/featured-2.jpg",
+      "/images/brand/paper/featured-3.jpg"
+    ]
+  },
+  "recentProjects": [
+    "/images/brand/paper/recent-1.jpg",
+    "/images/brand/paper/recent-2.jpg",
+    "/images/brand/paper/recent-3.jpg"
+  ],
+  "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?section_id=paper"
+}

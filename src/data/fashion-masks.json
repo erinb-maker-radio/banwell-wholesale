@@ -1,0 +1,14 @@
+{
+  "title": "Fashion Masks",
+  "subtitle": "From Fancy to Filigree to Filthy. Over 100 different designs. Hand-crafted leather masquerade masks.",
+  "images": [
+    { "src": "/images/brand/fashion/Raven-1-scaled.jpg", "alt": "Raven Mask", "name": "Raven" },
+    { "src": "/images/brand/fashion/Hearts-winterwolfstudios-scaled.jpg", "alt": "Hearts Mask", "name": "Hearts" },
+    { "src": "/images/brand/fashion/bunny-scaled.jpg", "alt": "Bunny Mask", "name": "Bunny" },
+    { "src": "/images/brand/fashion/snowflake-scaled.jpg", "alt": "Snowflake Mask", "name": "Snowflake" },
+    { "src": "/images/brand/fashion/purple-swirly-scaled.jpg", "alt": "Purple Swirly Mask", "name": "Purple Swirly" },
+    { "src": "/images/brand/fashion/Raven-2-scaled.jpg", "alt": "Raven Mask Variant", "name": "Raven II" },
+    { "src": "/images/brand/fashion/Gas-Mask-1024x964-1.jpg", "alt": "Gas Mask", "name": "Gas Mask" }
+  ],
+  "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?section_id=32885465"
+}
