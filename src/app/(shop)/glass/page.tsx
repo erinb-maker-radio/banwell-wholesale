@@ -8,60 +8,72 @@ export const metadata = {
 };
 
 export default function GlassHomePage() {
+  // Separate video and images from recent projects
+  const heroVideo = glassData.recentProjects.find((item: { type: string }) => item.type === 'video');
+  const heroImages = glassData.recentProjects.filter((item: { type: string }) => item.type === 'image');
+
   return (
     <div>
-      {/* Section 1: Banner / Title */}
-      <section className="max-w-[1140px] mx-auto px-[8%] py-12 text-center">
-        <h1 className="text-[36px] md:text-[65px] font-semibold text-gray-900 leading-tight mb-4">
-          Glass Suncatchers
-        </h1>
-        <p className="text-[14px] md:text-[22px] font-light text-gray-500 max-w-3xl mx-auto leading-relaxed">
-          {glassData.subtitle}
-        </p>
-      </section>
+      {/* Section 1: Full-bleed Video Hero */}
+      <section className="relative w-full h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden">
+        {/* Video background */}
+        {heroVideo && (
+          <video
+            src={heroVideo.src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
 
-      {/* Section 2: Recent Projects (moved to top) */}
-      <section className="w-full py-8">
-        <div className="max-w-[1140px] mx-auto px-[8%] text-center mb-6">
-          <h2 className="text-[36px] md:text-[65px] font-semibold text-gray-900 mb-4">
-            Recent Projects
-          </h2>
-          <p className="text-[16px] md:text-[22px] font-light text-gray-500">
-            Our latest stained glass creations.
+        {/* Title content */}
+        <div className="relative z-10 flex flex-col items-center justify-end h-full pb-16 px-[8%] text-center">
+          <h1 className="text-[42px] md:text-[72px] font-semibold text-white leading-tight mb-4 drop-shadow-lg">
+            Glass Suncatchers
+          </h1>
+          <p className="text-[15px] md:text-[20px] font-light text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow">
+            {glassData.subtitle}
           </p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
-          {glassData.recentProjects.map((item: { type: string; src: string; alt?: string }, i: number) => (
+      </section>
+
+      {/* Section 2: Image mosaic — asymmetric grid */}
+      <section className="w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-[2px]">
+          {/* Large feature image spanning 2 cols */}
+          {heroImages[0] && (
+            <div className="relative aspect-square md:col-span-2 md:row-span-2 overflow-hidden">
+              <Image
+                src={(heroImages[0] as { src: string }).src}
+                alt={(heroImages[0] as { alt?: string }).alt || 'Glass art'}
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          )}
+          {/* Smaller images filling the right side */}
+          {heroImages.slice(1).map((item: { type: string; src: string; alt?: string }, i: number) => (
             <div key={i} className="relative aspect-square overflow-hidden">
-              {item.type === 'video' ? (
-                <video
-                  src={item.src}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              ) : (
-                <Image
-                  src={item.src}
-                  alt={item.alt || `Recent glass project ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              )}
+              <Image
+                src={item.src}
+                alt={item.alt || `Glass art ${i + 2}`}
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-700"
+              />
             </div>
           ))}
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="max-w-[1140px] mx-auto px-[8%] py-4">
-        <hr className="border-t border-gray-200 w-[82%] mx-auto" />
-      </div>
-
       {/* Section 3: Three Category Circles */}
-      <section className="max-w-[1140px] mx-auto px-[8%] py-8">
+      <section className="max-w-[1140px] mx-auto px-[8%] py-16">
+        <h2 className="text-[28px] md:text-[42px] font-semibold text-gray-900 text-center mb-12">
+          Browse by Category
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
           {glassData.categories.map((cat) => (
             <Link key={cat.slug} href={`/glass/${cat.slug}`} className="group text-center">
@@ -91,16 +103,16 @@ export default function GlassHomePage() {
       </section>
 
       {/* Divider */}
-      <div className="max-w-[1140px] mx-auto px-[8%] py-4">
+      <div className="max-w-[1140px] mx-auto px-[8%]">
         <hr className="border-t border-gray-200 w-[82%] mx-auto" />
       </div>
 
       {/* Section 4: Featured Work */}
-      <section className="max-w-[1140px] mx-auto px-[8%] pt-8 pb-4 text-center">
-        <h2 className="text-[36px] md:text-[65px] font-semibold text-gray-900 mb-4">
+      <section className="max-w-[1140px] mx-auto px-[8%] pt-16 pb-4 text-center">
+        <h2 className="text-[28px] md:text-[42px] font-semibold text-gray-900 mb-4">
           {glassData.featuredWork.heading}
         </h2>
-        <p className="text-[16px] md:text-[22px] font-light text-gray-500 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-[16px] md:text-[20px] font-light text-gray-500 max-w-3xl mx-auto leading-relaxed">
           {glassData.featuredWork.description}
         </p>
       </section>
@@ -127,10 +139,10 @@ export default function GlassHomePage() {
 
       {/* Section 5: Wholesale CTA */}
       <section className="max-w-[1140px] mx-auto px-[8%] py-16 text-center">
-        <h2 className="text-[36px] md:text-[65px] font-semibold text-gray-900 mb-4">
+        <h2 className="text-[28px] md:text-[42px] font-semibold text-gray-900 mb-4">
           Wholesale
         </h2>
-        <p className="text-[16px] md:text-[22px] font-light text-gray-500 max-w-3xl mx-auto mb-8 leading-relaxed">
+        <p className="text-[16px] md:text-[20px] font-light text-gray-500 max-w-3xl mx-auto mb-8 leading-relaxed">
           Stained glass ornaments, sun catchers, and more. Wholesale pricing for retailers with discounts up to 55%.
         </p>
         <Link
