@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 
@@ -97,7 +97,7 @@ export default function CatalogPage() {
                 <div className="aspect-square bg-gray-100 relative overflow-hidden">
                   {(product.image_url || product.image) && (
                     <img
-                      src={product.image_url || ''}
+                      src={etsyImageHD(product.image_url)}
                       alt={product.short_title || product.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       loading="lazy"

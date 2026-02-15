@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Customer, Order, Communication, CuratedProduct, Product, CommunicationType } from '@/lib/types';
-import { formatCurrency, formatDate, getStatusColor, formatOrderStatus, normalizeUrl, getDisplayUrl } from '@/lib/utils';
+import { formatCurrency, formatDate, getStatusColor, formatOrderStatus, normalizeUrl, getDisplayUrl, etsyImageHD } from '@/lib/utils';
 import PageHeader from '@/components/layout/PageHeader';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -354,7 +354,7 @@ export default function CustomerDetailPage() {
                           <div className="flex items-center gap-3">
                             {(product.image || product.image_url) && (
                               <img
-                                src={product.image_url || product.image}
+                                src={etsyImageHD(product.image_url) || product.image}
                                 alt={product.title}
                                 className="w-10 h-10 rounded object-cover"
                               />
@@ -390,7 +390,7 @@ export default function CustomerDetailPage() {
                       >
                         {(product.image || product.image_url) && (
                           <img
-                            src={product.image_url || product.image}
+                            src={etsyImageHD(product.image_url) || product.image}
                             alt={product.title}
                             className="w-full aspect-square rounded object-cover mb-2"
                           />

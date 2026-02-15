@@ -62,6 +62,11 @@ export function getStatusColor(status: string): string {
     tier1: 'bg-blue-100 text-blue-800',
     tier2: 'bg-purple-100 text-purple-800',
     tier3: 'bg-amber-100 text-amber-800',
+    // Subscriber statuses
+    unsubscribed: 'bg-red-100 text-red-800',
+    // Subscriber types
+    retail: 'bg-teal-100 text-teal-800',
+    wholesale: 'bg-indigo-100 text-indigo-800',
   };
   return colors[status] || 'bg-gray-100 text-gray-800';
 }
@@ -107,6 +112,24 @@ export function normalizeUrl(url: string): string {
 export function getDisplayUrl(url: string): string {
   if (!url) return '';
   return url.replace(/^https?:\/\//i, '');
+}
+
+// Upgrade Etsy CDN image URL to higher resolution
+// Etsy thumbnails are 340x270 by default; this swaps to 794px wide (or larger)
+export function etsyImageHD(url: string | undefined, size: 'medium' | 'large' | 'full' = 'large'): string {
+  if (!url) return '';
+  const sizeMap = { medium: 'il_570xN', large: 'il_794xN', full: 'il_1140xN' };
+  return url.replace(/il_\d+x\d+/, sizeMap[size]);
+}
+
+// Generate a branded discount code: BD25-XXXXX
+export function generateDiscountCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // excludes I/1/O/0
+  let code = '';
+  for (let i = 0; i < 5; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `BD25-${code}`;
 }
 
 // Strip common suffixes from product titles for short display

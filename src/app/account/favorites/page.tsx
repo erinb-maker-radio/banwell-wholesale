@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
@@ -61,7 +61,7 @@ export default function FavoritesPage() {
           <div key={id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <Link href={`/product/${product.id}`}>
               <div className="aspect-square bg-gray-100 overflow-hidden">
-                {product.image_url && <img src={product.image_url} alt={product.short_title} className="w-full h-full object-cover" loading="lazy" />}
+                {product.image_url && <img src={etsyImageHD(product.image_url)} alt={product.short_title} className="w-full h-full object-cover" loading="lazy" />}
               </div>
             </Link>
             <div className="p-3">

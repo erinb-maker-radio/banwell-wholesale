@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
@@ -41,7 +41,7 @@ export default function ProductDetailPage() {
         <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
           {product.image_url && (
             <img
-              src={product.image_url}
+              src={etsyImageHD(product.image_url, 'full')}
               alt={product.title}
               className="w-full h-full object-cover"
             />

@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Badge from '@/components/ui/Badge';
 import { Product, ProductCategory } from '@/lib/types';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, etsyImageHD } from '@/lib/utils';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -176,7 +176,7 @@ export default function ProductsPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {product.image_url ? (
                           <img
-                            src={product.image_url || ''}
+                            src={etsyImageHD(product.image_url, 'medium')}
                             alt={product.short_title}
                             className="w-12 h-12 object-cover rounded"
                           />

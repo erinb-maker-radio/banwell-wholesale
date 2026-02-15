@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { formatCurrency, formatDate, formatOrderStatus, getStatusColor } from '@/lib/utils';
+import { formatCurrency, formatDate, formatOrderStatus, getStatusColor, etsyImageHD } from '@/lib/utils';
 import { getFileUrl } from '@/lib/pocketbase';
 import type { Order, OrderItem, Customer, Communication, OrderStatus } from '@/lib/types';
 import PageHeader from '@/components/layout/PageHeader';
@@ -172,7 +172,7 @@ export default function AdminOrderDetailPage() {
       return getFileUrl('products', product.id, product.image);
     }
     if (product.image_url) {
-      return product.image_url;
+      return etsyImageHD(product.image_url, 'medium');
     }
     return null;
   }

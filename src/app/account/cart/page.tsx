@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import { calculateDiscount } from '@/lib/pricing';
 import type { Product } from '@/lib/types';
 import pb from '@/lib/pocketbase';
@@ -82,7 +82,7 @@ export default function CartPage() {
                 <div key={item.productId} className="flex items-center p-4 gap-4">
                   <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
                     {product.image_url && (
-                      <img src={product.image_url} alt={product.short_title} className="w-full h-full object-cover" />
+                      <img src={etsyImageHD(product.image_url, 'medium')} alt={product.short_title} className="w-full h-full object-cover" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
