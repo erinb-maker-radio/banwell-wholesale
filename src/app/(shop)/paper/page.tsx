@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function PaperHomePage() {
   return (
-    <div className="relative bg-fixed bg-cover bg-center" style={{ backgroundImage: "url('/images/brand/paper/paper-bg.png')" }}>
+    <div>
       {/* Section 1: Banner / Title */}
       <section className="pt-6 pb-4">
         <div className="max-w-[1140px] mx-auto px-[8%] text-center">

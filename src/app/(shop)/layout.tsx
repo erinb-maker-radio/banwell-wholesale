@@ -39,7 +39,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const showFullLogo = isDark;
 
   const isDarkHeader = isDark || isPaper;
-  const headerBg = isDark ? 'bg-black' : isPaper ? '' : 'bg-white shadow-sm';
+  const headerBg = isDark ? 'bg-black' : isPaper ? 'bg-transparent' : 'bg-white shadow-sm';
   const navText = isDarkHeader
     ? 'text-white hover:text-[#F74646]'
     : 'text-gray-700 hover:text-blue-600';
@@ -55,12 +55,12 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const dropdownHover = isDarkHeader ? 'hover:bg-white/5' : 'hover:bg-gray-50';
 
   return (
-    <div className={`${pageBg} min-h-screen`}>
+    <div
+      className={`${pageBg} min-h-screen ${isPaper ? 'bg-fixed bg-cover bg-center' : ''}`}
+      style={isPaper ? { backgroundImage: "url('/images/brand/paper/paper-bg.png')" } : undefined}
+    >
       {/* Header */}
-      <header
-        className={`${headerBg} ${isPaper ? 'relative z-40 bg-cover bg-center' : 'sticky top-0 z-40'}`}
-        style={isPaper ? { backgroundImage: "url('/images/brand/paper/paper-header-bg.png')" } : undefined}
-      >
+      <header className={`${headerBg} ${isPaper ? 'relative z-40' : 'sticky top-0 z-40'}`}>
         <div className="max-w-[1140px] mx-auto px-4">
           {/* Logo - centered */}
           <div className="flex justify-center py-2">
