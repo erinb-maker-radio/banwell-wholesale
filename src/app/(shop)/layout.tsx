@@ -49,7 +49,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
     : 'text-gray-700 hover:text-blue-600';
   const mobileDivider = isDarkHeader ? 'border-white/10' : 'border-gray-200';
   const hamburgerColor = isDarkHeader ? 'text-[#C30000]' : 'text-gray-600';
-  const pageBg = isDark ? 'bg-black' : 'bg-white';
+  const pageBg = isDark ? 'bg-black' : isPaper ? 'bg-transparent' : 'bg-white';
   const mainText = isDark ? 'text-white' : 'text-gray-900';
   const dropdownBg = isDarkHeader ? 'bg-black border-white/10' : 'bg-white border-gray-200';
   const dropdownHover = isDarkHeader ? 'hover:bg-white/5' : 'hover:bg-gray-50';
