@@ -117,11 +117,13 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
               Copyright &amp; Licensing
             </Link>
             <Link href="/about" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
-              About
+              {isDark ? 'About Tom Banwell' : 'About'}
             </Link>
-            <Link href="/catalog" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
-              Wholesale
-            </Link>
+            {!isDark && (
+              <Link href="/catalog" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
+                Wholesale
+              </Link>
+            )}
           </nav>
 
           {/* Mobile menu toggle */}
@@ -187,19 +189,23 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
                 Copyright &amp; Licensing
               </Link>
               <Link href="/about" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
-                About
+                {isDark ? 'About Tom Banwell' : 'About'}
               </Link>
 
-              <div className={`border-t ${mobileDivider} my-2`} />
-              <Link href="/catalog" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
-                Wholesale Catalog
-              </Link>
-              <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
-                Wholesale Pricing
-              </Link>
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
-                Sign In
-              </Link>
+              {!isDark && (
+                <>
+                  <div className={`border-t ${mobileDivider} my-2`} />
+                  <Link href="/catalog" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
+                    Wholesale Catalog
+                  </Link>
+                  <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
+                    Wholesale Pricing
+                  </Link>
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
+                    Sign In
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
