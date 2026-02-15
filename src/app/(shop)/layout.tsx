@@ -9,7 +9,7 @@ import Footer from '@/components/layout/Footer';
 const etsyUrl = 'https://www.etsy.com/shop/BanwellDesigns';
 
 const shopCategories = [
-  { label: 'Leather', href: etsyUrl },
+  { label: 'Leather', href: `${etsyUrl}?search_query=leather` },
   { label: 'Art Glass', href: etsyUrl },
   { label: 'Paper Art', href: etsyUrl },
 ];
