@@ -61,7 +61,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
     >
       {/* Header */}
       <header
-        className={`${headerBg} ${isPaper ? 'relative z-40' : 'sticky top-0 z-40'}`}
+        className={`${headerBg} ${isPaper ? 'relative z-40 overflow-visible' : 'sticky top-0 z-40'}`}
       >
         {isPaper && (
           <img
