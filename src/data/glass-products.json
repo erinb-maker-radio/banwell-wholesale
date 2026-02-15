@@ -7,6 +7,7 @@
       "slug": "sun-catchers",
       "image": "/images/brand/glass/sun-catchers/hero.jpg",
       "video": "/images/brand/glass/sun-catchers/hero.mp4",
+      "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=sun+catcher",
       "description": "Stained glass style window hangings made with real glass. Available in 6\", 10\", 12\", and 15\" sizes. Lead-free, made of one piece of glass with texture, transparent stains, and opaque pigments. Includes decorative chain for hanging.",
       "images": [
         { "src": "/images/brand/glass/sun-catchers/sun-catcher-1.jpg", "alt": "Blooming lotus stained glass sun catcher" },
@@ -18,6 +19,7 @@
       "name": "Ornaments",
       "slug": "ornaments",
       "image": "/images/brand/glass/ornaments/hero.jpg",
+      "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=ornament",
       "description": "Stained glass style Christmas ornaments made with real glass. Lead-free, with texture, transparent stains, and opaque pigments applied to one piece of glass. Textured on the front, smooth and glossy on the back.",
       "images": [
         { "src": "/images/brand/glass/ornaments/ornament-1.jpg", "alt": "Sunflowers stained glass ornament" },
@@ -29,6 +31,7 @@
       "name": "Custom From Photo",
       "slug": "custom-work",
       "image": "/images/brand/glass/custom-work/hero.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/1897620011/custom-photo-suncatcher-stained-glass",
       "description": "Custom photo suncatchers made with real glass. Send us your photo and we create a stained glass style wall or window hanging from it. Available in multiple sizes.",
       "images": [
         { "src": "/images/brand/glass/custom-work/custom-1.webp", "alt": "Custom family photo to stained glass suncatcher" },

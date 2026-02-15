@@ -46,7 +46,7 @@ export default function LighthousePage() {
       {/* CTA */}
       <section className="max-w-[1140px] mx-auto px-[8%] py-16 text-center">
         <a
-          href={paperData.etsyUrl}
+          href={item.etsyUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block px-[35px] py-[16px] text-[16px] font-normal capitalize text-white bg-[#A22020] border border-white rounded-full hover:text-[#F74646] hover:bg-transparent transition-colors"

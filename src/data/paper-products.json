@@ -6,6 +6,7 @@
       "name": "Butterfly",
       "slug": "butterfly",
       "image": "/images/brand/paper/butterfly/hero-new.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4302621699/butterflies-paper-cut-art-wall-hanging",
       "description": "Hand-cut paper butterflies with incredible detail and dimension. Each wing is individually crafted and layered for a stunning 3D effect.",
       "images": [
         { "src": "/images/brand/paper/butterfly/butterfly-1.jpg", "alt": "Butterflies paper cut art wall hanging" },
@@ -17,6 +18,7 @@
       "name": "Fox Ornament",
       "slug": "lighthouse",
       "image": "https://i.etsystatic.com/27632250/r/il/79d147/7478350961/il_1140xN.7478350961_byhb.jpg",
+      "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=fox+ornament",
       "description": "Detailed paper lighthouses capturing the beauty and romance of coastal beacons. Multi-layered construction creates depth and shadow.",
       "images": [
         { "src": "/images/brand/paper/lighthouse/lighthouse-1.jpg", "alt": "Lighthouse by the sea paper cut ornament" },
@@ -28,6 +30,7 @@
       "name": "Cat",
       "slug": "cat",
       "image": "/images/brand/paper/cat/hero.jpg",
+      "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=cat",
       "description": "Charming paper art cats with personality and poise. Each piece captures feline grace through precision cutting and layering.",
       "images": [
         { "src": "/images/brand/paper/cat/cat-1.jpg", "alt": "Sleepy white cat paper cut art wall hanging" },
