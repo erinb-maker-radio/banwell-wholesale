@@ -14,43 +14,9 @@ export default function GlassHomePage() {
 
   return (
     <div>
-      {/* Section 1: Full-bleed Video Hero */}
-      <section className="relative w-full h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden">
-        {/* Video background */}
-        {heroVideo && (
-          <video
-            src={heroVideo.src}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
-
-        {/* Title content */}
-        <div className="relative z-10 flex flex-col items-center justify-end h-full pb-16 px-[8%] text-center">
-          <h1 className="text-[42px] md:text-[72px] font-semibold text-white leading-tight mb-4 drop-shadow-lg">
-            Glass Suncatchers
-          </h1>
-          <p className="text-[15px] md:text-[20px] font-light text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow">
-            {glassData.subtitle}
-          </p>
-        </div>
-      </section>
-
-      {/* Section 2: Recent Projects grid */}
-      <section className="w-full py-8">
-        <div className="max-w-[1140px] mx-auto px-[8%] text-center mb-6">
-          <h2 className="text-[36px] md:text-[65px] font-semibold text-gray-900 mb-4">
-            Recent Projects
-          </h2>
-          <p className="text-[16px] md:text-[22px] font-light text-gray-500">
-            Our latest stained glass creations.
-          </p>
-        </div>
+      {/* Section 1: Photo grid hero with title overlay */}
+      <section className="relative w-full overflow-hidden">
+        {/* Photo grid as background */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
           {glassData.recentProjects.map((item: { type: string; src: string; alt?: string }, i: number) => (
             <div key={i} className="relative aspect-square overflow-hidden">
@@ -73,6 +39,15 @@ export default function GlassHomePage() {
               )}
             </div>
           ))}
+        </div>
+        {/* Dark overlay + title */}
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center px-[8%] text-center">
+          <h1 className="text-[42px] md:text-[72px] font-semibold text-white leading-tight mb-4 drop-shadow-lg">
+            Glass Suncatchers
+          </h1>
+          <p className="text-[15px] md:text-[20px] font-light text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow">
+            {glassData.subtitle}
+          </p>
         </div>
       </section>
 
