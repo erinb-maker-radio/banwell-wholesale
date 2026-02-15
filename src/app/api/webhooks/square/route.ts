@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     console.log('Square webhook received:', eventType);
 
-    if (eventType !== 'payment.completed' && eventType !== 'payment.updated') {
+    if (eventType !== 'payment.completed') {
       return NextResponse.json({ received: true });
     }
 
