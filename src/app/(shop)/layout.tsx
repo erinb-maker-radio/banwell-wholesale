@@ -38,25 +38,29 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const isLanding = pathname === '/';
   const showFullLogo = isDark;
 
-  const headerBg = isDark ? 'bg-black' : isPaper ? 'bg-[#F5E6D0]' : 'bg-white shadow-sm';
-  const navText = isDark
+  const isDarkHeader = isDark || isPaper;
+  const headerBg = isDark ? 'bg-black' : isPaper ? '' : 'bg-white shadow-sm';
+  const navText = isDarkHeader
     ? 'text-white hover:text-[#F74646]'
     : 'text-gray-700 hover:text-blue-600';
-  const mobileBg = isDark ? 'bg-black border-white/10' : 'bg-white border-gray-200';
-  const mobileText = isDark
+  const mobileBg = isDarkHeader ? 'bg-black border-white/10' : 'bg-white border-gray-200';
+  const mobileText = isDarkHeader
     ? 'text-white hover:text-[#F74646]'
     : 'text-gray-700 hover:text-blue-600';
-  const mobileDivider = isDark ? 'border-white/10' : 'border-gray-200';
-  const hamburgerColor = isDark ? 'text-[#C30000]' : 'text-gray-600';
+  const mobileDivider = isDarkHeader ? 'border-white/10' : 'border-gray-200';
+  const hamburgerColor = isDarkHeader ? 'text-[#C30000]' : 'text-gray-600';
   const pageBg = isDark ? 'bg-black' : 'bg-white';
   const mainText = isDark ? 'text-white' : 'text-gray-900';
-  const dropdownBg = isDark ? 'bg-black border-white/10' : 'bg-white border-gray-200';
-  const dropdownHover = isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50';
+  const dropdownBg = isDarkHeader ? 'bg-black border-white/10' : 'bg-white border-gray-200';
+  const dropdownHover = isDarkHeader ? 'hover:bg-white/5' : 'hover:bg-gray-50';
 
   return (
     <div className={`${pageBg} min-h-screen`}>
       {/* Header */}
-      <header className={`${headerBg} ${isPaper ? 'relative z-40' : 'sticky top-0 z-40'}`}>
+      <header
+        className={`${headerBg} ${isPaper ? 'relative z-40 bg-cover bg-center' : 'sticky top-0 z-40'}`}
+        style={isPaper ? { backgroundImage: "url('/images/brand/paper/paper-header-bg.png')" } : undefined}
+      >
         <div className="max-w-[1140px] mx-auto px-4">
           {/* Logo - centered */}
           <div className="flex justify-center py-2">
@@ -66,7 +70,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
                 alt="Banwell Designs"
                 width={220}
                 height={80}
-                className={`h-auto ${isDark ? '' : 'brightness-0'} ${showFullLogo ? '' : 'ml-[-62px]'}`}
+                className={`h-auto ${isDarkHeader ? '' : 'brightness-0'} ${showFullLogo ? '' : 'ml-[-62px]'}`}
                 priority
               />
             </Link>
@@ -210,18 +214,6 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
         )}
       </header>
-
-      {/* Torn paper edge for paper pages */}
-      {isPaper && (
-        <div className="relative z-30 -mb-4">
-          <svg viewBox="0 0 1200 40" preserveAspectRatio="none" className="w-full h-[40px] block">
-            <path
-              d="M0,0 L0,18 Q15,22 30,17 Q50,10 70,20 Q85,28 100,15 Q120,5 140,18 Q155,26 170,14 Q190,4 210,20 Q225,30 245,16 Q260,6 280,19 Q300,28 320,13 Q340,3 360,18 Q375,26 395,14 Q410,5 430,21 Q450,30 470,15 Q485,6 505,19 Q520,27 540,13 Q560,4 580,20 Q595,28 615,15 Q630,5 650,18 Q670,27 690,14 Q705,4 725,20 Q740,28 760,15 Q780,5 800,19 Q815,27 835,13 Q855,4 875,20 Q890,28 910,15 Q930,5 950,18 Q965,26 985,14 Q1005,5 1025,20 Q1040,28 1060,15 Q1080,5 1100,19 Q1115,27 1135,14 Q1155,5 1175,18 L1200,15 L1200,0 Z"
-              fill="#F5E6D0"
-            />
-          </svg>
-        </div>
-      )}
 
       <main className={`${pageBg} ${mainText}`}>{children}</main>
       <Footer isDark={isDark} />
