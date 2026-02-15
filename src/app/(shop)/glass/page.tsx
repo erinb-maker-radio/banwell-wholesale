@@ -13,9 +13,9 @@ export default function GlassHomePage() {
   const heroImages = glassData.recentProjects.filter((item: { type: string }) => item.type === 'image');
 
   return (
-    <div className="bg-fixed bg-cover bg-center" style={{ backgroundImage: "url('/images/brand/glass/glass-bg.png')" }}>
+    <div>
       {/* Section 1: Title */}
-      <section className="max-w-[1140px] mx-auto px-[8%] pt-16 pb-4 text-center bg-white/80 backdrop-blur-sm">
+      <section className="max-w-[1140px] mx-auto px-[8%] pt-16 pb-4 text-center">
         <h1 className="text-[28px] md:text-[42px] font-semibold text-gray-900 mb-4">
           Glass Suncatchers
         </h1>
@@ -52,7 +52,7 @@ export default function GlassHomePage() {
       </section>
 
       {/* Section 3: Three Category Circles */}
-      <section className="max-w-[1140px] mx-auto px-[8%] py-16 bg-white/80 backdrop-blur-sm">
+      <section className="max-w-[1140px] mx-auto px-[8%] py-16">
         <h2 className="text-[28px] md:text-[42px] font-semibold text-gray-900 text-center mb-12">
           Browse by Category
         </h2>
@@ -90,7 +90,7 @@ export default function GlassHomePage() {
       </div>
 
       {/* Section 4: Featured Work */}
-      <section className="max-w-[1140px] mx-auto px-[8%] pt-16 pb-4 text-center bg-white/80 backdrop-blur-sm">
+      <section className="max-w-[1140px] mx-auto px-[8%] pt-16 pb-4 text-center">
         <h2 className="text-[28px] md:text-[42px] font-semibold text-gray-900 mb-4">
           {glassData.featuredWork.heading}
         </h2>
@@ -120,7 +120,7 @@ export default function GlassHomePage() {
       </div>
 
       {/* Section 5: Wholesale CTA */}
-      <section className="max-w-[1140px] mx-auto px-[8%] py-16 text-center bg-white/80 backdrop-blur-sm">
+      <section className="max-w-[1140px] mx-auto px-[8%] py-16 text-center">
         <h2 className="text-[28px] md:text-[42px] font-semibold text-gray-900 mb-4">
           Wholesale
         </h2>
