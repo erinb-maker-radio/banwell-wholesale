@@ -15,11 +15,11 @@ export default function GlassHomePage() {
   return (
     <div>
       {/* Section 1: Photo grid hero with title overlay */}
-      <section className="relative w-full overflow-hidden">
+      <section className="relative w-full overflow-hidden max-w-[1140px] mx-auto">
         {/* Photo grid as background */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
           {glassData.recentProjects.map((item: { type: string; src: string; alt?: string }, i: number) => (
-            <div key={i} className="relative aspect-square overflow-hidden">
+            <div key={i} className="relative aspect-[4/3] overflow-hidden">
               {item.type === 'video' ? (
                 <video
                   src={item.src}
@@ -41,11 +41,11 @@ export default function GlassHomePage() {
           ))}
         </div>
         {/* Dark overlay + title */}
-        <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent pt-8 md:pt-12 pb-24 px-[8%] text-center">
-          <h1 className="text-[42px] md:text-[72px] font-semibold text-white leading-tight mb-4 drop-shadow-lg">
+        <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent pt-6 md:pt-10 pb-20 px-[8%] text-center">
+          <h1 className="text-[30px] md:text-[50px] font-semibold text-white leading-tight mb-3 drop-shadow-lg">
             Glass Suncatchers
           </h1>
-          <p className="text-[15px] md:text-[20px] font-light text-white/85 max-w-2xl mx-auto leading-relaxed drop-shadow">
+          <p className="text-[12px] md:text-[14px] font-light text-white/85 max-w-xl mx-auto leading-relaxed drop-shadow">
             {glassData.subtitle}
           </p>
         </div>
