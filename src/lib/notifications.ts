@@ -1,15 +1,12 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
 import sgMail from '@sendgrid/mail';
-
-const execAsync = promisify(exec);
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
 }
 
-const HOLLA_SCRIPT_PATH = process.env.HOLLA_SCRIPT_PATH || '/mnt/c/Users/erin/My Notification Android app/holla.py';
+const HOLLA_URL = process.env.HOLLA_URL || 'https://pb.banwelldesigns.com/holla';
+const HOLLA_TOKEN = process.env.HOLLA_TOKEN || '';
 
 // ============================================
 // HOLLA PUSH NOTIFICATIONS
@@ -26,21 +23,37 @@ interface HollaParams {
 export async function sendHollaAlert(params: HollaParams): Promise<boolean> {
   const { title, message, priority = 'normal', url, urlLabel = 'View' } = params;
 
+  if (!HOLLA_TOKEN) {
+    console.log('Holla not configured, skipping push notification:', title);
+    return false;
+  }
+
   try {
-    const escapedTitle = title.replace(/"/g, '\\"');
-    const escapedDesc = message.replace(/"/g, '\\"').replace(/\n/g, '\\n');
-
-    const scriptPrefix = HOLLA_SCRIPT_PATH.endsWith('.py') ? 'python3 ' : '';
-    let command = `${scriptPrefix}"${HOLLA_SCRIPT_PATH}" "${escapedTitle}" "${escapedDesc}" --priority ${priority} --source "Banwell Wholesale"`;
-
-    if (url) {
-      command += ` --url "${url}" --label "${urlLabel}"`;
-    }
-
     console.log('Sending Holla alert:', title);
-    await execAsync(command);
-    console.log('Holla alert sent');
-    return true;
+    const res = await fetch(HOLLA_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${HOLLA_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title,
+        message,
+        priority,
+        source: 'Banwell Wholesale',
+        action_url: url,
+        action_label: urlLabel,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      console.log('Holla alert sent');
+      return true;
+    } else {
+      console.error('Holla alert failed:', data.result);
+      return false;
+    }
   } catch (error) {
     console.error('Holla alert failed:', error);
     return false;
