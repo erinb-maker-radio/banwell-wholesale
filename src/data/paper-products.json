@@ -42,10 +42,10 @@
   "featuredWork": {
     "heading": "Featured Paper Art",
     "description": "A showcase of our most intricate and beloved paper art creations.",
-    "images": [
-      "/images/brand/paper/featured-1.jpg",
-      "/images/brand/paper/featured-2.jpg",
-      "/images/brand/paper/featured-3.jpg"
+    "items": [
+      { "type": "video", "src": "/images/brand/paper/featured-video.mp4" },
+      { "type": "image", "src": "/images/brand/paper/featured-2.jpg" },
+      { "type": "image", "src": "/images/brand/paper/featured-3.jpg" }
     ]
   },
   "recentProjects": [

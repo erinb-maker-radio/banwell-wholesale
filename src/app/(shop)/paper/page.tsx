@@ -55,14 +55,25 @@ export default function PaperHomePage() {
         </div>
         <div className="max-w-[1140px] mx-auto px-[8%]">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-            {paperData.featuredWork.images.map((img, i) => (
+            {paperData.featuredWork.items.map((item: { type: string; src: string }, i: number) => (
               <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-lg border-4 border-white/60">
-                <Image
-                  src={img}
-                  alt={`Featured paper art ${i + 1}`}
-                  fill
-                  className="object-cover"
-                />
+                {item.type === 'video' ? (
+                  <video
+                    src={item.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={item.src}
+                    alt={`Featured paper art ${i + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                )}
               </div>
             ))}
           </div>
