@@ -63,7 +63,6 @@ export default function PricingPage() {
               { name: 'Glass Sun Catchers (12")', retail: 119 },
               { name: 'Glass Sun Catchers (15")', retail: 153 },
               { name: 'Paper Cut Ornaments', retail: 15 },
-              { name: 'Wooden Ornaments', retail: 35 },
             ].map(item => (
               <tr key={item.name}>
                 <td className="px-6 py-3 font-medium text-gray-900">{item.name}</td>

@@ -11,7 +11,6 @@ export const TIER_THRESHOLDS = {
 export const CATEGORY_PRICES: Record<string, number> = {
   'Glass Ornaments': 3500,
   'Paper Cut Ornaments': 1500,
-  'Wooden Ornaments': 3500,
 };
 
 // Sun catcher prices by size (in cents)
