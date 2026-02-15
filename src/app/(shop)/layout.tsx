@@ -60,7 +60,10 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       style={isPaper ? { backgroundImage: "url('/images/brand/paper/paper-bg.png')" } : undefined}
     >
       {/* Header */}
-      <header className={`${headerBg} ${isPaper ? 'relative z-40' : 'sticky top-0 z-40'}`}>
+      <header
+        className={`${headerBg} ${isPaper ? 'relative z-40 bg-cover bg-center bg-no-repeat' : 'sticky top-0 z-40'}`}
+        style={isPaper ? { backgroundImage: "url('/images/brand/paper/paper-header-bg.png')" } : undefined}
+      >
         <div className="max-w-[1140px] mx-auto px-4">
           {/* Logo - centered */}
           <div className="flex justify-center py-2">
