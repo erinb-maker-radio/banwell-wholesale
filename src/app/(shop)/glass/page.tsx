@@ -41,7 +41,7 @@ export default function GlassHomePage() {
           ))}
         </div>
         {/* Dark overlay + title */}
-        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-start pt-12 md:pt-16 px-[8%] text-center">
+        <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent pt-8 md:pt-12 pb-24 px-[8%] text-center">
           <h1 className="text-[42px] md:text-[72px] font-semibold text-white leading-tight mb-4 drop-shadow-lg">
             Glass Suncatchers
           </h1>
