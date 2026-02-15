@@ -11,12 +11,12 @@ export default function PaperHomePage() {
   return (
     <div className="relative bg-fixed bg-cover bg-center" style={{ backgroundImage: "url('/images/brand/paper/paper-bg.png')" }}>
       {/* Section 1: Banner / Title */}
-      <section className="py-12">
+      <section className="pt-6 pb-4">
         <div className="max-w-[1140px] mx-auto px-[8%] text-center">
-          <h1 className="text-[36px] md:text-[65px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] leading-tight mb-4">
+          <h1 className="text-[28px] md:text-[42px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-4">
             {paperData.title}
           </h1>
-          <p className="text-[14px] md:text-[22px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-[16px] md:text-[20px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] max-w-3xl mx-auto leading-relaxed">
             {paperData.subtitle}
           </p>
         </div>
