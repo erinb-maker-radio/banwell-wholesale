@@ -175,7 +175,7 @@ export default function LeatherHomePage() {
 
       {/* Floating Etsy Button */}
       <a
-        href="https://www.etsy.com/shop/BanwellDesigns"
+        href="https://www.etsy.com/shop/BanwellDesigns?search_query=leather"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[#9E0000] to-[#FCC1C1] text-white text-[14px] font-normal rounded-[7px] shadow-lg hover:shadow-xl transition-shadow"
