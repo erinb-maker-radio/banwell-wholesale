@@ -61,7 +61,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
     >
       {/* Header */}
       <header
-        className={`${headerBg} ${isPaper ? 'relative z-40 bg-cover bg-center bg-no-repeat' : 'sticky top-0 z-40'}`}
+        className={`${headerBg} ${isPaper ? 'relative z-40 bg-[length:100%_auto] bg-top bg-no-repeat pb-8' : 'sticky top-0 z-40'}`}
         style={isPaper ? { backgroundImage: "url('/images/brand/paper/paper-header-bg.png')" } : undefined}
       >
         <div className="max-w-[1140px] mx-auto px-4">
