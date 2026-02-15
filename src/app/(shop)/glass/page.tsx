@@ -41,29 +41,36 @@ export default function GlassHomePage() {
         </div>
       </section>
 
-      {/* Section 2: Image mosaic — asymmetric grid */}
-      <section className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-[2px]">
-          {/* Large feature image spanning 2 cols */}
-          {heroImages[0] && (
-            <div className="relative aspect-square md:col-span-2 md:row-span-2 overflow-hidden">
-              <Image
-                src={(heroImages[0] as { src: string }).src}
-                alt={(heroImages[0] as { alt?: string }).alt || 'Glass art'}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          )}
-          {/* Smaller images filling the right side */}
-          {heroImages.slice(1).map((item: { type: string; src: string; alt?: string }, i: number) => (
+      {/* Section 2: Recent Projects grid */}
+      <section className="w-full py-8">
+        <div className="max-w-[1140px] mx-auto px-[8%] text-center mb-6">
+          <h2 className="text-[36px] md:text-[65px] font-semibold text-gray-900 mb-4">
+            Recent Projects
+          </h2>
+          <p className="text-[16px] md:text-[22px] font-light text-gray-500">
+            Our latest stained glass creations.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-0">
+          {glassData.recentProjects.map((item: { type: string; src: string; alt?: string }, i: number) => (
             <div key={i} className="relative aspect-square overflow-hidden">
-              <Image
-                src={item.src}
-                alt={item.alt || `Glass art ${i + 2}`}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-              />
+              {item.type === 'video' ? (
+                <video
+                  src={item.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <Image
+                  src={item.src}
+                  alt={item.alt || `Recent glass project ${i + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              )}
             </div>
           ))}
         </div>
