@@ -42,10 +42,10 @@ export default function GlassHomePage() {
         </div>
         {/* Dark overlay + title */}
         <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent pt-6 md:pt-10 pb-20 px-[8%] text-center">
-          <h1 className="text-[30px] md:text-[50px] font-semibold text-white leading-tight mb-3 drop-shadow-lg">
+          <h1 className="text-[21px] md:text-[35px] font-semibold text-white leading-tight mb-2 drop-shadow-lg">
             Glass Suncatchers
           </h1>
-          <p className="text-[12px] md:text-[14px] font-light text-white/85 max-w-xl mx-auto leading-relaxed drop-shadow">
+          <p className="text-[11px] md:text-[13px] font-light text-white/85 max-w-lg mx-auto leading-relaxed drop-shadow">
             {glassData.subtitle}
           </p>
         </div>
