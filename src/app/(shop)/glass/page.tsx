@@ -15,7 +15,7 @@ export default function GlassHomePage() {
   return (
     <div>
       {/* Section 1: Title */}
-      <section className="max-w-[1140px] mx-auto px-[8%] pt-16 pb-4 text-center">
+      <section className="max-w-[1140px] mx-auto px-[8%] pt-6 pb-4 text-center">
         <h1 className="text-[28px] md:text-[42px] font-semibold text-gray-900 mb-4">
           Glass Suncatchers
         </h1>
