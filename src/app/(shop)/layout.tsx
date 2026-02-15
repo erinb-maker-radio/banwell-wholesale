@@ -10,8 +10,8 @@ const etsyUrl = 'https://www.etsy.com/shop/BanwellDesigns';
 
 const shopCategories = [
   { label: 'Leather', href: `${etsyUrl}?search_query=leather` },
-  { label: 'Art Glass', href: etsyUrl },
-  { label: 'Paper Art', href: etsyUrl },
+  { label: 'Art Glass', href: `${etsyUrl}?search_query=glass` },
+  { label: 'Paper Art', href: `${etsyUrl}?search_query=paper` },
 ];
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
