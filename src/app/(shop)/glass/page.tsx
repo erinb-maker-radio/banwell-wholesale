@@ -125,7 +125,7 @@ export default function GlassHomePage() {
           Wholesale
         </h2>
         <p className="text-[16px] md:text-[20px] font-light text-gray-500 max-w-3xl mx-auto mb-8 leading-relaxed">
-          Stained glass ornaments, sun catchers, and more. Wholesale pricing for retailers with discounts up to 55%.
+          Stained glass style ornaments, sun catchers, and more. Wholesale pricing for retailers with discounts up to 55%.
         </p>
         <Link
           href="/catalog?line=glass"
