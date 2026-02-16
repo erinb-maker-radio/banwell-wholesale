@@ -1,12 +1,14 @@
 import sgMail from '@sendgrid/mail';
+import { execFile } from 'child_process';
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
 }
 
-const HOLLA_URL = process.env.HOLLA_URL || 'https://pb.banwelldesigns.com/holla';
+const HOLLA_URL = process.env.HOLLA_URL || '';
 const HOLLA_TOKEN = process.env.HOLLA_TOKEN || '';
+const HOLLA_SCRIPT_PATH = process.env.HOLLA_SCRIPT_PATH || '';
 
 // ============================================
 // HOLLA PUSH NOTIFICATIONS
@@ -23,41 +25,65 @@ interface HollaParams {
 export async function sendHollaAlert(params: HollaParams): Promise<boolean> {
   const { title, message, priority = 'normal', url, urlLabel = 'View' } = params;
 
-  if (!HOLLA_TOKEN) {
-    console.log('Holla not configured, skipping push notification:', title);
-    return false;
-  }
-
-  try {
-    console.log('Sending Holla alert:', title);
-    const res = await fetch(HOLLA_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${HOLLA_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title,
-        message,
-        priority,
-        source: 'Banwell Wholesale',
-        action_url: url,
-        action_label: urlLabel,
-      }),
-    });
-
-    const data = await res.json();
-    if (data.success) {
-      console.log('Holla alert sent');
-      return true;
-    } else {
-      console.error('Holla alert failed:', data.result);
+  // Method 1: Local Python script (holla.py)
+  if (HOLLA_SCRIPT_PATH) {
+    try {
+      const args = [HOLLA_SCRIPT_PATH, title, message, '--priority', priority, '--source', 'Banwell Wholesale'];
+      if (url) { args.push('--url', url); }
+      if (urlLabel) { args.push('--label', urlLabel); }
+      return await new Promise((resolve) => {
+        execFile('python3', args, (error) => {
+          if (error) {
+            console.error('Holla script failed:', error.message);
+            resolve(false);
+          } else {
+            console.log('Holla alert sent via script:', title);
+            resolve(true);
+          }
+        });
+      });
+    } catch (error) {
+      console.error('Holla script failed:', error);
       return false;
     }
-  } catch (error) {
-    console.error('Holla alert failed:', error);
-    return false;
   }
+
+  // Method 2: HTTP relay endpoint
+  if (HOLLA_URL && HOLLA_TOKEN) {
+    try {
+      console.log('Sending Holla alert:', title);
+      const res = await fetch(HOLLA_URL, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${HOLLA_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          message,
+          priority,
+          source: 'Banwell Wholesale',
+          action_url: url,
+          action_label: urlLabel,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        console.log('Holla alert sent');
+        return true;
+      } else {
+        console.error('Holla alert failed:', data.result);
+        return false;
+      }
+    } catch (error) {
+      console.error('Holla alert failed:', error);
+      return false;
+    }
+  }
+
+  console.log('Holla not configured, skipping push notification:', title);
+  return false;
 }
 
 // ============================================
