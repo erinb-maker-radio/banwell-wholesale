@@ -80,7 +80,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
 
           {/* Desktop Nav */}
-          <nav className={`hidden md:flex justify-center items-center gap-1 pb-3 ${isPaper ? 'mt-[-40px]' : ''}`}>
+          <nav className={`hidden md:flex justify-center items-center gap-1 pb-3 ${isPaper ? 'mt-[-70px]' : ''}`}>
             <Link href="/leather" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
               Leather
             </Link>
