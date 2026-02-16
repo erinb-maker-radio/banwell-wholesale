@@ -67,12 +67,12 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           <img
             src="/images/brand/paper/paper-header-bg.png"
             alt=""
-            className="absolute inset-x-0 -bottom-[80px] w-full h-auto min-h-full object-cover object-bottom pointer-events-none"
+            className="absolute inset-x-0 -bottom-[100px] w-full h-auto min-h-full object-cover object-bottom pointer-events-none"
           />
         )}
         <div className={`max-w-[1140px] mx-auto px-4 ${isPaper ? 'relative z-10' : ''}`}>
           {/* Logo */}
-          <div className={`flex ${isPaper ? 'justify-start ml-[-60px]' : 'justify-center'} py-2`}>
+          <div className={`flex ${isPaper ? 'justify-start ml-[-80px]' : 'justify-center'} py-2`}>
             <Link href="/" className={showFullLogo ? '' : 'overflow-hidden'}>
               <Image
                 src="/images/brand/logos/diamond-logo.png"
