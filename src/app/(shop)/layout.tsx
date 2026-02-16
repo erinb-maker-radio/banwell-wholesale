@@ -220,7 +220,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
 
       {/* Torn paper transition between header and content */}
       {isPaper && (
-        <div className="relative z-30 -mt-[20px] mb-[-60px] pointer-events-none">
+        <div className="relative z-30 -mt-[120px] mb-[-60px] pointer-events-none">
           <img
             src="/images/brand/paper/paper-header-bg.png"
             alt=""
