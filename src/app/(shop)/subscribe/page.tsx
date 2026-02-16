@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
-export default function SubscribePage() {
+function SubscribeForm() {
   const searchParams = useSearchParams();
   const source = searchParams.get('source') || 'website_landing';
   const type = searchParams.get('type') || 'retail';
@@ -106,5 +106,13 @@ export default function SubscribePage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function SubscribePage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center">Loading...</div>}>
+      <SubscribeForm />
+    </Suspense>
   );
 }
