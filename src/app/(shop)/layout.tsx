@@ -67,7 +67,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           <img
             src="/images/brand/paper/paper-header-bg.png"
             alt=""
-            className="absolute inset-x-0 -bottom-[150px] w-full h-auto min-h-full object-cover object-bottom pointer-events-none"
+            className="absolute inset-x-0 -bottom-[170px] w-full h-auto min-h-full object-cover object-bottom pointer-events-none"
           />
         )}
         <div className={`max-w-[1140px] mx-auto px-4 ${isPaper ? 'relative z-10' : ''}`}>
