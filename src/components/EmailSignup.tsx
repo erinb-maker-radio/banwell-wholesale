@@ -52,7 +52,7 @@ export default function EmailSignup({ isDark = false }: { isDark?: boolean }) {
   return (
     <div className="text-center py-2">
       <p className={`text-[13px] font-light mb-2 ${textColor}`}>
-        Get 25% off your first order
+        Get 25% off your first retail order
       </p>
       <form onSubmit={handleSubmit} className="flex gap-2 max-w-sm mx-auto">
         <input
