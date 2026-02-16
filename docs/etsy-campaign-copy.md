@@ -13,7 +13,7 @@ Thank you so much for your order! I hope you love your new piece.
 
 Want 25% off your next order? Join our mailing list and get an exclusive discount code — valid on our website AND right here on Etsy:
 
-→ banwelldesigns.com/subscribe?source=etsy_message&type=retail
+→ wholesale.wholesale.banwelldesigns.com/subscribe?source=etsy_message&type=retail
 
 Just enter your email and you'll get your code instantly. To use it on Etsy, add the code in the "note to seller" on your next order.
 
@@ -28,7 +28,7 @@ Thanks again for supporting handmade!
 > Print as a small card (4x6" or business card size) and include in every shipment.
 > Generate a QR code pointing to the URL below.
 
-**QR Code URL:** `https://banwelldesigns.com/subscribe?source=etsy_insert&type=retail`
+**QR Code URL:** `https://wholesale.wholesale.banwelldesigns.com/subscribe?source=etsy_insert&type=retail`
 
 **Front of card:**
 
@@ -39,7 +39,7 @@ Thanks again for supporting handmade!
 │     YOUR NEXT ORDER             │
 │                                 │
 │     Scan the QR code or visit:  │
-│     banwelldesigns.com/subscribe│
+│     wholesale.banwelldesigns.com/subscribe│
 │                                 │
 │         [QR CODE HERE]          │
 │                                 │
@@ -71,7 +71,7 @@ Thank you for your purchase!
 ─────────────────────────
 ★ GET 25% OFF YOUR NEXT ORDER ★
 Join our email list for an exclusive discount code:
-banwelldesigns.com/subscribe
+wholesale.banwelldesigns.com/subscribe
 ─────────────────────────
 ```
 

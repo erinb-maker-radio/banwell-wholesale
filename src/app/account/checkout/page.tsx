@@ -7,6 +7,7 @@ import { calculateDiscount } from '@/lib/pricing';
 import type { Product } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import { useCart } from '@/components/CartProvider';
 
 export default function CheckoutPage() {
@@ -18,6 +19,9 @@ export default function CheckoutPage() {
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'square' | 'invoice'>('square');
   const [customerTier, setCustomerTier] = useState<string>('auto');
+  const [discountCode, setDiscountCode] = useState('');
+  const [codeStatus, setCodeStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid' | 'used'>('idle');
+  const [codeApplied, setCodeApplied] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -39,12 +43,47 @@ export default function CheckoutPage() {
     load();
   }, [items]);
 
+  async function verifyCode() {
+    if (!discountCode.trim()) return;
+    setCodeStatus('checking');
+    try {
+      const res = await fetch(`/api/subscribe/verify?code=${encodeURIComponent(discountCode.trim())}`);
+      const data = await res.json();
+      if (data.valid && !data.used) {
+        setCodeStatus('valid');
+        setCodeApplied(true);
+      } else if (data.used) {
+        setCodeStatus('used');
+        setCodeApplied(false);
+      } else {
+        setCodeStatus('invalid');
+        setCodeApplied(false);
+      }
+    } catch {
+      setCodeStatus('invalid');
+      setCodeApplied(false);
+    }
+  }
+
+  function removeCode() {
+    setDiscountCode('');
+    setCodeStatus('idle');
+    setCodeApplied(false);
+  }
+
   const subtotal = items.reduce((sum, item) => {
     const product = products.get(item.productId);
     return sum + (product ? product.retail_price * item.quantity : 0);
   }, 0);
 
-  const discount = calculateDiscount(subtotal, customerTier as 'auto' | 'tier1' | 'tier2' | 'tier3');
+  const tierDiscount = calculateDiscount(subtotal, customerTier as 'auto' | 'tier1' | 'tier2' | 'tier3');
+  const codeDiscountAmount = codeApplied ? Math.round(subtotal * 0.25) : 0;
+
+  // Use whichever discount is better for the customer
+  const useCode = codeApplied && codeDiscountAmount > tierDiscount.amount;
+  const discount = useCode
+    ? { percent: 25, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: 'Subscriber Code (25% off)' }
+    : tierDiscount;
 
   async function handleCheckout() {
     setSubmitting(true);
@@ -63,6 +102,7 @@ export default function CheckoutPage() {
             productId: i.productId,
             quantity: i.quantity,
           })),
+          ...(useCode ? { discountCode: discountCode.trim() } : {}),
         }),
       });
 
@@ -130,6 +170,44 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Discount code */}
+      <div className="bg-white rounded-lg border p-6 mb-6">
+        <h3 className="font-semibold text-gray-900 mb-4">Discount Code</h3>
+        {codeApplied ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-green-700 font-medium">{discountCode}</span>
+              {useCode ? (
+                <span className="text-green-600 text-sm ml-2">25% off applied</span>
+              ) : (
+                <span className="text-gray-500 text-sm ml-2">(your wholesale discount is better)</span>
+              )}
+            </div>
+            <button onClick={removeCode} className="text-sm text-red-600 hover:underline">Remove</button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="BD25-XXXXX"
+              value={discountCode}
+              onChange={(e) => { setDiscountCode(e.target.value.toUpperCase()); setCodeStatus('idle'); }}
+              className="flex-1"
+            />
+            <Button
+              onClick={verifyCode}
+              disabled={!discountCode.trim() || codeStatus === 'checking'}
+              variant="secondary"
+              size="sm"
+            >
+              {codeStatus === 'checking' ? 'Checking...' : 'Apply'}
+            </Button>
+          </div>
+        )}
+        {codeStatus === 'invalid' && <p className="text-red-600 text-sm mt-2">Invalid discount code.</p>}
+        {codeStatus === 'used' && <p className="text-red-600 text-sm mt-2">This code has already been used.</p>}
       </div>
 
       {/* Payment method */}

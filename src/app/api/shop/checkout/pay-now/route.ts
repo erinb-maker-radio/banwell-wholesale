@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const customerId = pb.authStore.record?.id;
     const customer = await pb.collection('customers').getOne(customerId!);
 
-    const { items } = await request.json();
+    const { items, discountCode } = await request.json();
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
     }
@@ -50,7 +50,28 @@ export async function POST(request: Request) {
       });
     }
 
-    const discount = calculateDiscount(subtotal, customer.discount_tier || 'auto');
+    const tierDiscount = calculateDiscount(subtotal, customer.discount_tier || 'auto');
+
+    // Check if a subscriber discount code was provided
+    let codeRecord = null;
+    let codeDiscountAmount = 0;
+    if (discountCode) {
+      try {
+        const results = await adminPb.collection('subscribers').getList(1, 1, {
+          filter: `discount_code = "${discountCode}" && status = "active" && discount_used = false`,
+        });
+        if (results.items.length > 0) {
+          codeRecord = results.items[0];
+          codeDiscountAmount = Math.round(subtotal * 0.25);
+        }
+      } catch { /* invalid code, ignore */ }
+    }
+
+    // Use whichever discount is better
+    const useCode = codeRecord && codeDiscountAmount > tierDiscount.amount;
+    const discount = useCode
+      ? { percent: 25, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: 'Subscriber Code (25% off)' }
+      : tierDiscount;
 
     // Generate order number
     const year = new Date().getFullYear();
@@ -80,6 +101,11 @@ export async function POST(request: Request) {
         unit_price: li.unitPrice,
         line_total: li.lineTotal,
       });
+    }
+
+    // Mark discount code as used
+    if (useCode && codeRecord) {
+      await adminPb.collection('subscribers').update(codeRecord.id, { discount_used: true });
     }
 
     // Create Square checkout link
