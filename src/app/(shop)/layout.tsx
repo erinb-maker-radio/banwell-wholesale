@@ -36,7 +36,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const isDark = pathname.startsWith('/leather');
   const isPaper = pathname.startsWith('/paper');
   const isLanding = pathname === '/';
-  const showFullLogo = isDark;
+  const showFullLogo = isDark || isPaper;
 
   const isDarkHeader = isDark || isPaper;
   const headerBg = isDark ? 'bg-black' : isPaper ? 'bg-transparent' : 'bg-white shadow-sm';
