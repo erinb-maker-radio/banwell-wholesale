@@ -63,13 +63,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
       <header
         className={`${headerBg} ${isPaper ? 'relative z-40 overflow-visible' : 'sticky top-0 z-40'}`}
       >
-        {isPaper && (
-          <img
-            src="/images/brand/paper/paper-header-bg.png"
-            alt=""
-            className="absolute inset-x-0 -bottom-[170px] w-full h-auto min-h-full object-cover object-bottom pointer-events-none"
-          />
-        )}
+{/* torn paper bg handled outside header */}
         <div className={`max-w-[1140px] mx-auto px-4 ${isPaper ? 'relative z-10' : ''}`}>
           {/* Logo */}
           <div className={`flex ${isPaper ? 'justify-start ml-[-80px]' : 'justify-center'} py-2`}>
@@ -223,6 +217,17 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
         )}
       </header>
+
+      {/* Torn paper transition between header and content */}
+      {isPaper && (
+        <div className="relative z-30 -mt-[20px] mb-[-60px] pointer-events-none">
+          <img
+            src="/images/brand/paper/paper-header-bg.png"
+            alt=""
+            className="w-full h-auto object-cover object-bottom"
+          />
+        </div>
+      )}
 
       <main className={`${pageBg} ${mainText}`}>{children}</main>
       <Footer isDark={isDark} />
