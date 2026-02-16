@@ -72,7 +72,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
         )}
         <div className={`max-w-[1140px] mx-auto px-4 ${isPaper ? 'relative z-10' : ''}`}>
           {/* Logo */}
-          <div className={`flex ${isPaper ? 'justify-start' : 'justify-center'} py-2`}>
+          <div className={`flex ${isPaper ? 'justify-start ml-[-60px]' : 'justify-center'} py-2`}>
             <Link href="/" className={showFullLogo ? '' : 'overflow-hidden'}>
               <Image
                 src="/images/brand/logos/diamond-logo.png"
@@ -86,7 +86,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex justify-center items-center gap-1 pb-3">
+          <nav className={`hidden md:flex justify-center items-center gap-1 pb-3 ${isPaper ? 'mt-[-40px]' : ''}`}>
             <Link href="/leather" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
               Leather
             </Link>
