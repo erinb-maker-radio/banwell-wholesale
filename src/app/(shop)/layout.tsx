@@ -39,11 +39,11 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const showFullLogo = isDark || isPaper;
 
   const isDarkHeader = isDark || isPaper;
-  const headerBg = isDark ? 'bg-black' : isPaper ? 'bg-transparent' : 'bg-white shadow-sm';
+  const headerBg = isDark ? 'bg-black' : isPaper ? 'bg-[#1B4332]' : 'bg-white shadow-sm';
   const navText = isDarkHeader
     ? 'text-white hover:text-[#F74646]'
     : 'text-gray-700 hover:text-blue-600';
-  const mobileBg = isDarkHeader ? 'bg-black border-white/10' : 'bg-white border-gray-200';
+  const mobileBg = isDark ? 'bg-black border-white/10' : isPaper ? 'bg-[#1B4332] border-white/10' : 'bg-white border-gray-200';
   const mobileText = isDarkHeader
     ? 'text-white hover:text-[#F74646]'
     : 'text-gray-700 hover:text-blue-600';
@@ -51,7 +51,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const hamburgerColor = isDarkHeader ? 'text-[#C30000]' : 'text-gray-600';
   const pageBg = isDark ? 'bg-black' : isPaper ? 'bg-transparent' : 'bg-white';
   const mainText = isDark ? 'text-white' : 'text-gray-900';
-  const dropdownBg = isDarkHeader ? 'bg-black border-white/10' : 'bg-white border-gray-200';
+  const dropdownBg = isDark ? 'bg-black border-white/10' : isPaper ? 'bg-[#1B4332] border-white/10' : 'bg-white border-gray-200';
   const dropdownHover = isDarkHeader ? 'hover:bg-white/5' : 'hover:bg-gray-50';
 
   return (
@@ -61,12 +61,11 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
     >
       {/* Header */}
       <header
-        className={`${headerBg} ${isPaper ? 'relative z-40 overflow-visible' : 'sticky top-0 z-40'}`}
+        className={`${headerBg} sticky top-0 z-40`}
       >
-{/* torn paper bg handled outside header */}
-        <div className={`max-w-[1140px] mx-auto px-4 ${isPaper ? 'relative z-10' : ''}`}>
+        <div className="max-w-[1140px] mx-auto px-4">
           {/* Logo */}
-          <div className={`flex ${isPaper ? 'justify-start ml-[-80px]' : 'justify-center'} py-2`}>
+          <div className="flex justify-center py-2">
             <Link href="/" className={showFullLogo ? '' : 'overflow-hidden'}>
               <Image
                 src="/images/brand/logos/diamond-logo.png"
@@ -80,7 +79,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
           </div>
 
           {/* Desktop Nav */}
-          <nav className={`hidden md:flex justify-center items-center gap-1 pb-3 ${isPaper ? 'mt-[-70px]' : ''}`}>
+          <nav className="hidden md:flex justify-center items-center gap-1 pb-3">
             <Link href="/leather" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
               Leather
             </Link>
