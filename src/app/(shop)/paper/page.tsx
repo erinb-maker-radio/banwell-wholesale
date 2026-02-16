@@ -98,7 +98,7 @@ export default function PaperHomePage() {
                   src={img}
                   alt={`Recent paper project ${i + 1}`}
                   fill
-                  className={`object-cover ${i === 2 ? 'scale-110 rotate-[10deg] translate-y-[30px]' : ''}`}
+                  className={`object-cover ${i === 0 ? 'scale-110 rotate-[10deg] translate-y-[30px]' : ''}`}
                 />
               </div>
             ))}
