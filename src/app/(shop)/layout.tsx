@@ -72,7 +72,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
         )}
         <div className={`max-w-[1140px] mx-auto px-4 ${isPaper ? 'relative z-10' : ''}`}>
           {/* Logo */}
-          <div className={`flex ${isPaper ? 'justify-start' : 'justify-center'} py-2`}
+          <div className={`flex ${isPaper ? 'justify-start' : 'justify-center'} py-2`}>
             <Link href="/" className={showFullLogo ? '' : 'overflow-hidden'}>
               <Image
                 src="/images/brand/logos/diamond-logo.png"
