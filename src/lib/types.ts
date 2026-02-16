@@ -216,6 +216,34 @@ export interface DiscountTier {
   updated: string;
 }
 
+// ---- Subscriber Types ----
+
+export type SubscriberType = 'retail' | 'wholesale';
+
+export type SubscriberSource =
+  | 'website_popup'
+  | 'website_footer'
+  | 'website_landing'
+  | 'etsy_insert'
+  | 'etsy_message'
+  | 'manual';
+
+export type SubscriberStatus = 'active' | 'unsubscribed';
+
+export interface Subscriber {
+  id: string;
+  email: string;
+  name?: string;
+  type: SubscriberType;
+  source: SubscriberSource;
+  discount_code: string;
+  discount_used: boolean;
+  opted_in_at: string;
+  status: SubscriberStatus;
+  created: string;
+  updated: string;
+}
+
 // ---- API Types ----
 
 export interface ApiResponse<T> {

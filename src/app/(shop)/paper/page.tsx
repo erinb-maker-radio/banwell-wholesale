@@ -11,7 +11,7 @@ export default function PaperHomePage() {
   return (
     <div>
       {/* Section 1: Banner / Title */}
-      <section className="-mt-[100px] pt-6 pb-4 relative z-20">
+      <section className="pt-6 pb-4">
         <div className="max-w-[1140px] mx-auto px-[8%] text-center">
           <h1 className="text-[28px] md:text-[42px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-4">
             {paperData.title}

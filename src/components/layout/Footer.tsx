@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import EmailSignup from '@/components/EmailSignup';
 
 export default function Footer({ isDark = false }: { isDark?: boolean }) {
   const bg = isDark ? 'bg-black border-white/10' : 'bg-gray-50 border-gray-200';
@@ -10,7 +11,8 @@ export default function Footer({ isDark = false }: { isDark?: boolean }) {
   return (
     <footer className={`${bg} border-t`}>
       <div className="max-w-[1140px] mx-auto px-[8%] py-6 text-center">
-        <div className="flex flex-wrap justify-center gap-6 mb-3">
+        <EmailSignup isDark={isDark} />
+        <div className="flex flex-wrap justify-center gap-6 mb-3 mt-4">
           <Link href="/leather" className={`text-[13px] font-light transition-colors ${linkColor}`}>
             Leather
           </Link>

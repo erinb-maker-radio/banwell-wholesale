@@ -308,6 +308,68 @@ export async function sendReorderReminder(params: {
 // INVOICE SENT
 // ============================================
 
+// ============================================
+// SUBSCRIBER WELCOME EMAIL
+// ============================================
+
+export async function sendWelcomeEmail(params: {
+  email: string;
+  name?: string;
+  discountCode: string;
+}): Promise<void> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const greeting = params.name ? `Hi ${params.name},` : 'Hi there,';
+  const unsubUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(params.email)}`;
+
+  await sendEmail({
+    to: params.email,
+    subject: 'Your 25% Off Discount Code - Banwell Designs',
+    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${params.discountCode}\n\nHow to use it:\n- On our website: Enter the code at checkout\n- On Etsy: Add a note to seller with your code when placing an order\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
+    html: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h1 style="color: #A22020; text-align: center;">Welcome to Banwell Designs!</h1>
+  <p>${greeting}</p>
+  <p>Thank you for subscribing! Here&rsquo;s your exclusive <strong>25% discount</strong> on your first order:</p>
+  <div style="background: #fef2f2; border: 2px dashed #A22020; border-radius: 8px; padding: 24px; margin: 24px 0; text-align: center;">
+    <p style="margin: 0; color: #666; font-size: 14px;">Your Discount Code</p>
+    <p style="font-size: 32px; font-weight: bold; color: #A22020; margin: 8px 0; letter-spacing: 2px;">${params.discountCode}</p>
+  </div>
+  <h3 style="color: #333;">How to use your code:</h3>
+  <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0;">
+    <p style="margin: 4px 0;"><strong>On our website:</strong> Enter the code at checkout</p>
+    <p style="margin: 4px 0;"><strong>On Etsy:</strong> Add a note to seller with your code when placing an order</p>
+  </div>
+  <p>Happy shopping!</p>
+  <p><strong>Banwell Designs</strong></p>
+  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
+  <p style="color: #9ca3af; font-size: 11px; text-align: center;">
+    You received this email because you subscribed to Banwell Designs.
+    <a href="${unsubUrl}" style="color: #9ca3af;">Unsubscribe</a>
+  </p>
+</div>`,
+  });
+}
+
+// ============================================
+// NEW SUBSCRIBER PUSH NOTIFICATION
+// ============================================
+
+export async function notifyNewSubscriber(params: {
+  email: string;
+  type: string;
+  source: string;
+}): Promise<void> {
+  await sendHollaAlert({
+    title: 'New Subscriber!',
+    message: `${params.email} (${params.type}, via ${params.source.replace(/_/g, ' ')})`,
+    priority: 'normal',
+  });
+}
+
+// ============================================
+// INVOICE SENT
+// ============================================
+
 export async function notifyInvoiceSent(params: {
   customerEmail: string;
   contactName: string;

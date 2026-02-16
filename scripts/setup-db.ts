@@ -311,6 +311,34 @@ async function main() {
     console.log('  communications already exists, skipping');
   }
 
+  // ---- subscribers ----
+  if (!await collectionExists('subscribers')) {
+    console.log('Creating subscribers...');
+    await pb.collections.create({
+      name: 'subscribers',
+      type: 'base',
+      fields: [
+        { name: 'email', type: 'email', required: true },
+        { name: 'name', type: 'text' },
+        { name: 'type', type: 'select', required: true, values: ['retail', 'wholesale'], maxSelect: 1 },
+        { name: 'source', type: 'select', required: true, values: ['website_popup', 'website_footer', 'website_landing', 'etsy_insert', 'etsy_message', 'manual'], maxSelect: 1 },
+        { name: 'discount_code', type: 'text', required: true },
+        { name: 'discount_used', type: 'bool' },
+        { name: 'opted_in_at', type: 'date' },
+        { name: 'status', type: 'select', required: true, values: ['active', 'unsubscribed'], maxSelect: 1 },
+        { name: 'created', type: 'autodate', onCreate: true, onUpdate: false },
+        { name: 'updated', type: 'autodate', onCreate: true, onUpdate: true },
+      ],
+      indexes: [
+        'CREATE UNIQUE INDEX idx_subscribers_email ON subscribers (email)',
+        'CREATE UNIQUE INDEX idx_subscribers_discount_code ON subscribers (discount_code)',
+      ],
+    });
+    console.log('  Created subscribers');
+  } else {
+    console.log('  subscribers already exists, skipping');
+  }
+
   console.log('\nSchema setup complete!');
   console.log('Next steps:');
   console.log('  1. Run: npm run import-products');
