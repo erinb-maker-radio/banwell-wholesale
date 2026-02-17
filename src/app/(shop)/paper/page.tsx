@@ -98,7 +98,7 @@ export default function PaperHomePage() {
                   src={img}
                   alt={`Recent paper project ${i + 1}`}
                   fill
-                  className={`object-cover ${i === 0 ? 'object-[center_calc(50%+20px)]' : ''}`}
+                  className={`object-cover ${i === 0 ? 'object-[center_calc(50%+30px)]' : ''}`}
                 />
               </div>
             ))}
