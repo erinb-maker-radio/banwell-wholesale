@@ -33,7 +33,7 @@ export default function PaperHomePage() {
                     src={item.image}
                     alt={item.name}
                     fill
-                    className={`object-cover group-hover:scale-105 transition-transform duration-500 ${item.slug === 'lighthouse' ? 'object-[center_calc(50%+10px)]' : ''}`}
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <p className="mt-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] text-[22px] font-semibold capitalize">{item.name}</p>
@@ -98,7 +98,7 @@ export default function PaperHomePage() {
                   src={img}
                   alt={`Recent paper project ${i + 1}`}
                   fill
-                  className={`object-cover ${i === 0 ? 'object-[center_calc(50%+30px)]' : ''}`}
+                  className={`object-cover ${i === 0 ? 'object-[center_calc(50%+30px)]' : i === 1 ? 'object-[center_calc(50%+10px)]' : ''}`}
                 />
               </div>
             ))}
