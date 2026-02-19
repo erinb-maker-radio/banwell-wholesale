@@ -40,6 +40,24 @@ export default function PaperHomePage() {
               </Link>
             ))}
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center mt-10">
+            {[
+              { src: '/images/brand/paper/circle-4.jpg', alt: 'Paper art 4' },
+              { src: '/images/brand/paper/circle-5.jpg', alt: 'Paper art 5' },
+              { src: '/images/brand/paper/circle-6.jpg', alt: 'Paper art 6' },
+            ].map((img, i) => (
+              <div key={i} className="text-center">
+                <div className="relative w-full aspect-square max-w-[300px] mx-auto rounded-full overflow-hidden border-4 border-white/60 shadow-lg bg-gray-100">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
