@@ -366,24 +366,24 @@ export async function sendWelcomeEmail(params: {
     <p style="margin: 4px 0;"><strong>On Etsy:</strong> Add a note to seller with your code when placing an order</p>
   </div>
   <h3 style="color: #333; text-align: center; margin-top: 32px;">Shop Our Collections</h3>
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin: 16px 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 16px 0;">
     <tr>
-      <td width="33%" align="center" style="padding: 4px;">
+      <td width="33%" align="center" valign="top" style="padding: 4px;">
         <a href="${baseUrl}/glass" style="text-decoration: none;">
-          <img src="${baseUrl}/images/brand/glass/glass-hero.jpg" alt="Art Glass" width="170" style="width: 170px; height: 170px; object-fit: cover; border-radius: 8px; display: block;" />
-          <p style="margin: 8px 0 0; font-size: 13px; font-weight: 600; color: #333;">Art Glass</p>
+          <img src="${baseUrl}/images/brand/glass/glass-hero.jpg" alt="Art Glass" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
+          <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Art Glass</p>
         </a>
       </td>
-      <td width="33%" align="center" style="padding: 4px;">
+      <td width="33%" align="center" valign="top" style="padding: 4px;">
         <a href="${baseUrl}/paper" style="text-decoration: none;">
-          <img src="${baseUrl}/images/brand/paper/paper-art-hero.jpg" alt="Paper Art" width="170" style="width: 170px; height: 170px; object-fit: cover; border-radius: 8px; display: block;" />
-          <p style="margin: 8px 0 0; font-size: 13px; font-weight: 600; color: #333;">Paper Art</p>
+          <img src="${baseUrl}/images/brand/paper/paper-art-hero.jpg" alt="Paper Art" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
+          <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Paper Art</p>
         </a>
       </td>
-      <td width="33%" align="center" style="padding: 4px;">
+      <td width="33%" align="center" valign="top" style="padding: 4px;">
         <a href="${baseUrl}/leather" style="text-decoration: none;">
-          <img src="${baseUrl}/images/brand/leather/plague-doctor-hero.jpg" alt="Leather" width="170" style="width: 170px; height: 170px; object-fit: cover; border-radius: 8px; display: block;" />
-          <p style="margin: 8px 0 0; font-size: 13px; font-weight: 600; color: #333;">Leather</p>
+          <img src="${baseUrl}/images/brand/leather/plague-doctor-hero.jpg" alt="Leather" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
+          <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Leather</p>
         </a>
       </td>
     </tr>
