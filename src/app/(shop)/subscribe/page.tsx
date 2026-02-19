@@ -65,7 +65,7 @@ function SubscribeForm() {
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">Get 25% Off Your First Order</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">Get 25% Off Your Retail Order</h1>
           <p className="text-gray-600">
             Subscribe to get an exclusive discount code valid on our website and Etsy shop.
           </p>
