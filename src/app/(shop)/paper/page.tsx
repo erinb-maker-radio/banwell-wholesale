@@ -27,17 +27,16 @@ export default function PaperHomePage() {
         <div className="max-w-[1140px] mx-auto px-[8%]">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
             {paperData.items.map((item) => (
-              <Link key={item.slug} href={`/paper/${item.slug}`} className="group text-center">
-                <div className="relative w-full aspect-square max-w-[300px] mx-auto rounded-full overflow-hidden border-4 border-white/60 shadow-lg bg-gray-100 group-hover:border-white group-hover:shadow-xl transition-all duration-300">
+              <div key={item.slug} className="text-center">
+                <div className="relative w-full aspect-square max-w-[300px] mx-auto rounded-full overflow-hidden border-4 border-white/60 shadow-lg bg-gray-100">
                   <Image
                     src={item.image}
                     alt={item.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover"
                   />
                 </div>
-                <p className="mt-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] text-[22px] font-semibold capitalize">{item.name}</p>
-              </Link>
+              </div>
             ))}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center mt-10">
