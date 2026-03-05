@@ -18,7 +18,7 @@
       "name": "Fox Ornament",
       "slug": "lighthouse",
       "image": "https://i.etsystatic.com/27632250/r/il/79d147/7478350961/il_1140xN.7478350961_byhb.jpg",
-      "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=fox+ornament",
+      "etsyUrl": "https://www.etsy.com/shop/banwelldesignpaper",
       "description": "Detailed paper lighthouses capturing the beauty and romance of coastal beacons. Multi-layered construction creates depth and shadow.",
       "images": [
         { "src": "/images/brand/paper/lighthouse/lighthouse-1.jpg", "alt": "Lighthouse by the sea paper cut ornament" },
@@ -30,7 +30,7 @@
       "name": "Cat",
       "slug": "cat",
       "image": "/images/brand/paper/cat/hero.jpg",
-      "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=cat",
+      "etsyUrl": "https://www.etsy.com/shop/banwelldesignpaper",
       "description": "Charming paper art cats with personality and poise. Each piece captures feline grace through precision cutting and layering.",
       "images": [
         { "src": "/images/brand/paper/cat/cat-1.jpg", "alt": "Sleepy white cat paper cut art wall hanging" },
@@ -53,5 +53,5 @@
     "/images/brand/paper/recent-2.jpg",
     "/images/brand/paper/recent-3.jpg"
   ],
-  "etsyUrl": "https://www.etsy.com/shop/BanwellDesigns?search_query=paper"
+  "etsyUrl": "https://www.etsy.com/shop/banwelldesignpaper"
 }

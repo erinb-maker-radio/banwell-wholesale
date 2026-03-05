@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
+import { isValidCode } from '@/lib/discount-codes';
 
 export async function GET(request: Request) {
   try {
@@ -13,26 +13,13 @@ export async function GET(request: Request) {
       );
     }
 
-    const pb = createServerPB();
-    await authenticateAdmin(pb);
+    const valid = isValidCode(code);
 
-    try {
-      const subscriber = await pb.collection('subscribers').getFirstListItem(
-        `discount_code="${code}" && status="active"`
-      );
-
-      return NextResponse.json({
-        success: true,
-        valid: true,
-        used: subscriber.discount_used,
-      });
-    } catch {
-      return NextResponse.json({
-        success: true,
-        valid: false,
-        used: false,
-      });
-    }
+    return NextResponse.json({
+      success: true,
+      valid,
+      used: false,
+    });
   } catch (err) {
     console.error('Verify error:', err);
     return NextResponse.json(

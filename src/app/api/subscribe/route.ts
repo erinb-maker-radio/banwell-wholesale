@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
-import { generateDiscountCode } from '@/lib/utils';
 import { sendWelcomeEmail, notifyNewSubscriber } from '@/lib/notifications';
+import { getCurrentCode } from '@/lib/discount-codes';
 import type { SubscriberSource, SubscriberType } from '@/lib/types';
 
 const VALID_SOURCES: SubscriberSource[] = [
@@ -34,58 +34,59 @@ export async function POST(request: Request) {
       const existing = await pb.collection('subscribers').getFirstListItem(`email="${email}"`);
 
       if (existing.status === 'active') {
-        // Already active — return existing code with friendly message
+        // Already active — return current month's code
         return NextResponse.json({
           success: true,
           alreadySubscribed: true,
-          discountCode: existing.discount_code,
+          discountCode: getCurrentCode(),
           message: "You're already subscribed! Here's your discount code.",
         });
       }
 
       // Previously unsubscribed — reactivate
+      const reactivateCode = getCurrentCode();
       await pb.collection('subscribers').update(existing.id, {
         status: 'active',
         source: subscriberSource,
         type: subscriberType,
+        discount_code: reactivateCode,
         opted_in_at: new Date().toISOString(),
         ...(name ? { name } : {}),
       });
 
       // Fire-and-forget: send welcome email + push
-      sendWelcomeEmail({ email, name: name || existing.name, discountCode: existing.discount_code }).catch(() => {});
+      sendWelcomeEmail({ email, name: name || existing.name, discountCode: reactivateCode }).catch(() => {});
       notifyNewSubscriber({ email, type: subscriberType, source: subscriberSource }).catch(() => {});
 
       return NextResponse.json({
         success: true,
         reactivated: true,
-        discountCode: existing.discount_code,
+        discountCode: reactivateCode,
         message: 'Welcome back! Your discount code is still valid.',
       });
     } catch {
       // Not found — create new subscriber
     }
 
-    const discountCode = generateDiscountCode();
-
+    const newCode = getCurrentCode();
     await pb.collection('subscribers').create({
       email,
       name: name || '',
       type: subscriberType,
       source: subscriberSource,
-      discount_code: discountCode,
+      discount_code: newCode,
       discount_used: false,
       opted_in_at: new Date().toISOString(),
       status: 'active',
     });
 
     // Fire-and-forget: send welcome email + push
-    sendWelcomeEmail({ email, name, discountCode }).catch(() => {});
+    sendWelcomeEmail({ email, name, discountCode: newCode }).catch(() => {});
     notifyNewSubscriber({ email, type: subscriberType, source: subscriberSource }).catch(() => {});
 
     return NextResponse.json({
       success: true,
-      discountCode,
+      discountCode: newCode,
       message: 'You\'re subscribed! Check your email for your discount code.',
     });
   } catch (err) {

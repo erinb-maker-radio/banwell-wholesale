@@ -6,12 +6,10 @@ import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from '@/components/layout/Footer';
 
-const etsyUrl = 'https://www.etsy.com/shop/BanwellDesigns';
-
 const shopCategories = [
-  { label: 'Leather', href: `${etsyUrl}?search_query=leather` },
-  { label: 'Art Glass', href: `${etsyUrl}?search_query=glass` },
-  { label: 'Paper Art', href: `${etsyUrl}?search_query=paper` },
+  { label: 'Leather', href: 'https://www.etsy.com/shop/banwelldesignleather' },
+  { label: 'Art Glass', href: 'https://www.etsy.com/shop/BanwellDesigns' },
+  { label: 'Paper Art', href: 'https://www.etsy.com/shop/banwelldesignpaper' },
 ];
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {

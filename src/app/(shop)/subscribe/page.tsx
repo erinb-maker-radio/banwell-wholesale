@@ -53,9 +53,35 @@ function SubscribeForm() {
             <p className="text-sm text-gray-500 mb-1">Your Discount Code</p>
             <p className="text-4xl font-bold text-[#A22020] tracking-wider">{discountCode}</p>
           </div>
-          <p className="text-sm text-gray-500">
-            Check your email for instructions on how to use your code on our website and on Etsy.
+          <p className="text-sm text-gray-500 mb-4">
+            Use this code at checkout in any of our Etsy shops. Check your email for details!
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="https://www.etsy.com/shop/banwelldesigns"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#A22020] hover:bg-[#8a1b1b] text-white font-semibold px-5 py-3 rounded-lg transition-colors text-sm"
+            >
+              Glass Shop
+            </a>
+            <a
+              href="https://www.etsy.com/shop/banwelldesignleather"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#A22020] hover:bg-[#8a1b1b] text-white font-semibold px-5 py-3 rounded-lg transition-colors text-sm"
+            >
+              Leather Shop
+            </a>
+            <a
+              href="https://www.etsy.com/shop/banwelldesignpaper"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#A22020] hover:bg-[#8a1b1b] text-white font-semibold px-5 py-3 rounded-lg transition-colors text-sm"
+            >
+              Paper Shop
+            </a>
+          </div>
         </div>
       </div>
     );

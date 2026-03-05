@@ -48,23 +48,15 @@ export async function POST(request: Request) {
 
     const tierDiscount = calculateDiscount(subtotal, customer.discount_tier || 'auto');
 
-    // Check if a subscriber discount code was provided
-    let codeRecord = null;
+    // Check if WELCOME25 discount code was provided
     let codeDiscountAmount = 0;
-    if (discountCode) {
-      try {
-        const results = await adminPb.collection('subscribers').getList(1, 1, {
-          filter: `discount_code = "${discountCode}" && status = "active" && discount_used = false`,
-        });
-        if (results.items.length > 0) {
-          codeRecord = results.items[0];
-          codeDiscountAmount = Math.round(subtotal * 0.25);
-        }
-      } catch { /* invalid code, ignore */ }
+    const validCode = discountCode && discountCode.toUpperCase() === 'WELCOME25';
+    if (validCode) {
+      codeDiscountAmount = Math.round(subtotal * 0.25);
     }
 
     // Use whichever discount is better
-    const useCode = codeRecord && codeDiscountAmount > tierDiscount.amount;
+    const useCode = validCode && codeDiscountAmount > tierDiscount.amount;
     const discount = useCode
       ? { percent: 25, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: 'Subscriber Code (25% off)' }
       : tierDiscount;
@@ -100,10 +92,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // Mark discount code as used
-    if (useCode && codeRecord) {
-      await adminPb.collection('subscribers').update(codeRecord.id, { discount_used: true });
-    }
+    // Note: WELCOME25 is a universal Etsy coupon code, no per-subscriber tracking needed
 
     // Create invoice
     const existingInvoices = await adminPb.collection('invoices').getList(1, 1, { sort: '-created' });

@@ -1,6 +1,17 @@
 # Etsy Campaign Copy — Banwell Designs Email List
 
 All copy below drives subscribers to the signup page with tracking parameters.
+The discount code **WELCOME25** must be added as a coupon in Etsy Shop Manager → Marketing → Sales and Coupons (25% off, one use per buyer).
+
+**IMPORTANT:** Never reveal the code in the copy. Customers must subscribe to get it.
+
+## Short Links
+
+| Use | Short Link | Tracks As |
+|-----|-----------|-----------|
+| Message to Buyers | https://tinyurl.com/26oxa4da | `etsy_message` |
+| Package Insert QR | https://tinyurl.com/25os9aov | `etsy_insert` |
+| Listing Description | https://tinyurl.com/25pggjsm | `website_landing` |
 
 ---
 
@@ -11,11 +22,11 @@ All copy below drives subscribers to the signup page with tracking parameters.
 ```
 Thank you so much for your order! I hope you love your new piece.
 
-Want 25% off your next order? Join our mailing list and get an exclusive discount code — valid on our website AND right here on Etsy:
+Want 25% off your next order? Join our mailing list and we'll send you an exclusive discount code you can use right here on Etsy:
 
-→ wholesale.wholesale.banwelldesigns.com/subscribe?source=etsy_message&type=retail
+→ https://tinyurl.com/26oxa4da
 
-Just enter your email and you'll get your code instantly. To use it on Etsy, add the code in the "note to seller" on your next order.
+Just enter your email and your code will be delivered instantly!
 
 Thanks again for supporting handmade!
 — Erin, Banwell Designs
@@ -28,7 +39,7 @@ Thanks again for supporting handmade!
 > Print as a small card (4x6" or business card size) and include in every shipment.
 > Generate a QR code pointing to the URL below.
 
-**QR Code URL:** `https://wholesale.wholesale.banwelldesigns.com/subscribe?source=etsy_insert&type=retail`
+**QR Code URL:** `https://tinyurl.com/25os9aov`
 
 **Front of card:**
 
@@ -38,27 +49,16 @@ Thanks again for supporting handmade!
 │     GET 25% OFF                 │
 │     YOUR NEXT ORDER             │
 │                                 │
-│     Scan the QR code or visit:  │
-│     wholesale.banwelldesigns.com/subscribe│
+│     Scan to get your exclusive  │
+│     discount code:              │
 │                                 │
 │         [QR CODE HERE]          │
 │                                 │
-│  Works on our website & Etsy!   │
+│     Works at Etsy checkout!     │
 │                                 │
 │        BANWELL DESIGNS          │
 │                                 │
 └─────────────────────────────────┘
-```
-
-**Back of card (optional):**
-
-```
-How to use your code:
-
-Website: Enter at checkout
-Etsy: Add to "note to seller"
-
-Thank you for your purchase!
 ```
 
 ---
@@ -70,8 +70,8 @@ Thank you for your purchase!
 ```
 ─────────────────────────
 ★ GET 25% OFF YOUR NEXT ORDER ★
-Join our email list for an exclusive discount code:
-wholesale.banwelldesigns.com/subscribe
+Sign up for our mailing list to get an exclusive discount code:
+https://tinyurl.com/25pggjsm
 ─────────────────────────
 ```
 
@@ -79,10 +79,10 @@ wholesale.banwelldesigns.com/subscribe
 
 ## Tracking Summary
 
-| Source | URL Parameter | Where Used |
-|--------|--------------|------------|
-| Etsy buyer message | `?source=etsy_message&type=retail` | Auto-sent after purchase |
-| Package insert QR | `?source=etsy_insert&type=retail` | Physical card in shipment |
-| Listing description | `?source=website_landing&type=retail` | Etsy product listing footer |
-| Website footer | `?source=website_footer&type=retail` | Auto-set by footer widget |
-| Website landing | `?source=website_landing&type=retail` | Direct visits to /subscribe |
+| Source | Short Link | Tracking Params | Where Used |
+|--------|-----------|-----------------|------------|
+| Etsy buyer message | tinyurl.com/26oxa4da | `etsy_message / retail` | Auto-sent after purchase |
+| Package insert QR | tinyurl.com/25os9aov | `etsy_insert / retail` | Physical card in shipment |
+| Listing description | tinyurl.com/25pggjsm | `website_landing / retail` | Etsy product listing footer |
+| Website footer | (auto) | `website_footer / retail` | Auto-set by footer widget |
+| Website landing | (direct) | `website_landing / retail` | Direct visits to /subscribe |

@@ -331,7 +331,6 @@ async function main() {
       ],
       indexes: [
         'CREATE UNIQUE INDEX idx_subscribers_email ON subscribers (email)',
-        'CREATE UNIQUE INDEX idx_subscribers_discount_code ON subscribers (discount_code)',
       ],
     });
     console.log('  Created subscribers');

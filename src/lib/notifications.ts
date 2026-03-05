@@ -344,44 +344,42 @@ export async function sendWelcomeEmail(params: {
   discountCode: string;
 }): Promise<void> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const etsyShop = 'https://www.etsy.com/shop/BanwellDesigns';
   const greeting = params.name ? `Hi ${params.name},` : 'Hi there,';
   const unsubUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(params.email)}`;
+  const code = params.discountCode;
 
   await sendEmail({
     to: params.email,
     subject: 'Your 25% Off Discount Code - Banwell Designs',
-    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${params.discountCode}\n\nHow to use it:\n- On our website: Enter the code at checkout\n- On Etsy: Add a note to seller with your code when placing an order\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
+    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${code}\n\nUse it at checkout in any of our Etsy shops:\n- Art Glass: https://www.etsy.com/shop/banwelldesigns\n- Paper Art: https://www.etsy.com/shop/banwelldesignpaper\n- Leather: https://www.etsy.com/shop/banwelldesignleather\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <h1 style="color: #A22020; text-align: center;">Welcome to Banwell Designs!</h1>
   <p>${greeting}</p>
-  <p>Thank you for subscribing! Here&rsquo;s your exclusive <strong>25% discount</strong> on your first order:</p>
+  <p>Thank you for subscribing! Here&rsquo;s your exclusive <strong>25% discount</strong> on your retail order:</p>
   <div style="background: #fef2f2; border: 2px dashed #A22020; border-radius: 8px; padding: 24px; margin: 24px 0; text-align: center;">
     <p style="margin: 0; color: #666; font-size: 14px;">Your Discount Code</p>
-    <p style="font-size: 32px; font-weight: bold; color: #A22020; margin: 8px 0; letter-spacing: 2px;">${params.discountCode}</p>
+    <p style="font-size: 32px; font-weight: bold; color: #A22020; margin: 8px 0; letter-spacing: 2px;">${code}</p>
   </div>
-  <h3 style="color: #333;">How to use your code:</h3>
-  <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin: 16px 0;">
-    <p style="margin: 4px 0;"><strong>On our website:</strong> Enter the code at checkout</p>
-    <p style="margin: 4px 0;"><strong>On Etsy:</strong> Add a note to seller with your code when placing an order</p>
-  </div>
+  <p style="text-align: center;">Apply the code at checkout in any of our Etsy shops:</p>
   <h3 style="color: #333; text-align: center; margin-top: 32px;">Shop Our Collections</h3>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 16px 0;">
     <tr>
       <td width="33%" align="center" valign="top" style="padding: 4px;">
-        <a href="${baseUrl}/glass" style="text-decoration: none;">
+        <a href="https://www.etsy.com/shop/banwelldesigns" style="text-decoration: none;">
           <img src="${baseUrl}/images/brand/glass/glass-hero.jpg" alt="Art Glass" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
           <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Art Glass</p>
         </a>
       </td>
       <td width="33%" align="center" valign="top" style="padding: 4px;">
-        <a href="${baseUrl}/paper" style="text-decoration: none;">
+        <a href="https://www.etsy.com/shop/banwelldesignpaper" style="text-decoration: none;">
           <img src="${baseUrl}/images/brand/paper/paper-art-hero.jpg" alt="Paper Art" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
           <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Paper Art</p>
         </a>
       </td>
       <td width="33%" align="center" valign="top" style="padding: 4px;">
-        <a href="${baseUrl}/leather" style="text-decoration: none;">
+        <a href="https://www.etsy.com/shop/banwelldesignleather" style="text-decoration: none;">
           <img src="${baseUrl}/images/brand/leather/plague-doctor-hero.jpg" alt="Leather" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
           <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Leather</p>
         </a>
