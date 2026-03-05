@@ -10,6 +10,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Banwell Designs - Fantastic Handmade Goods",
   description: "The original maker of modern, handmade leather plague doctor masks, steampunk creations, and stained glass products. Imitated by many, duplicated by none.",
+  verification: {
+    other: {
+      "p:domain_verify": "e3ea680a058ab8aa8b258891f572bd02",
+    },
+  },
 };
 
 export default function RootLayout({
