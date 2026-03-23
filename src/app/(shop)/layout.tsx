@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from '@/components/layout/Footer';
+import { AuthProvider, useAuth } from '@/components/AuthProvider';
 
 const shopCategories = [
   { label: 'Leather', href: 'https://www.etsy.com/shop/banwelldesignleather' },
@@ -13,11 +14,20 @@ const shopCategories = [
 ];
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <ShopLayoutInner>{children}</ShopLayoutInner>
+    </AuthProvider>
+  );
+}
+
+function ShopLayoutInner({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const { customer, loading: authLoading, logout } = useAuth();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -123,10 +133,26 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
             <Link href="/about" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
               {isDark ? 'About Tom Banwell' : 'About'}
             </Link>
-            {!isDark && (
-              <Link href="/catalog" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
-                Wholesale
-              </Link>
+            {!isDark && !authLoading && (
+              customer ? (
+                <>
+                  <Link href="/account" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
+                    My Account
+                  </Link>
+                  <button onClick={logout} className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/catalog" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
+                    Wholesale
+                  </Link>
+                  <Link href="/login" className={`px-4 py-2 text-[16px] font-normal transition-colors ${navText}`}>
+                    Sign In
+                  </Link>
+                </>
+              )
             )}
           </nav>
 
@@ -196,7 +222,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
                 {isDark ? 'About Tom Banwell' : 'About'}
               </Link>
 
-              {!isDark && (
+              {!isDark && !authLoading && (
                 <>
                   <div className={`border-t ${mobileDivider} my-2`} />
                   <Link href="/catalog" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
@@ -205,9 +231,20 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
                   <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
                     Wholesale Pricing
                   </Link>
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
-                    Sign In
-                  </Link>
+                  {customer ? (
+                    <>
+                      <Link href="/account" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
+                        My Account
+                      </Link>
+                      <button onClick={() => { logout(); setMobileMenuOpen(false); }} className={`block w-full text-left py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
+                        Log Out
+                      </button>
+                    </>
+                  ) : (
+                    <Link href="/login" onClick={() => setMobileMenuOpen(false)} className={`block py-2 text-[14px] font-normal transition-colors ${mobileText}`}>
+                      Sign In
+                    </Link>
+                  )}
                 </>
               )}
             </div>

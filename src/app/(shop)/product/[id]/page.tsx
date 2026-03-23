@@ -1,18 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<ProductCategory | null>(null);
   const [loading, setLoading] = useState(true);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { customer, loading: authLoading } = useAuth();
 
   useEffect(() => {
     pb.collection('products').getOne(params.id as string, { expand: 'category' })
@@ -26,6 +30,25 @@ export default function ProductDetailPage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [params.id]);
+
+  function handleAddToCart() {
+    // Save to localStorage directly (same key as CartProvider)
+    try {
+      const saved = localStorage.getItem('banwell_cart');
+      const items = saved ? JSON.parse(saved) : [];
+      const existing = items.find((i: { productId: string }) => i.productId === product!.id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        items.push({ productId: product!.id, quantity: 1 });
+      }
+      localStorage.setItem('banwell_cart', JSON.stringify(items));
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 2000);
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+    }
+  }
 
   if (loading) return <div className="max-w-7xl mx-auto px-4 py-12 text-center text-gray-500">Loading...</div>;
   if (!product) return <div className="max-w-7xl mx-auto px-4 py-12 text-center text-gray-500">Product not found</div>;
@@ -88,17 +111,36 @@ export default function ProductDetailPage() {
           )}
 
           <div className="mt-8 space-y-3">
-            <Link href="/login">
-              <Button size="lg" className="w-full">
-                Sign In to Order
-              </Button>
-            </Link>
-            <p className="text-center text-sm text-gray-500">
-              <Link href="/register" className="text-blue-600 hover:underline">
-                Create a wholesale account
-              </Link>
-              {' '}to start ordering
-            </p>
+            {!authLoading && customer ? (
+              <>
+                <Button size="lg" className="w-full" onClick={handleAddToCart}>
+                  {addedToCart ? 'Added!' : 'Add to Cart'}
+                </Button>
+                <p className="text-center text-sm text-gray-500">
+                  <Link href="/account/cart" className="text-blue-600 hover:underline">
+                    View Cart
+                  </Link>
+                  {' | '}
+                  <Link href="/account" className="text-blue-600 hover:underline">
+                    My Account
+                  </Link>
+                </p>
+              </>
+            ) : !authLoading ? (
+              <>
+                <Link href="/login">
+                  <Button size="lg" className="w-full">
+                    Sign In to Order
+                  </Button>
+                </Link>
+                <p className="text-center text-sm text-gray-500">
+                  <Link href="/register" className="text-blue-600 hover:underline">
+                    Create a wholesale account
+                  </Link>
+                  {' '}to start ordering
+                </p>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
