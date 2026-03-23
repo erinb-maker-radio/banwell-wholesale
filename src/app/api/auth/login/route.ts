@@ -14,6 +14,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({
       success: true,
+      token: authData.token,
       data: {
         id: authData.record.id,
         email: authData.record.email,
