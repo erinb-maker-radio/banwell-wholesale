@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createServerPB } from '@/lib/pocketbase';
+import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 import { notifyNewCustomer } from '@/lib/notifications';
 
 export async function POST(request: Request) {
@@ -16,6 +16,7 @@ export async function POST(request: Request) {
     }
 
     const pb = createServerPB();
+    await authenticateAdmin(pb);
 
     const customer = await pb.collection('customers').create({
       email,
