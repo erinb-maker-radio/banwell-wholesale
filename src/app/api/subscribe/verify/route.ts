@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { isValidCode } from '@/lib/discount-codes';
+import { isValidCode, getCodeDiscount } from '@/lib/discount-codes';
 
 export async function GET(request: Request) {
   try {
@@ -19,6 +19,7 @@ export async function GET(request: Request) {
       success: true,
       valid,
       used: false,
+      discount: valid ? getCodeDiscount(code) : 0,
     });
   } catch (err) {
     console.error('Verify error:', err);

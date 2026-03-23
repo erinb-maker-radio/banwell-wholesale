@@ -22,6 +22,7 @@ export default function CheckoutPage() {
   const [discountCode, setDiscountCode] = useState('');
   const [codeStatus, setCodeStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid' | 'used'>('idle');
   const [codeApplied, setCodeApplied] = useState(false);
+  const [codePercent, setCodePercent] = useState(25);
   const { customer } = useAuth();
 
   const customerTier = customer?.discount_tier || 'auto';
@@ -51,6 +52,7 @@ export default function CheckoutPage() {
       if (data.valid && !data.used) {
         setCodeStatus('valid');
         setCodeApplied(true);
+        setCodePercent(data.discount || 25);
       } else if (data.used) {
         setCodeStatus('used');
         setCodeApplied(false);
@@ -68,6 +70,7 @@ export default function CheckoutPage() {
     setDiscountCode('');
     setCodeStatus('idle');
     setCodeApplied(false);
+    setCodePercent(25);
   }
 
   const subtotal = items.reduce((sum, item) => {
@@ -76,11 +79,11 @@ export default function CheckoutPage() {
   }, 0);
 
   const tierDiscount = calculateDiscount(subtotal, customerTier as 'auto' | 'tier1' | 'tier2' | 'tier3');
-  const codeDiscountAmount = codeApplied ? Math.round(subtotal * 0.25) : 0;
+  const codeDiscountAmount = codeApplied ? Math.round(subtotal * (codePercent / 100)) : 0;
 
   const useCode = codeApplied && codeDiscountAmount > tierDiscount.amount;
   const discount = useCode
-    ? { percent: 25, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: 'Subscriber Code (25% off)' }
+    ? { percent: codePercent, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: `Discount Code (${codePercent}% off)` }
     : tierDiscount;
 
   async function handleCheckout() {
@@ -178,7 +181,7 @@ export default function CheckoutPage() {
             <div>
               <span className="text-green-700 font-medium">{discountCode}</span>
               {useCode ? (
-                <span className="text-green-600 text-sm ml-2">25% off applied</span>
+                <span className="text-green-600 text-sm ml-2">{codePercent}% off applied</span>
               ) : (
                 <span className="text-gray-500 text-sm ml-2">(your wholesale discount is better)</span>
               )}

@@ -34,6 +34,11 @@ const MONTHLY_CODES: MonthlyCode[] = [
   { code: 'CRIMSONBLOOM',   year: 2027, month: 2 },  // Feb — Etsy expiry: Mar 15
 ];
 
+// Special codes with custom discount percentages
+const SPECIAL_CODES: Record<string, number> = {
+  'ERIN90': 90,
+};
+
 // Legacy code that was sent before the rotation system
 const LEGACY_CODES = ['WELCOME25'];
 
@@ -63,8 +68,19 @@ export function isValidCode(code: string): boolean {
   const upper = code.toUpperCase();
 
   if (LEGACY_CODES.includes(upper)) return true;
+  if (upper in SPECIAL_CODES) return true;
 
   return MONTHLY_CODES.some(c => c.code === upper);
+}
+
+/**
+ * Get the discount percentage for a code. Special codes may have custom percentages.
+ * Default is 25% for monthly/legacy codes.
+ */
+export function getCodeDiscount(code: string): number {
+  const upper = code.toUpperCase();
+  if (upper in SPECIAL_CODES) return SPECIAL_CODES[upper];
+  return 25;
 }
 
 /**
