@@ -89,7 +89,7 @@ export default function CartPage() {
                       onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                       className="w-8 h-8 border rounded text-gray-600 hover:bg-gray-50"
                     >-</button>
-                    <span className="w-8 text-center text-sm">{item.quantity}</span>
+                    <span className="w-8 text-center text-sm text-gray-900 font-medium">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                       className="w-8 h-8 border rounded text-gray-600 hover:bg-gray-50"
