@@ -84,19 +84,19 @@ export default function CartPage() {
                     <p className="text-xs text-gray-400">{product.sku}</p>
                     <p className="text-sm text-gray-600">{formatCurrency(product.retail_price)} each</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <button
                       onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                       className="w-8 h-8 border rounded text-gray-600 hover:bg-gray-50"
                     >-</button>
-                    <span className="w-8 text-center text-sm text-gray-900 font-medium">{item.quantity}</span>
+                    <span className="min-w-[2rem] text-center text-sm text-gray-900 font-medium inline-block">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                       className="w-8 h-8 border rounded text-gray-600 hover:bg-gray-50"
                     >+</button>
                   </div>
-                  <div className="text-right w-24">
-                    <p className="text-sm font-medium">{formatCurrency(product.retail_price * item.quantity)}</p>
+                  <div className="text-right w-24 flex-shrink-0">
+                    <p className="text-sm font-medium text-gray-900">{formatCurrency(product.retail_price * item.quantity)}</p>
                   </div>
                   <button
                     onClick={() => removeItem(item.productId)}
