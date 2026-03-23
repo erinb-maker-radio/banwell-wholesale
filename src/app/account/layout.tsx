@@ -78,13 +78,15 @@ function AccountHeader() {
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <AccountHeader />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-          {children}
-        </div>
-      </CartProvider>
-    </AuthProvider>
+    <div style={{ color: '#111827' }} className="bg-gray-50 min-h-screen">
+      <AuthProvider>
+        <CartProvider>
+          <AccountHeader />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+            {children}
+          </div>
+        </CartProvider>
+      </AuthProvider>
+    </div>
   );
 }
