@@ -64,9 +64,10 @@ export default function RegisterPage() {
         <Input label="Email" name="email" type="email" required id="email" />
         <Input label="Phone" name="phone" type="tel" id="phone" />
         <div className="grid grid-cols-2 gap-4">
-          <Input label="Password" name="password" type="password" required id="password" />
-          <Input label="Confirm Password" name="passwordConfirm" type="password" required id="passwordConfirm" />
+          <Input label="Password" name="password" type="password" required id="password" minLength={8} />
+          <Input label="Confirm Password" name="passwordConfirm" type="password" required id="passwordConfirm" minLength={8} />
         </div>
+        <p className="text-xs text-gray-400 -mt-2">Minimum 8 characters</p>
 
         <hr className="my-6" />
 
