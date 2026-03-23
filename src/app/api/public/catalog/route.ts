@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createServerPB } from '@/lib/pocketbase';
+import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 
 export async function GET(request: Request) {
   try {
     const pb = createServerPB();
+    await authenticateAdmin(pb);
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');

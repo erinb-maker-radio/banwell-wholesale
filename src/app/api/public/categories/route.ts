@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createServerPB } from '@/lib/pocketbase';
+import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 
 export async function GET() {
   try {
     const pb = createServerPB();
+    await authenticateAdmin(pb);
     const categories = await pb.collection('product_categories').getFullList({
       sort: 'sort_order',
     });

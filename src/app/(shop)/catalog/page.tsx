@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,29 +16,23 @@ export default function CatalogPage() {
   const perPage = 48;
 
   useEffect(() => {
-    pb.collection('product_categories').getFullList({ sort: 'sort_order' })
-      .then(records => setCategories(records as unknown as ProductCategory[]))
+    fetch('/api/public/categories')
+      .then(res => res.json())
+      .then(data => { if (data.data) setCategories(data.data); })
       .catch(console.error);
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    let filter = 'is_active=true';
-    if (selectedCategory) {
-      filter += ` && category="${selectedCategory}"`;
-    }
-    if (search) {
-      filter += ` && (title~"${search}" || sku~"${search}")`;
-    }
+    const params = new URLSearchParams({ page: String(page), perPage: String(perPage) });
+    if (selectedCategory) params.set('category', selectedCategory);
+    if (search) params.set('search', search);
 
-    pb.collection('products').getList(page, perPage, {
-      filter,
-      sort: 'sort_order',
-      expand: 'category',
-    })
-      .then(result => {
-        setProducts(result.items as unknown as Product[]);
-        setTotalPages(result.totalPages);
+    fetch(`/api/public/catalog?${params}`)
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data.items || []);
+        setTotalPages(data.totalPages || 1);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
