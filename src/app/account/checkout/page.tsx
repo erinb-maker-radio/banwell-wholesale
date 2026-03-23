@@ -147,14 +147,14 @@ export default function CheckoutPage() {
             return (
               <div key={item.productId} className="flex justify-between">
                 <span className="text-gray-600">{product.short_title || product.title} x{item.quantity}</span>
-                <span>{formatCurrency(product.retail_price * item.quantity)}</span>
+                <span className="text-gray-900">{formatCurrency(product.retail_price * item.quantity)}</span>
               </div>
             );
           })}
           <div className="border-t pt-2 mt-2">
             <div className="flex justify-between">
               <span className="text-gray-600">Subtotal</span>
-              <span>{formatCurrency(subtotal)}</span>
+              <span className="text-gray-900">{formatCurrency(subtotal)}</span>
             </div>
             {discount.percent > 0 && (
               <div className="flex justify-between text-green-700">
@@ -162,7 +162,7 @@ export default function CheckoutPage() {
                 <span>-{formatCurrency(discount.amount)}</span>
               </div>
             )}
-            <div className="flex justify-between font-semibold text-lg mt-2">
+            <div className="flex justify-between font-semibold text-lg mt-2 text-gray-900">
               <span>Total</span>
               <span>{formatCurrency(discount.total)}</span>
             </div>
