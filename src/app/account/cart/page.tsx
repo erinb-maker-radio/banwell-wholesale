@@ -120,7 +120,7 @@ export default function CartPage() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</span>
-                <span>{formatCurrency(subtotal)}</span>
+                <span className="text-gray-900">{formatCurrency(subtotal)}</span>
               </div>
 
               {discount.percent > 0 && (
@@ -137,7 +137,7 @@ export default function CartPage() {
               )}
 
               <div className="border-t pt-2 mt-2">
-                <div className="flex justify-between font-semibold text-lg">
+                <div className="flex justify-between font-semibold text-lg text-gray-900">
                   <span>Total</span>
                   <span>{formatCurrency(discount.total)}</span>
                 </div>
