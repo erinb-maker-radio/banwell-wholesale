@@ -4,27 +4,26 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatCurrency, formatDate, formatOrderStatus, getStatusColor } from '@/lib/utils';
 import type { Order } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 import Badge from '@/components/ui/Badge';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const { customer, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    const customerId = pb.authStore.record?.id;
-    if (!customerId) return;
+    if (authLoading) return;
+    if (!customer) { setLoading(false); return; }
 
-    pb.collection('orders').getFullList({
-      filter: `customer="${customerId}"`,
-      sort: '-created',
-    })
-      .then(records => setOrders(records as unknown as Order[]))
+    fetch('/api/account/orders')
+      .then(res => res.json())
+      .then(data => setOrders(data.orders || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [customer, authLoading]);
 
-  if (loading) return <div className="text-center py-12 text-gray-500">Loading orders...</div>;
+  if (loading || authLoading) return <div className="text-center py-12 text-gray-500">Loading orders...</div>;
 
   if (orders.length === 0) {
     return (

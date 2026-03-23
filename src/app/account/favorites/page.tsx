@@ -4,44 +4,43 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<{ id: string; product: Product }[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+  const { customer, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    const customerId = pb.authStore.record?.id;
-    if (!customerId) return;
+    if (authLoading) return;
+    if (!customer) { setLoading(false); return; }
 
-    pb.collection('favorites').getFullList({
-      filter: `customer="${customerId}"`,
-      expand: 'product',
-      sort: '-created',
-    })
-      .then(records => {
-        setFavorites(records.map(r => ({
-          id: r.id,
-          product: r.expand?.product as unknown as Product,
-        })).filter(f => f.product));
-      })
+    fetch('/api/account/favorites')
+      .then(res => res.json())
+      .then(data => setFavorites(data.favorites || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [customer, authLoading]);
 
   async function removeFavorite(favId: string) {
     try {
-      await pb.collection('favorites').delete(favId);
-      setFavorites(prev => prev.filter(f => f.id !== favId));
+      const res = await fetch('/api/account/favorites', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favoriteId: favId }),
+      });
+      if (res.ok) {
+        setFavorites(prev => prev.filter(f => f.id !== favId));
+      }
     } catch (err) {
       console.error(err);
     }
   }
 
-  if (loading) return <div className="text-center py-12 text-gray-500">Loading...</div>;
+  if (loading || authLoading) return <div className="text-center py-12 text-gray-500">Loading...</div>;
 
   if (favorites.length === 0) {
     return (

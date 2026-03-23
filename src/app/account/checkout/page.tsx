@@ -9,6 +9,7 @@ import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useCart } from '@/components/CartProvider';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -18,10 +19,12 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'square' | 'invoice'>('square');
-  const [customerTier, setCustomerTier] = useState<string>('auto');
   const [discountCode, setDiscountCode] = useState('');
   const [codeStatus, setCodeStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid' | 'used'>('idle');
   const [codeApplied, setCodeApplied] = useState(false);
+  const { customer } = useAuth();
+
+  const customerTier = customer?.discount_tier || 'auto';
 
   useEffect(() => {
     async function load() {
@@ -34,10 +37,6 @@ export default function CheckoutPage() {
         } catch { /* skip */ }
       }
       setProducts(productMap);
-      try {
-        const customer = pb.authStore.record;
-        if (customer?.discount_tier) setCustomerTier(customer.discount_tier);
-      } catch { /* ignore */ }
       setLoading(false);
     }
     load();
@@ -79,7 +78,6 @@ export default function CheckoutPage() {
   const tierDiscount = calculateDiscount(subtotal, customerTier as 'auto' | 'tier1' | 'tier2' | 'tier3');
   const codeDiscountAmount = codeApplied ? Math.round(subtotal * 0.25) : 0;
 
-  // Use whichever discount is better for the customer
   const useCode = codeApplied && codeDiscountAmount > tierDiscount.amount;
   const discount = useCode
     ? { percent: 25, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: 'Subscriber Code (25% off)' }

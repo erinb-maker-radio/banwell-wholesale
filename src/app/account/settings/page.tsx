@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import pb from '@/lib/pocketbase';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function SettingsPage() {
-  const [loading, setLoading] = useState(true);
+  const { customer, loading: authLoading } = useAuth();
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
@@ -20,9 +20,10 @@ export default function SettingsPage() {
     zip: '',
     website: '',
   });
+  const [formLoaded, setFormLoaded] = useState(false);
 
   useEffect(() => {
-    const customer = pb.authStore.record;
+    if (authLoading || formLoaded) return;
     if (customer) {
       setForm({
         business_name: customer.business_name || '',
@@ -34,9 +35,9 @@ export default function SettingsPage() {
         zip: customer.zip || '',
         website: customer.website || '',
       });
+      setFormLoaded(true);
     }
-    setLoading(false);
-  }, []);
+  }, [customer, authLoading, formLoaded]);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -45,20 +46,27 @@ export default function SettingsPage() {
     setSuccess('');
 
     try {
-      const customerId = pb.authStore.record?.id;
-      if (!customerId) throw new Error('Not authenticated');
+      const res = await fetch('/api/account/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
 
-      await pb.collection('customers').update(customerId, form);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to save');
+      }
+
       setSuccess('Settings saved.');
     } catch (err) {
-      setError('Failed to save settings.');
+      setError(err instanceof Error ? err.message : 'Failed to save settings.');
       console.error(err);
     } finally {
       setSaving(false);
     }
   }
 
-  if (loading) return <div className="text-center py-12 text-gray-500">Loading...</div>;
+  if (authLoading) return <div className="text-center py-12 text-gray-500">Loading...</div>;
 
   return (
     <div className="max-w-2xl">

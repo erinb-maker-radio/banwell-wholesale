@@ -1,30 +1,28 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import type { Invoice } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 import Badge from '@/components/ui/Badge';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function CustomerInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const { customer, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    const customerId = pb.authStore.record?.id;
-    if (!customerId) return;
+    if (authLoading) return;
+    if (!customer) { setLoading(false); return; }
 
-    pb.collection('invoices').getFullList({
-      filter: `customer="${customerId}"`,
-      sort: '-created',
-      expand: 'order',
-    })
-      .then(records => setInvoices(records as unknown as Invoice[]))
+    fetch('/api/account/invoices')
+      .then(res => res.json())
+      .then(data => setInvoices(data.invoices || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [customer, authLoading]);
 
-  if (loading) return <div className="text-center py-12 text-gray-500">Loading...</div>;
+  if (loading || authLoading) return <div className="text-center py-12 text-gray-500">Loading...</div>;
 
   if (invoices.length === 0) {
     return (

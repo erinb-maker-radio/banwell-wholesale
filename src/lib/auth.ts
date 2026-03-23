@@ -67,3 +67,21 @@ export async function isAuthenticated(): Promise<boolean> {
   const customer = await getCurrentCustomer();
   return customer !== null;
 }
+
+// Get authenticated PocketBase instance + customer ID for API routes
+export async function getAuthenticatedPB(): Promise<{ pb: ReturnType<typeof createServerPB>; customerId: string } | null> {
+  try {
+    const cookieStore = await cookies();
+    const authCookie = cookieStore.get(AUTH_COOKIE);
+    if (!authCookie?.value) return null;
+
+    const pb = createServerPB();
+    pb.authStore.save(authCookie.value);
+    if (!pb.authStore.isValid) return null;
+
+    const result = await pb.collection('customers').authRefresh();
+    return { pb, customerId: result.record.id };
+  } catch {
+    return null;
+  }
+}

@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import pb from '@/lib/pocketbase';
 
 export default function LoginPage() {
   return (
@@ -45,11 +44,6 @@ function LoginForm() {
         setError(result.error || 'Login failed');
         setLoading(false);
         return;
-      }
-
-      // Save auth to client-side PocketBase SDK so client queries work
-      if (result.token && result.data) {
-        pb.authStore.save(result.token, result.data);
       }
 
       router.push('/account');

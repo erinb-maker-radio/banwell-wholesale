@@ -4,42 +4,28 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function MyCatalogPage() {
   const [curatedProducts, setCuratedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+  const { customer, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    async function load() {
-      try {
-        const customerId = pb.authStore.record?.id;
-        if (!customerId) return;
+    if (authLoading) return;
+    if (!customer) { setLoading(false); return; }
 
-        const curated = await pb.collection('curated_products').getFullList({
-          filter: `customer="${customerId}"`,
-          expand: 'product',
-          sort: 'sort_order',
-        });
+    fetch('/api/account/curated')
+      .then(res => res.json())
+      .then(data => setCuratedProducts(data.products || []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [customer, authLoading]);
 
-        const products = curated
-          .map(c => c.expand?.product as unknown as Product)
-          .filter(Boolean);
-
-        setCuratedProducts(products);
-      } catch (err) {
-        console.error('Failed to load curated catalog:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
-
-  if (loading) return <div className="text-center py-12 text-gray-500">Loading your catalog...</div>;
+  if (loading || authLoading) return <div className="text-center py-12 text-gray-500">Loading your catalog...</div>;
 
   if (curatedProducts.length === 0) {
     return (

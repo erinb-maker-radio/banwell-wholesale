@@ -8,12 +8,15 @@ import type { Product } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, clearCart } = useCart();
   const [products, setProducts] = useState<Map<string, Product>>(new Map());
   const [loading, setLoading] = useState(true);
-  const [customerTier, setCustomerTier] = useState<string>('auto');
+  const { customer } = useAuth();
+
+  const customerTier = customer?.discount_tier || 'auto';
 
   useEffect(() => {
     async function loadProducts() {
@@ -27,15 +30,6 @@ export default function CartPage() {
         } catch { /* product may have been removed */ }
       }
       setProducts(productMap);
-
-      // Get customer tier
-      try {
-        const customer = pb.authStore.record;
-        if (customer?.discount_tier) {
-          setCustomerTier(customer.discount_tier);
-        }
-      } catch { /* ignore */ }
-
       setLoading(false);
     }
     loadProducts();
