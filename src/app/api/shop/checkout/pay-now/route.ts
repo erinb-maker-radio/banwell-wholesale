@@ -15,7 +15,12 @@ export async function POST(request: Request) {
     }
 
     const customerId = auth.customerId;
-    const customer = await auth.pb.collection('customers').getOne(customerId);
+    let customer;
+    try {
+      customer = await auth.pb.collection('customers').getOne(customerId);
+    } catch (e) {
+      return NextResponse.json({ error: `Failed to load customer: ${e instanceof Error ? e.message : e}` }, { status: 500 });
+    }
 
     const { items, discountCode } = await request.json();
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -24,7 +29,11 @@ export async function POST(request: Request) {
 
     // Authenticate as admin for writes
     const adminPb = createServerPB();
-    await authenticateAdmin(adminPb);
+    try {
+      await authenticateAdmin(adminPb);
+    } catch (e) {
+      return NextResponse.json({ error: `Admin auth failed: ${e instanceof Error ? e.message : e}` }, { status: 500 });
+    }
 
     // Load products and calculate totals
     let subtotal = 0;
@@ -65,13 +74,16 @@ export async function POST(request: Request) {
     };
 
     // Generate order number
+    let orderNumber: string;
+    let order;
+    try {
     const year = new Date().getFullYear();
     const existingOrders = await adminPb.collection('orders').getList(1, 1, { sort: '-created' });
     const seq = existingOrders.totalItems + 1;
-    const orderNumber = generateOrderNumber(year, seq);
+    orderNumber = generateOrderNumber(year, seq);
 
     // Create order
-    const order = await adminPb.collection('orders').create({
+    order = await adminPb.collection('orders').create({
       order_number: orderNumber,
       customer: customerId,
       status: 'pending_payment',
@@ -93,8 +105,9 @@ export async function POST(request: Request) {
         line_total: li.lineTotal,
       });
     }
-
-    // Note: WELCOME25 is a universal Etsy coupon code, no per-subscriber tracking needed
+    } catch (e) {
+      return NextResponse.json({ error: `Order creation failed: ${e instanceof Error ? e.message : e}` }, { status: 500 });
+    }
 
     // Create Square checkout link
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
