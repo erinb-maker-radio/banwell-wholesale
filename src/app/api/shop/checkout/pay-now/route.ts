@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     step = 'admin auth';
     const adminPb = createServerPB();
     await authenticateAdmin(adminPb);
+    const adminToken = adminPb.authStore.token;
 
     step = 'load products';
     let subtotal = 0;
@@ -69,21 +70,94 @@ export async function POST(request: Request) {
     const seq = existingOrders.totalItems + 1;
     const orderNumber = generateOrderNumber(year, seq);
 
-    const orderData = {
-      order_number: orderNumber,
-      customer: customerId,
-      status: 'pending_payment',
-      payment_method: 'square',
-      subtotal,
-      discount_percent: discount.percent,
-      discount_amount: discount.amount,
+    const pbUrl = process.env.NEXT_PUBLIC_POCKETBASE_URL || 'https://pb.banwelldesigns.com';
+
+    // Use direct fetch instead of SDK to ensure admin superuser auth works
+    const orderRes = await fetch(`${pbUrl}/api/collections/orders/records`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        order_number: orderNumber,
+        customer: customerId,
+        status: 'pending_payment',
+        payment_method: 'square',
+        subtotal,
+        discount_percent: discount.percent,
+        discount_amount: discount.amount,
+        total: discount.total,
+        follow_up_sent: false,
+      }),
+    });
+
+    if (!orderRes.ok) {
+      const errBody = await orderRes.text();
+      return NextResponse.json({ error: `Order creation failed (${orderRes.status}): ${errBody}` }, { status: 500 });
+    }
+
+    const order = await orderRes.json();
+
+    step = 'create order items';
+    for (const li of lineItems) {
+      const itemRes = await fetch(`${pbUrl}/api/collections/order_items/records`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({
+          order: order.id,
+          product: li.productId,
+          quantity: li.quantity,
+          unit_price: li.unitPrice,
+          line_total: li.lineTotal,
+        }),
+      });
+      if (!itemRes.ok) {
+        const errBody = await itemRes.text();
+        return NextResponse.json({ error: `Order item creation failed: ${errBody}` }, { status: 500 });
+      }
+    }
+
+    step = 'square checkout';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.banwelldesigns.com';
+
+    const checkout = await createCheckoutLink({
+      orderId: order.id,
+      orderNumber,
+      totalCents: discount.total,
+      customerEmail: customer.email,
+      lineItems: lineItems.map(li => ({ name: li.name, quantity: li.quantity, priceCents: li.priceCents })),
+      redirectUrl: `${baseUrl}/account/checkout/thank-you?order=${orderNumber}`,
+    });
+
+    // Update order with Square checkout ID
+    await fetch(`${pbUrl}/api/collections/orders/records/${order.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({ square_checkout_id: checkout.paymentLinkId }),
+    });
+
+    notifyOrderPlaced({
+      orderNumber,
+      businessName: customer.business_name,
+      contactName: customer.contact_name,
+      customerEmail: customer.email,
       total: discount.total,
-      follow_up_sent: false,
-    };
+      itemCount: lineItems.reduce((s, i) => s + i.quantity, 0),
+      paymentMethod: 'square',
+    }).catch(console.error);
 
-    // DEBUG: return what we'd send
-    return NextResponse.json({ debug: true, orderData, adminValid: adminPb.authStore.isValid });
-
+    return NextResponse.json({
+      success: true,
+      checkoutUrl: checkout.checkoutUrl,
+      orderNumber,
+    });
   } catch (err: unknown) {
     console.error(`Checkout error at step "${step}":`, err);
     let message = 'Unknown error';
