@@ -123,9 +123,15 @@ export async function POST(request: Request) {
       checkoutUrl: checkout.checkoutUrl,
       orderNumber,
     });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error(`Checkout error at step "${step}":`, err);
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json({ error: `Checkout failed at ${step}: ${message}` }, { status: 500 });
+    let message = 'Unknown error';
+    if (err instanceof Error) {
+      message = err.message;
+    }
+    // PocketBase errors have response.data with field-level details
+    const pbData = (err as Record<string, unknown>)?.response ?? (err as Record<string, unknown>)?.data;
+    const detail = pbData ? ` | ${JSON.stringify(pbData)}` : '';
+    return NextResponse.json({ error: `Checkout failed at ${step}: ${message}${detail}` }, { status: 500 });
   }
 }
