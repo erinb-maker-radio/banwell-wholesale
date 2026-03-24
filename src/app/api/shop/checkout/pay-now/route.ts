@@ -5,6 +5,7 @@ import { calculateDiscount } from '@/lib/pricing';
 import { generateOrderNumber } from '@/lib/utils';
 import { createCheckoutLink } from '@/lib/square';
 import { notifyOrderPlaced } from '@/lib/notifications';
+import { isValidCode, getCodeDiscount } from '@/lib/discount-codes';
 
 export async function POST(request: Request) {
   try {
@@ -20,8 +21,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
 
-    const customerId = pb.authStore.record?.id;
-    const customer = await pb.collection('customers').getOne(customerId!);
+    // Refresh to populate the auth record
+    const authResult = await pb.collection('customers').authRefresh();
+    const customerId = authResult.record.id;
+    const customer = authResult.record;
 
     const { items, discountCode } = await request.json();
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -52,18 +55,23 @@ export async function POST(request: Request) {
 
     const tierDiscount = calculateDiscount(subtotal, customer.discount_tier || 'auto');
 
-    // Check if WELCOME25 discount code was provided
+    // Apply coupon code on top of tier discount (stacked)
     let codeDiscountAmount = 0;
-    const validCode = discountCode && discountCode.toUpperCase() === 'WELCOME25';
-    if (validCode) {
-      codeDiscountAmount = Math.round(subtotal * 0.25);
+    let codePercent = 0;
+    if (discountCode && isValidCode(discountCode)) {
+      codePercent = getCodeDiscount(discountCode);
+      codeDiscountAmount = Math.round(tierDiscount.total * (codePercent / 100));
     }
 
-    // Use whichever discount is better
-    const useCode = validCode && codeDiscountAmount > tierDiscount.amount;
-    const discount = useCode
-      ? { percent: 25, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: 'Subscriber Code (25% off)' }
-      : tierDiscount;
+    const totalDiscountAmount = tierDiscount.amount + codeDiscountAmount;
+    const finalTotal = tierDiscount.total - codeDiscountAmount;
+
+    const discount = {
+      percent: tierDiscount.percent,
+      amount: totalDiscountAmount,
+      total: finalTotal,
+      tierName: tierDiscount.tierName,
+    };
 
     // Generate order number
     const year = new Date().getFullYear();
