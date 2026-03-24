@@ -1,29 +1,20 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 import { calculateDiscount } from '@/lib/pricing';
 import { generateOrderNumber, generateInvoiceNumber } from '@/lib/utils';
 import { notifyOrderPlaced } from '@/lib/notifications';
 import { isValidCode, getCodeDiscount } from '@/lib/discount-codes';
+import { getAuthenticatedPB } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const authCookie = cookieStore.get('pb_auth');
-    if (!authCookie?.value) {
+    const auth = await getAuthenticatedPB();
+    if (!auth) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const pb = createServerPB();
-    pb.authStore.save(authCookie.value);
-    if (!pb.authStore.isValid) {
-      return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
-    }
-
-    // Refresh to populate the auth record
-    const authResult = await pb.collection('customers').authRefresh();
-    const customerId = authResult.record.id;
-    const customer = authResult.record;
+    const customerId = auth.customerId;
+    const customer = await auth.pb.collection('customers').getOne(customerId);
 
     const { items, discountCode } = await request.json();
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -146,6 +137,7 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error('Invoice checkout error:', err);
-    return NextResponse.json({ error: 'Checkout failed' }, { status: 500 });
+    const message = err instanceof Error ? err.message : 'Checkout failed';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
