@@ -8,34 +8,28 @@ import { isValidCode, getCodeDiscount } from '@/lib/discount-codes';
 import { getAuthenticatedPB } from '@/lib/auth';
 
 export async function POST(request: Request) {
+  let step = 'init';
   try {
+    step = 'auth';
     const auth = await getAuthenticatedPB();
     if (!auth) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
+    step = 'load customer';
     const customerId = auth.customerId;
-    let customer;
-    try {
-      customer = await auth.pb.collection('customers').getOne(customerId);
-    } catch (e) {
-      return NextResponse.json({ error: `Failed to load customer: ${e instanceof Error ? e.message : e}` }, { status: 500 });
-    }
+    const customer = await auth.pb.collection('customers').getOne(customerId);
 
     const { items, discountCode } = await request.json();
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
     }
 
-    // Authenticate as admin for writes
+    step = 'admin auth';
     const adminPb = createServerPB();
-    try {
-      await authenticateAdmin(adminPb);
-    } catch (e) {
-      return NextResponse.json({ error: `Admin auth failed: ${e instanceof Error ? e.message : e}` }, { status: 500 });
-    }
+    await authenticateAdmin(adminPb);
 
-    // Load products and calculate totals
+    step = 'load products';
     let subtotal = 0;
     const lineItems = [];
 
@@ -53,37 +47,29 @@ export async function POST(request: Request) {
       });
     }
 
+    step = 'calculate discount';
     const tierDiscount = calculateDiscount(subtotal, customer.discount_tier || 'auto');
 
-    // Apply coupon code on top of tier discount (stacked)
     let codeDiscountAmount = 0;
-    let codePercent = 0;
     if (discountCode && isValidCode(discountCode)) {
-      codePercent = getCodeDiscount(discountCode);
-      codeDiscountAmount = Math.round(tierDiscount.total * (codePercent / 100));
+      const pct = getCodeDiscount(discountCode);
+      codeDiscountAmount = Math.round(tierDiscount.total * (pct / 100));
     }
-
-    const totalDiscountAmount = tierDiscount.amount + codeDiscountAmount;
-    const finalTotal = tierDiscount.total - codeDiscountAmount;
 
     const discount = {
       percent: tierDiscount.percent,
-      amount: totalDiscountAmount,
-      total: finalTotal,
+      amount: tierDiscount.amount + codeDiscountAmount,
+      total: tierDiscount.total - codeDiscountAmount,
       tierName: tierDiscount.tierName,
     };
 
-    // Generate order number
-    let orderNumber: string;
-    let order;
-    try {
+    step = 'create order';
     const year = new Date().getFullYear();
     const existingOrders = await adminPb.collection('orders').getList(1, 1, { sort: '-created' });
     const seq = existingOrders.totalItems + 1;
-    orderNumber = generateOrderNumber(year, seq);
+    const orderNumber = generateOrderNumber(year, seq);
 
-    // Create order
-    order = await adminPb.collection('orders').create({
+    const order = await adminPb.collection('orders').create({
       order_number: orderNumber,
       customer: customerId,
       status: 'pending_payment',
@@ -95,7 +81,7 @@ export async function POST(request: Request) {
       follow_up_sent: false,
     });
 
-    // Create order items
+    step = 'create order items';
     for (const li of lineItems) {
       await adminPb.collection('order_items').create({
         order: order.id,
@@ -105,50 +91,41 @@ export async function POST(request: Request) {
         line_total: li.lineTotal,
       });
     }
-    } catch (e) {
-      return NextResponse.json({ error: `Order creation failed: ${e instanceof Error ? e.message : e}` }, { status: 500 });
-    }
 
-    // Create Square checkout link
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    step = 'square checkout';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.banwelldesigns.com';
 
-    try {
-      const checkout = await createCheckoutLink({
-        orderId: order.id,
-        orderNumber,
-        totalCents: discount.total,
-        customerEmail: customer.email,
-        lineItems: lineItems.map(li => ({ name: li.name, quantity: li.quantity, priceCents: li.priceCents })),
-        redirectUrl: `${baseUrl}/account/checkout/thank-you?order=${orderNumber}`,
-      });
+    const checkout = await createCheckoutLink({
+      orderId: order.id,
+      orderNumber,
+      totalCents: discount.total,
+      customerEmail: customer.email,
+      lineItems: lineItems.map(li => ({ name: li.name, quantity: li.quantity, priceCents: li.priceCents })),
+      redirectUrl: `${baseUrl}/account/checkout/thank-you?order=${orderNumber}`,
+    });
 
-      await adminPb.collection('orders').update(order.id, {
-        square_checkout_id: checkout.paymentLinkId,
-      });
+    await adminPb.collection('orders').update(order.id, {
+      square_checkout_id: checkout.paymentLinkId,
+    });
 
-      // Notify
-      notifyOrderPlaced({
-        orderNumber,
-        businessName: customer.business_name,
-        contactName: customer.contact_name,
-        customerEmail: customer.email,
-        total: discount.total,
-        itemCount: lineItems.reduce((s, i) => s + i.quantity, 0),
-        paymentMethod: 'square',
-      }).catch(console.error);
+    notifyOrderPlaced({
+      orderNumber,
+      businessName: customer.business_name,
+      contactName: customer.contact_name,
+      customerEmail: customer.email,
+      total: discount.total,
+      itemCount: lineItems.reduce((s, i) => s + i.quantity, 0),
+      paymentMethod: 'square',
+    }).catch(console.error);
 
-      return NextResponse.json({
-        success: true,
-        checkoutUrl: checkout.checkoutUrl,
-        orderNumber,
-      });
-    } catch (squareErr) {
-      console.error('Square checkout error:', squareErr);
-      return NextResponse.json({ error: 'Payment system error. Please try invoice payment.' }, { status: 500 });
-    }
+    return NextResponse.json({
+      success: true,
+      checkoutUrl: checkout.checkoutUrl,
+      orderNumber,
+    });
   } catch (err) {
-    console.error('Checkout error:', err);
-    const message = err instanceof Error ? err.message : 'Checkout failed';
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error(`Checkout error at step "${step}":`, err);
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: `Checkout failed at ${step}: ${message}` }, { status: 500 });
   }
 }
