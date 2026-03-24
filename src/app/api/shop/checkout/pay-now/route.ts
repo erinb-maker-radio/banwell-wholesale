@@ -28,6 +28,9 @@ export async function POST(request: Request) {
     step = 'admin auth';
     const adminPb = createServerPB();
     await authenticateAdmin(adminPb);
+    if (!adminPb.authStore.isValid) {
+      return NextResponse.json({ error: 'Admin auth succeeded but token invalid' }, { status: 500 });
+    }
 
     step = 'load products';
     let subtotal = 0;
@@ -69,7 +72,7 @@ export async function POST(request: Request) {
     const seq = existingOrders.totalItems + 1;
     const orderNumber = generateOrderNumber(year, seq);
 
-    const order = await adminPb.collection('orders').create({
+    const orderData = {
       order_number: orderNumber,
       customer: customerId,
       status: 'pending_payment',
@@ -79,7 +82,9 @@ export async function POST(request: Request) {
       discount_amount: discount.amount,
       total: discount.total,
       follow_up_sent: false,
-    });
+    };
+    // Temporarily return debug info
+    return NextResponse.json({ debug: true, orderData, adminValid: adminPb.authStore.isValid });
 
     step = 'create order items';
     for (const li of lineItems) {
