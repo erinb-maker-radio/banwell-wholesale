@@ -28,9 +28,6 @@ export async function POST(request: Request) {
     step = 'admin auth';
     const adminPb = createServerPB();
     await authenticateAdmin(adminPb);
-    if (!adminPb.authStore.isValid) {
-      return NextResponse.json({ error: 'Admin auth succeeded but token invalid' }, { status: 500 });
-    }
 
     step = 'load products';
     let subtotal = 0;
@@ -83,58 +80,16 @@ export async function POST(request: Request) {
       total: discount.total,
       follow_up_sent: false,
     };
-    // Temporarily return debug info
+
+    // DEBUG: return what we'd send
     return NextResponse.json({ debug: true, orderData, adminValid: adminPb.authStore.isValid });
 
-    step = 'create order items';
-    for (const li of lineItems) {
-      await adminPb.collection('order_items').create({
-        order: order.id,
-        product: li.productId,
-        quantity: li.quantity,
-        unit_price: li.unitPrice,
-        line_total: li.lineTotal,
-      });
-    }
-
-    step = 'square checkout';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.banwelldesigns.com';
-
-    const checkout = await createCheckoutLink({
-      orderId: order.id,
-      orderNumber,
-      totalCents: discount.total,
-      customerEmail: customer.email,
-      lineItems: lineItems.map(li => ({ name: li.name, quantity: li.quantity, priceCents: li.priceCents })),
-      redirectUrl: `${baseUrl}/account/checkout/thank-you?order=${orderNumber}`,
-    });
-
-    await adminPb.collection('orders').update(order.id, {
-      square_checkout_id: checkout.paymentLinkId,
-    });
-
-    notifyOrderPlaced({
-      orderNumber,
-      businessName: customer.business_name,
-      contactName: customer.contact_name,
-      customerEmail: customer.email,
-      total: discount.total,
-      itemCount: lineItems.reduce((s, i) => s + i.quantity, 0),
-      paymentMethod: 'square',
-    }).catch(console.error);
-
-    return NextResponse.json({
-      success: true,
-      checkoutUrl: checkout.checkoutUrl,
-      orderNumber,
-    });
   } catch (err: unknown) {
     console.error(`Checkout error at step "${step}":`, err);
     let message = 'Unknown error';
     if (err instanceof Error) {
       message = err.message;
     }
-    // PocketBase errors have response.data with field-level details
     const pbData = (err as Record<string, unknown>)?.response ?? (err as Record<string, unknown>)?.data;
     const detail = pbData ? ` | ${JSON.stringify(pbData)}` : '';
     return NextResponse.json({ error: `Checkout failed at ${step}: ${message}${detail}` }, { status: 500 });
