@@ -79,12 +79,17 @@ export default function CheckoutPage() {
   }, 0);
 
   const tierDiscount = calculateDiscount(subtotal, customerTier as 'auto' | 'tier1' | 'tier2' | 'tier3');
-  const codeDiscountAmount = codeApplied ? Math.round(subtotal * (codePercent / 100)) : 0;
+  // Code discount stacks on top of tier discount (applied to the already-discounted total)
+  const afterTier = tierDiscount.total;
+  const codeDiscountAmount = codeApplied ? Math.round(afterTier * (codePercent / 100)) : 0;
+  const totalAfterCode = afterTier - codeDiscountAmount;
 
-  const useCode = codeApplied && codeDiscountAmount > tierDiscount.amount;
-  const discount = useCode
-    ? { percent: codePercent, amount: codeDiscountAmount, total: subtotal - codeDiscountAmount, tierName: `Discount Code (${codePercent}% off)` }
-    : tierDiscount;
+  const discount = {
+    ...tierDiscount,
+    codeAmount: codeDiscountAmount,
+    codePercent: codeApplied ? codePercent : 0,
+    total: codeApplied ? totalAfterCode : tierDiscount.total,
+  };
 
   async function handleCheckout() {
     setSubmitting(true);
@@ -103,7 +108,7 @@ export default function CheckoutPage() {
             productId: i.productId,
             quantity: i.quantity,
           })),
-          ...(useCode ? { discountCode: discountCode.trim() } : {}),
+          ...(codeApplied ? { discountCode: discountCode.trim() } : {}),
         }),
       });
 
@@ -161,8 +166,14 @@ export default function CheckoutPage() {
             </div>
             {discount.percent > 0 && (
               <div className="flex justify-between text-green-700">
-                <span>Discount ({discount.percent}%)</span>
+                <span>{discount.tierName}</span>
                 <span>-{formatCurrency(discount.amount)}</span>
+              </div>
+            )}
+            {discount.codeAmount > 0 && (
+              <div className="flex justify-between text-green-700">
+                <span>Coupon ({discount.codePercent}% off)</span>
+                <span>-{formatCurrency(discount.codeAmount)}</span>
               </div>
             )}
             <div className="flex justify-between font-semibold text-lg mt-2 text-gray-900">
@@ -180,11 +191,7 @@ export default function CheckoutPage() {
           <div className="flex items-center justify-between">
             <div>
               <span className="text-green-700 font-medium">{discountCode}</span>
-              {useCode ? (
-                <span className="text-green-600 text-sm ml-2">{codePercent}% off applied</span>
-              ) : (
-                <span className="text-gray-500 text-sm ml-2">(your wholesale discount is better)</span>
-              )}
+              <span className="text-green-600 text-sm ml-2">{codePercent}% off applied</span>
             </div>
             <button onClick={removeCode} className="text-sm text-red-600 hover:underline">Remove</button>
           </div>
