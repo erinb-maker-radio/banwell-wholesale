@@ -7,6 +7,23 @@ import { notifyOrderPlaced } from '@/lib/notifications';
 import { isValidCode, getCodeDiscount } from '@/lib/discount-codes';
 import { getAuthenticatedPB } from '@/lib/auth';
 
+async function pbFetch(path: string, token: string, options: RequestInit = {}) {
+  const pbUrl = process.env.NEXT_PUBLIC_POCKETBASE_URL || 'https://pb.banwelldesigns.com';
+  const res = await fetch(`${pbUrl}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`PB ${options.method || 'GET'} ${path} failed (${res.status}): ${body}`);
+  }
+  return res.json();
+}
+
 export async function POST(request: Request) {
   let step = 'init';
   try {
@@ -35,7 +52,10 @@ export async function POST(request: Request) {
     const lineItems = [];
 
     for (const item of items) {
-      const product = await adminPb.collection('products').getOne(item.productId);
+      const product = await pbFetch(
+        `/api/collections/products/records/${item.productId}`,
+        adminToken
+      );
       const lineTotal = product.retail_price * item.quantity;
       subtotal += lineTotal;
       lineItems.push({
@@ -64,21 +84,18 @@ export async function POST(request: Request) {
       tierName: tierDiscount.tierName,
     };
 
-    step = 'create order';
+    step = 'generate order number';
     const year = new Date().getFullYear();
-    const existingOrders = await adminPb.collection('orders').getList(1, 1, { sort: '-created' });
-    const seq = existingOrders.totalItems + 1;
+    const existingOrders = await pbFetch(
+      '/api/collections/orders/records?perPage=1&sort=-created',
+      adminToken
+    );
+    const seq = (existingOrders.totalItems || 0) + 1;
     const orderNumber = generateOrderNumber(year, seq);
 
-    const pbUrl = process.env.NEXT_PUBLIC_POCKETBASE_URL || 'https://pb.banwelldesigns.com';
-
-    // Use direct fetch instead of SDK to ensure admin superuser auth works
-    const orderRes = await fetch(`${pbUrl}/api/collections/orders/records`, {
+    step = 'create order record';
+    const order = await pbFetch('/api/collections/orders/records', adminToken, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${adminToken}`,
-      },
       body: JSON.stringify({
         order_number: orderNumber,
         customer: customerId,
@@ -92,21 +109,10 @@ export async function POST(request: Request) {
       }),
     });
 
-    if (!orderRes.ok) {
-      const errBody = await orderRes.text();
-      return NextResponse.json({ error: `Order creation failed (${orderRes.status}): ${errBody}` }, { status: 500 });
-    }
-
-    const order = await orderRes.json();
-
     step = 'create order items';
     for (const li of lineItems) {
-      const itemRes = await fetch(`${pbUrl}/api/collections/order_items/records`, {
+      await pbFetch('/api/collections/order_items/records', adminToken, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`,
-        },
         body: JSON.stringify({
           order: order.id,
           product: li.productId,
@@ -115,10 +121,6 @@ export async function POST(request: Request) {
           line_total: li.lineTotal,
         }),
       });
-      if (!itemRes.ok) {
-        const errBody = await itemRes.text();
-        return NextResponse.json({ error: `Order item creation failed: ${errBody}` }, { status: 500 });
-      }
     }
 
     step = 'square checkout';
@@ -133,13 +135,9 @@ export async function POST(request: Request) {
       redirectUrl: `${baseUrl}/account/checkout/thank-you?order=${orderNumber}`,
     });
 
-    // Update order with Square checkout ID
-    await fetch(`${pbUrl}/api/collections/orders/records/${order.id}`, {
+    step = 'update order with checkout id';
+    await pbFetch(`/api/collections/orders/records/${order.id}`, adminToken, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${adminToken}`,
-      },
       body: JSON.stringify({ square_checkout_id: checkout.paymentLinkId }),
     });
 
@@ -164,8 +162,6 @@ export async function POST(request: Request) {
     if (err instanceof Error) {
       message = err.message;
     }
-    const pbData = (err as Record<string, unknown>)?.response ?? (err as Record<string, unknown>)?.data;
-    const detail = pbData ? ` | ${JSON.stringify(pbData)}` : '';
-    return NextResponse.json({ error: `Checkout failed at ${step}: ${message}${detail}` }, { status: 500 });
+    return NextResponse.json({ error: `Checkout failed at ${step}: ${message}` }, { status: 500 });
   }
 }
