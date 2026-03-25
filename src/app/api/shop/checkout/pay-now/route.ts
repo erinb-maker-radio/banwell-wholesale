@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     step = 'generate order number';
     const year = new Date().getFullYear();
     const existingOrders = await pbFetch(
-      '/api/collections/orders/records?perPage=1&sort=-created',
+      '/api/collections/orders/records?perPage=1',
       adminToken
     );
     const seq = (existingOrders.totalItems || 0) + 1;
