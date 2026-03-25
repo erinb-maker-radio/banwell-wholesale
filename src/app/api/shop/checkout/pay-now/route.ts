@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     }
 
     step = 'square checkout';
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.banwelldesigns.com';
+    const baseUrl = 'https://www.banwelldesigns.com';
 
     const checkout = await createCheckoutLink({
       orderId: order.id,
