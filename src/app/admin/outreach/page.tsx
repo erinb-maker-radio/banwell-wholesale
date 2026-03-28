@@ -82,7 +82,6 @@ export default function OutreachPage() {
   const [notesValue, setNotesValue] = useState('');
   const [editingResponseNotes, setEditingResponseNotes] = useState<string | null>(null);
   const [responseNotesValue, setResponseNotesValue] = useState('');
-  const [sendingId, setSendingId] = useState<string | null>(null);
   const [actionFeedback, setActionFeedback] = useState<{ id: string; message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
@@ -122,32 +121,25 @@ export default function OutreachPage() {
     return json;
   }
 
-  async function handleApproveAndSend(lead: WholesaleLead) {
+  async function handleApprove(lead: WholesaleLead) {
     if (!lead.contact_email) {
       setActionFeedback({ id: lead.id, message: 'No contact email set for this lead', type: 'error' });
       return;
     }
-    if (!confirm(`Send outreach email to ${lead.contact_email}?`)) return;
+    await updateLead(lead.id, { status: 'outreach_approved' });
+    setActionFeedback({ id: lead.id, message: `Approved — will send next business morning`, type: 'success' });
+    fetchLeads();
+  }
 
-    setSendingId(lead.id);
-    try {
-      // First approve
+  async function handleApproveAll() {
+    const draftedWithEmail = leads.filter(l => l.status === 'outreach_drafted' && l.contact_email && l.outreach_draft);
+    if (draftedWithEmail.length === 0) return;
+    if (!confirm(`Approve all ${draftedWithEmail.length} drafts? They'll be sent next business morning.`)) return;
+    for (const lead of draftedWithEmail) {
       await updateLead(lead.id, { status: 'outreach_approved' });
-
-      // Then send
-      const res = await fetch(`/api/leads/${lead.id}/send`, { method: 'POST' });
-      const json = await res.json();
-
-      if (json.success) {
-        setActionFeedback({ id: lead.id, message: `Sent to ${lead.contact_email}`, type: 'success' });
-        fetchLeads();
-      } else {
-        setActionFeedback({ id: lead.id, message: json.error || 'Send failed', type: 'error' });
-      }
-    } catch {
-      setActionFeedback({ id: lead.id, message: 'Network error sending email', type: 'error' });
     }
-    setSendingId(null);
+    setActionFeedback({ id: 'all', message: `${draftedWithEmail.length} drafts approved — will send next business morning`, type: 'success' });
+    fetchLeads();
   }
 
   async function handleRejectDraft(lead: WholesaleLead) {
@@ -253,9 +245,16 @@ export default function OutreachPage() {
           (overdueCount > 0 ? ` \u2022 ${overdueCount} overdue follow-ups` : '')
         }
         actions={
-          <Button onClick={() => setShowAddForm(!showAddForm)}>
-            + Add Lead
-          </Button>
+          <div className="flex gap-2">
+            {draftReadyCount > 0 && (
+              <Button variant="secondary" onClick={handleApproveAll}>
+                Approve All ({draftReadyCount})
+              </Button>
+            )}
+            <Button onClick={() => setShowAddForm(!showAddForm)}>
+              + Add Lead
+            </Button>
+          </div>
         }
       />
 
@@ -562,11 +561,10 @@ export default function OutreachPage() {
                               {lead.status === 'outreach_drafted' && editingDraft !== lead.id && lead.outreach_draft && (
                                 <div className="flex flex-wrap gap-2 mt-3">
                                   <button
-                                    onClick={() => handleApproveAndSend(lead)}
-                                    disabled={sendingId === lead.id}
-                                    className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    onClick={() => handleApprove(lead)}
+                                    className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
                                   >
-                                    {sendingId === lead.id ? 'Sending...' : 'Approve & Send'}
+                                    Approve
                                   </button>
                                   <button
                                     onClick={() => { setEditingDraft(lead.id); setDraftValue(lead.outreach_draft); }}
