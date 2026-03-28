@@ -277,7 +277,7 @@ export default function OutreachPage() {
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
-          className="px-3 py-2 border rounded-lg text-sm"
+          className="px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
         >
           <option value="all">All Statuses</option>
           {Object.entries(STATUS_LABELS).map(([k, v]) => (
@@ -287,7 +287,7 @@ export default function OutreachPage() {
         <select
           value={shopTypeFilter}
           onChange={e => setShopTypeFilter(e.target.value)}
-          className="px-3 py-2 border rounded-lg text-sm"
+          className="px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
         >
           <option value="all">All Shop Types</option>
           <option value="gothic">Gothic</option>
@@ -306,16 +306,16 @@ export default function OutreachPage() {
           <CardContent className="p-6">
             <h3 className="font-semibold text-gray-900 mb-4">Add New Lead</h3>
             <form onSubmit={addLead} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <input name="business_name" placeholder="Business Name *" required className="px-3 py-2 border rounded text-sm" />
-              <input name="contact_name" placeholder="Contact Name" className="px-3 py-2 border rounded text-sm" />
-              <input name="contact_email" placeholder="Email" type="email" className="px-3 py-2 border rounded text-sm" />
-              <input name="contact_instagram" placeholder="Instagram @handle" className="px-3 py-2 border rounded text-sm" />
-              <input name="website" placeholder="Website URL" className="px-3 py-2 border rounded text-sm" />
+              <input name="business_name" placeholder="Business Name *" required className="px-3 py-2 border rounded text-sm text-gray-900 bg-white" />
+              <input name="contact_name" placeholder="Contact Name" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white" />
+              <input name="contact_email" placeholder="Email" type="email" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white" />
+              <input name="contact_instagram" placeholder="Instagram @handle" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white" />
+              <input name="website" placeholder="Website URL" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white" />
               <div className="flex gap-2">
-                <input name="city" placeholder="City" className="px-3 py-2 border rounded text-sm flex-1" />
-                <input name="state" placeholder="State" className="px-3 py-2 border rounded text-sm w-16" />
+                <input name="city" placeholder="City" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white flex-1" />
+                <input name="state" placeholder="State" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white w-16" />
               </div>
-              <select name="shop_type" className="px-3 py-2 border rounded text-sm">
+              <select name="shop_type" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white">
                 <option value="gothic">Gothic</option>
                 <option value="metaphysical">Metaphysical</option>
                 <option value="museum">Museum</option>
@@ -330,10 +330,10 @@ export default function OutreachPage() {
                 <label><input type="checkbox" name="product_fit" value="paper" className="mr-1" />Paper</label>
               </div>
               <div className="flex gap-2 items-center">
-                <input name="fit_score" type="number" min="1" max="10" defaultValue="5" className="px-3 py-2 border rounded text-sm w-20" />
+                <input name="fit_score" type="number" min="1" max="10" defaultValue="5" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white w-20" />
                 <span className="text-sm text-gray-500">Fit (1-10)</span>
               </div>
-              <input name="fit_reason" placeholder="Why they're a good fit" className="px-3 py-2 border rounded text-sm col-span-2" />
+              <input name="fit_reason" placeholder="Why they're a good fit" className="px-3 py-2 border rounded text-sm text-gray-900 bg-white col-span-2" />
               <div className="flex gap-2">
                 <Button type="submit" size="sm">Add Lead</Button>
                 <Button type="button" variant="secondary" size="sm" onClick={() => setShowAddForm(false)}>Cancel</Button>
@@ -504,7 +504,7 @@ export default function OutreachPage() {
                                     type="date"
                                     value={lead.next_follow_up ? lead.next_follow_up.split('T')[0] : ''}
                                     onChange={e => handleSetFollowUp(lead, e.target.value)}
-                                    className="text-xs px-2 py-1 border rounded"
+                                    className="text-xs px-2 py-1 border rounded text-gray-900 bg-white"
                                   />
                                 </div>
 
@@ -541,7 +541,7 @@ export default function OutreachPage() {
                                     value={draftValue}
                                     onChange={e => setDraftValue(e.target.value)}
                                     rows={12}
-                                    className="w-full px-3 py-2 border rounded-lg text-sm font-mono bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
+                                    className="w-full px-3 py-2 border rounded-lg text-sm font-mono text-gray-900 bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
                                   />
                                   <div className="flex gap-2 mt-2">
                                     <button onClick={() => handleSaveDraft(lead)} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors">Save Draft</button>
@@ -601,7 +601,7 @@ export default function OutreachPage() {
                                 </div>
                                 {editingNotes === lead.id ? (
                                   <div>
-                                    <textarea value={notesValue} onChange={e => setNotesValue(e.target.value)} rows={4} className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none" placeholder="Internal notes about this lead..." />
+                                    <textarea value={notesValue} onChange={e => setNotesValue(e.target.value)} rows={4} className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none" placeholder="Internal notes about this lead..." />
                                     <div className="flex gap-2 mt-1">
                                       <button onClick={() => handleSaveNotes(lead)} className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Save</button>
                                       <button onClick={() => setEditingNotes(null)} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancel</button>
@@ -624,7 +624,7 @@ export default function OutreachPage() {
                                 </div>
                                 {editingResponseNotes === lead.id ? (
                                   <div>
-                                    <textarea value={responseNotesValue} onChange={e => setResponseNotesValue(e.target.value)} rows={4} className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none" placeholder="Notes about their response..." />
+                                    <textarea value={responseNotesValue} onChange={e => setResponseNotesValue(e.target.value)} rows={4} className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none" placeholder="Notes about their response..." />
                                     <div className="flex gap-2 mt-1">
                                       <button onClick={() => handleSaveResponseNotes(lead)} className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Save</button>
                                       <button onClick={() => setEditingResponseNotes(null)} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancel</button>
