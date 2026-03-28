@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import PageHeader from '@/components/layout/PageHeader';
 import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -344,350 +344,309 @@ export default function OutreachPage() {
         </Card>
       )}
 
-      {/* Leads Table */}
+      {/* Leads List */}
       {loading ? (
         <div className="text-center py-12 text-gray-500">Loading leads...</div>
       ) : allLeads.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No leads found</div>
       ) : (
         <Card>
-          <CardContent className="p-0 overflow-x-auto">
-            <table className="w-full text-sm min-w-[640px]">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Business</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Type</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Products</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Fit</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-500">Follow-up</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {allLeads.map(lead => {
-                  const isExpanded = expandedLead === lead.id;
-                  const isOverdue = lead.next_follow_up && lead.next_follow_up.split('T')[0] <= new Date().toISOString().split('T')[0] && !['converted', 'declined', 'dead'].includes(lead.status);
-                  const feedback = actionFeedback?.id === lead.id ? actionFeedback : null;
+          <CardContent className="p-0">
+            {/* Header row */}
+            <div className="hidden md:grid grid-cols-[1fr_90px_100px_50px_120px_100px_80px] gap-0 bg-gray-50 border-b text-xs font-medium text-gray-500 px-4 py-3">
+              <div>Business</div>
+              <div>Type</div>
+              <div>Products</div>
+              <div>Fit</div>
+              <div>Status</div>
+              <div>Follow-up</div>
+              <div className="text-right">Links</div>
+            </div>
 
-                  return (
-                    <React.Fragment key={lead.id}>
-                      {/* Main data row */}
-                      <tr
-                        className={`group cursor-pointer hover:bg-gray-50 transition-colors ${isExpanded ? 'bg-blue-50/50' : ''}`}
-                        onClick={() => {
-                          setExpandedLead(isExpanded ? null : lead.id);
-                          setEditingDraft(null);
-                          setEditingNotes(null);
-                          setEditingResponseNotes(null);
-                        }}
-                      >
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>&#9654;</span>
+            {/* Lead rows */}
+            <div className="divide-y">
+              {allLeads.map(lead => {
+                const isExpanded = expandedLead === lead.id;
+                const isOverdue = lead.next_follow_up && lead.next_follow_up.split('T')[0] <= new Date().toISOString().split('T')[0] && !['converted', 'declined', 'dead'].includes(lead.status);
+                const feedback = actionFeedback?.id === lead.id ? actionFeedback : null;
+
+                return (
+                  <div key={lead.id}>
+                    {/* Main row */}
+                    <div
+                      className={`grid grid-cols-1 md:grid-cols-[1fr_90px_100px_50px_120px_100px_80px] gap-2 md:gap-0 items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors text-sm ${isExpanded ? 'bg-blue-50/50' : ''}`}
+                      onClick={() => {
+                        setExpandedLead(isExpanded ? null : lead.id);
+                        setEditingDraft(null);
+                        setEditingNotes(null);
+                        setEditingResponseNotes(null);
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>&#9654;</span>
+                        <div>
+                          <div className="font-medium text-gray-900">{lead.business_name}</div>
+                          <div className="text-xs text-gray-400">
+                            {lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{lead.shop_type}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        {(lead.product_fit || []).map(p => (
+                          <span key={p} className={`text-xs px-1.5 py-0.5 rounded ${p === 'glass' ? 'bg-blue-50 text-blue-600' : p === 'leather' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-600'}`}>{p}</span>
+                        ))}
+                      </div>
+                      <div>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${lead.fit_score >= 8 ? 'bg-green-100 text-green-700' : lead.fit_score >= 6 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'}`}>
+                          {lead.fit_score}
+                        </div>
+                      </div>
+                      <div onClick={e => e.stopPropagation()}>
+                        <select
+                          value={lead.status}
+                          onChange={e => updateLead(lead.id, { status: e.target.value })}
+                          className={`text-xs px-2 py-1 rounded border-0 cursor-pointer ${STATUS_COLORS[lead.status] || 'bg-gray-100'}`}
+                        >
+                          {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                            <option key={k} value={k}>{v}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        {lead.next_follow_up ? (
+                          <span className={`text-xs ${isOverdue ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
+                            {isOverdue ? 'OVERDUE ' : ''}{new Date(lead.next_follow_up).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-300">-</span>
+                        )}
+                      </div>
+                      <div className="text-right" onClick={e => e.stopPropagation()}>
+                        <div className="flex gap-1 justify-end">
+                          {lead.website && (
+                            <a href={lead.website} target="_blank" rel="noopener" className="text-xs text-blue-600 hover:underline">Web</a>
+                          )}
+                          {lead.contact_instagram && (
+                            <a href={'https://instagram.com/' + lead.contact_instagram} target="_blank" rel="noopener" className="text-xs text-pink-600 hover:underline">IG</a>
+                          )}
+                          {lead.contact_email && (
+                            <a href={'mailto:' + lead.contact_email} className="text-xs text-gray-600 hover:underline">Email</a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expanded detail panel */}
+                    {isExpanded && (
+                      <div className="border-t border-blue-100 bg-blue-50/30 px-6 py-5">
+                        {/* Feedback banner */}
+                        {feedback && (
+                          <div className={`mb-4 px-4 py-2 rounded-lg text-sm font-medium ${feedback.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {feedback.message}
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                          {/* Left column: Contact Info + Fit */}
+                          <div className="space-y-4">
                             <div>
-                              <div className="font-medium text-gray-900">{lead.business_name}</div>
-                              <div className="text-xs text-gray-400">
-                                {lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}
+                              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Contact Info</h4>
+                              <div className="space-y-1.5 text-sm">
+                                {lead.contact_name && (
+                                  <div><span className="text-gray-500">Name:</span> <span className="text-gray-900">{lead.contact_name}</span></div>
+                                )}
+                                {lead.contact_email && (
+                                  <div><span className="text-gray-500">Email:</span> <a href={`mailto:${lead.contact_email}`} className="text-blue-600 hover:underline">{lead.contact_email}</a></div>
+                                )}
+                                {lead.contact_phone && (
+                                  <div><span className="text-gray-500">Phone:</span> <a href={`tel:${lead.contact_phone}`} className="text-blue-600 hover:underline">{lead.contact_phone}</a></div>
+                                )}
+                                {lead.contact_instagram && (
+                                  <div><span className="text-gray-500">Instagram:</span> <a href={`https://instagram.com/${lead.contact_instagram}`} target="_blank" rel="noopener" className="text-pink-600 hover:underline">@{lead.contact_instagram}</a></div>
+                                )}
+                                {lead.website && (
+                                  <div><span className="text-gray-500">Website:</span> <a href={lead.website} target="_blank" rel="noopener" className="text-blue-600 hover:underline break-all">{lead.website.replace(/^https?:\/\//, '')}</a></div>
+                                )}
+                                {!lead.contact_name && !lead.contact_email && !lead.contact_phone && !lead.contact_instagram && !lead.website && (
+                                  <div className="text-gray-400 italic">No contact info</div>
+                                )}
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{lead.shop_type}</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-1">
-                            {(lead.product_fit || []).map(p => (
-                              <span key={p} className={`text-xs px-1.5 py-0.5 rounded ${p === 'glass' ? 'bg-blue-50 text-blue-600' : p === 'leather' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-600'}`}>{p}</span>
-                            ))}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${lead.fit_score >= 8 ? 'bg-green-100 text-green-700' : lead.fit_score >= 6 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'}`}>
-                            {lead.fit_score}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
-                          <select
-                            value={lead.status}
-                            onChange={e => updateLead(lead.id, { status: e.target.value })}
-                            className={`text-xs px-2 py-1 rounded border-0 cursor-pointer ${STATUS_COLORS[lead.status] || 'bg-gray-100'}`}
-                          >
-                            {Object.entries(STATUS_LABELS).map(([k, v]) => (
-                              <option key={k} value={k}>{v}</option>
-                            ))}
-                          </select>
-                        </td>
-                        <td className="px-4 py-3">
-                          {lead.next_follow_up ? (
-                            <span className={`text-xs ${isOverdue ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
-                              {isOverdue ? 'OVERDUE ' : ''}{new Date(lead.next_follow_up).toLocaleDateString()}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-gray-300">-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-right" onClick={e => e.stopPropagation()}>
-                          <div className="flex gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                            {lead.website && (
-                              <a href={lead.website} target="_blank" rel="noopener" className="text-xs text-blue-600 hover:underline">Web</a>
-                            )}
-                            {lead.contact_instagram && (
-                              <a href={'https://instagram.com/' + lead.contact_instagram} target="_blank" rel="noopener" className="text-xs text-pink-600 hover:underline">IG</a>
-                            )}
-                            {lead.contact_email && (
-                              <a href={'mailto:' + lead.contact_email} className="text-xs text-gray-600 hover:underline">Email</a>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
 
-                      {/* Expanded detail row */}
-                      {isExpanded && (
-                        <tr>
-                          <td colSpan={7} className="p-0 border-t border-blue-100">
-                            <div className="bg-blue-50/30 px-6 py-5">
-                              {/* Feedback banner */}
-                              {feedback && (
-                                <div className={`mb-4 px-4 py-2 rounded-lg text-sm font-medium ${feedback.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                  {feedback.message}
+                            {lead.fit_reason && (
+                              <div>
+                                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Fit Reason</h4>
+                                <p className="text-sm text-gray-700">{lead.fit_reason}</p>
+                              </div>
+                            )}
+
+                            {/* Contacted info */}
+                            {['contacted', 'replied', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
+                              <div>
+                                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Outreach History</h4>
+                                <div className="space-y-1.5 text-sm">
+                                  {lead.outreach_sent_at && (
+                                    <div><span className="text-gray-500">Sent:</span> <span className="text-gray-900">{new Date(lead.outreach_sent_at).toLocaleString()}</span></div>
+                                  )}
+                                  {lead.follow_up_count > 0 && (
+                                    <div><span className="text-gray-500">Follow-ups:</span> <span className="text-gray-900">{lead.follow_up_count}</span></div>
+                                  )}
+                                  {lead.last_follow_up && (
+                                    <div><span className="text-gray-500">Last follow-up:</span> <span className="text-gray-900">{new Date(lead.last_follow_up).toLocaleDateString()}</span></div>
+                                  )}
+                                </div>
+
+                                <div className="mt-3 flex items-center gap-2">
+                                  <label className="text-xs text-gray-500">Next follow-up:</label>
+                                  <input
+                                    type="date"
+                                    value={lead.next_follow_up ? lead.next_follow_up.split('T')[0] : ''}
+                                    onChange={e => handleSetFollowUp(lead, e.target.value)}
+                                    className="text-xs px-2 py-1 border rounded"
+                                  />
+                                </div>
+
+                                {lead.status === 'contacted' && (
+                                  <button
+                                    onClick={() => handleMarkReplied(lead)}
+                                    className="mt-3 px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors"
+                                  >
+                                    Mark Replied
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Right column: Draft + Notes */}
+                          <div className="lg:col-span-2 space-y-4">
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Outreach Draft</h4>
+                                {lead.outreach_draft && lead.status === 'outreach_drafted' && editingDraft !== lead.id && (
+                                  <button
+                                    onClick={() => { setEditingDraft(lead.id); setDraftValue(lead.outreach_draft); }}
+                                    className="text-xs text-blue-600 hover:underline"
+                                  >
+                                    Edit Draft
+                                  </button>
+                                )}
+                              </div>
+
+                              {editingDraft === lead.id ? (
+                                <div>
+                                  <textarea
+                                    value={draftValue}
+                                    onChange={e => setDraftValue(e.target.value)}
+                                    rows={12}
+                                    className="w-full px-3 py-2 border rounded-lg text-sm font-mono bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
+                                  />
+                                  <div className="flex gap-2 mt-2">
+                                    <button onClick={() => handleSaveDraft(lead)} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors">Save Draft</button>
+                                    <button onClick={() => setEditingDraft(null)} className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors">Cancel</button>
+                                  </div>
+                                </div>
+                              ) : lead.outreach_draft ? (
+                                <div className="bg-white border rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap max-h-[300px] overflow-y-auto">
+                                  {lead.outreach_draft}
+                                </div>
+                              ) : (
+                                <div className="bg-gray-50 border border-dashed rounded-lg p-4 text-sm text-gray-400 italic text-center">
+                                  No draft yet {lead.status === 'qualified' ? '-- BDA will generate one' : ''}
                                 </div>
                               )}
 
-                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                {/* Left column: Contact Info + Fit */}
-                                <div className="space-y-4">
-                                  <div>
-                                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Contact Info</h4>
-                                    <div className="space-y-1.5 text-sm">
-                                      {lead.contact_name && (
-                                        <div><span className="text-gray-500">Name:</span> <span className="text-gray-900">{lead.contact_name}</span></div>
-                                      )}
-                                      {lead.contact_email && (
-                                        <div><span className="text-gray-500">Email:</span> <a href={`mailto:${lead.contact_email}`} className="text-blue-600 hover:underline">{lead.contact_email}</a></div>
-                                      )}
-                                      {lead.contact_phone && (
-                                        <div><span className="text-gray-500">Phone:</span> <a href={`tel:${lead.contact_phone}`} className="text-blue-600 hover:underline">{lead.contact_phone}</a></div>
-                                      )}
-                                      {lead.contact_instagram && (
-                                        <div><span className="text-gray-500">Instagram:</span> <a href={`https://instagram.com/${lead.contact_instagram}`} target="_blank" rel="noopener" className="text-pink-600 hover:underline">@{lead.contact_instagram}</a></div>
-                                      )}
-                                      {lead.website && (
-                                        <div><span className="text-gray-500">Website:</span> <a href={lead.website} target="_blank" rel="noopener" className="text-blue-600 hover:underline break-all">{lead.website.replace(/^https?:\/\//, '')}</a></div>
-                                      )}
-                                      {!lead.contact_name && !lead.contact_email && !lead.contact_phone && !lead.contact_instagram && !lead.website && (
-                                        <div className="text-gray-400 italic">No contact info</div>
-                                      )}
-                                    </div>
-                                  </div>
+                              {lead.status === 'outreach_drafted' && editingDraft !== lead.id && lead.outreach_draft && (
+                                <div className="flex flex-wrap gap-2 mt-3">
+                                  <button
+                                    onClick={() => handleApproveAndSend(lead)}
+                                    disabled={sendingId === lead.id}
+                                    className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                  >
+                                    {sendingId === lead.id ? 'Sending...' : 'Approve & Send'}
+                                  </button>
+                                  <button
+                                    onClick={() => { setEditingDraft(lead.id); setDraftValue(lead.outreach_draft); }}
+                                    className="px-4 py-2 bg-blue-100 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-200 transition-colors"
+                                  >
+                                    Edit Draft
+                                  </button>
+                                  <button
+                                    onClick={() => handleRequestNewDraft(lead)}
+                                    className="px-4 py-2 bg-yellow-100 text-yellow-700 text-sm font-medium rounded-lg hover:bg-yellow-200 transition-colors"
+                                  >
+                                    Request New Draft
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectDraft(lead)}
+                                    className="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors"
+                                  >
+                                    Reject
+                                  </button>
+                                </div>
+                              )}
+                            </div>
 
-                                  {lead.fit_reason && (
-                                    <div>
-                                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Fit Reason</h4>
-                                      <p className="text-sm text-gray-700">{lead.fit_reason}</p>
-                                    </div>
-                                  )}
-
-                                  {/* Contacted info */}
-                                  {['contacted', 'replied', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
-                                    <div>
-                                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Outreach History</h4>
-                                      <div className="space-y-1.5 text-sm">
-                                        {lead.outreach_sent_at && (
-                                          <div><span className="text-gray-500">Sent:</span> <span className="text-gray-900">{new Date(lead.outreach_sent_at).toLocaleString()}</span></div>
-                                        )}
-                                        {lead.follow_up_count > 0 && (
-                                          <div><span className="text-gray-500">Follow-ups:</span> <span className="text-gray-900">{lead.follow_up_count}</span></div>
-                                        )}
-                                        {lead.last_follow_up && (
-                                          <div><span className="text-gray-500">Last follow-up:</span> <span className="text-gray-900">{new Date(lead.last_follow_up).toLocaleDateString()}</span></div>
-                                        )}
-                                      </div>
-
-                                      {/* Follow-up scheduling */}
-                                      <div className="mt-3 flex items-center gap-2">
-                                        <label className="text-xs text-gray-500">Next follow-up:</label>
-                                        <input
-                                          type="date"
-                                          value={lead.next_follow_up ? lead.next_follow_up.split('T')[0] : ''}
-                                          onChange={e => handleSetFollowUp(lead, e.target.value)}
-                                          className="text-xs px-2 py-1 border rounded"
-                                        />
-                                      </div>
-
-                                      {lead.status === 'contacted' && (
-                                        <button
-                                          onClick={() => handleMarkReplied(lead)}
-                                          className="mt-3 px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors"
-                                        >
-                                          Mark Replied
-                                        </button>
-                                      )}
-                                    </div>
+                            {/* Notes */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Notes</h4>
+                                  {editingNotes !== lead.id && (
+                                    <button onClick={() => { setEditingNotes(lead.id); setNotesValue(lead.notes || ''); }} className="text-xs text-blue-600 hover:underline">
+                                      {lead.notes ? 'Edit' : 'Add'}
+                                    </button>
                                   )}
                                 </div>
-
-                                {/* Middle column: Draft */}
-                                <div className="lg:col-span-2 space-y-4">
-                                  {/* Outreach Draft */}
+                                {editingNotes === lead.id ? (
                                   <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Outreach Draft</h4>
-                                      {lead.outreach_draft && lead.status === 'outreach_drafted' && editingDraft !== lead.id && (
-                                        <button
-                                          onClick={() => { setEditingDraft(lead.id); setDraftValue(lead.outreach_draft); }}
-                                          className="text-xs text-blue-600 hover:underline"
-                                        >
-                                          Edit Draft
-                                        </button>
-                                      )}
-                                    </div>
-
-                                    {editingDraft === lead.id ? (
-                                      <div>
-                                        <textarea
-                                          value={draftValue}
-                                          onChange={e => setDraftValue(e.target.value)}
-                                          rows={12}
-                                          className="w-full px-3 py-2 border rounded-lg text-sm font-mono bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
-                                        />
-                                        <div className="flex gap-2 mt-2">
-                                          <button
-                                            onClick={() => handleSaveDraft(lead)}
-                                            className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors"
-                                          >
-                                            Save Draft
-                                          </button>
-                                          <button
-                                            onClick={() => setEditingDraft(null)}
-                                            className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors"
-                                          >
-                                            Cancel
-                                          </button>
-                                        </div>
-                                      </div>
-                                    ) : lead.outreach_draft ? (
-                                      <div className="bg-white border rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap max-h-[300px] overflow-y-auto">
-                                        {lead.outreach_draft}
-                                      </div>
-                                    ) : (
-                                      <div className="bg-gray-50 border border-dashed rounded-lg p-4 text-sm text-gray-400 italic text-center">
-                                        No draft yet {lead.status === 'qualified' ? '-- BDA will generate one' : ''}
-                                      </div>
-                                    )}
-
-                                    {/* Draft action buttons */}
-                                    {lead.status === 'outreach_drafted' && editingDraft !== lead.id && lead.outreach_draft && (
-                                      <div className="flex flex-wrap gap-2 mt-3">
-                                        <button
-                                          onClick={() => handleApproveAndSend(lead)}
-                                          disabled={sendingId === lead.id}
-                                          className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                        >
-                                          {sendingId === lead.id ? 'Sending...' : 'Approve & Send'}
-                                        </button>
-                                        <button
-                                          onClick={() => { setEditingDraft(lead.id); setDraftValue(lead.outreach_draft); }}
-                                          className="px-4 py-2 bg-blue-100 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-200 transition-colors"
-                                        >
-                                          Edit Draft
-                                        </button>
-                                        <button
-                                          onClick={() => handleRequestNewDraft(lead)}
-                                          className="px-4 py-2 bg-yellow-100 text-yellow-700 text-sm font-medium rounded-lg hover:bg-yellow-200 transition-colors"
-                                        >
-                                          Request New Draft
-                                        </button>
-                                        <button
-                                          onClick={() => handleRejectDraft(lead)}
-                                          className="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors"
-                                        >
-                                          Reject
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  {/* Notes */}
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <div className="flex items-center justify-between mb-2">
-                                        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Notes</h4>
-                                        {editingNotes !== lead.id && (
-                                          <button
-                                            onClick={() => { setEditingNotes(lead.id); setNotesValue(lead.notes || ''); }}
-                                            className="text-xs text-blue-600 hover:underline"
-                                          >
-                                            {lead.notes ? 'Edit' : 'Add'}
-                                          </button>
-                                        )}
-                                      </div>
-                                      {editingNotes === lead.id ? (
-                                        <div>
-                                          <textarea
-                                            value={notesValue}
-                                            onChange={e => setNotesValue(e.target.value)}
-                                            rows={4}
-                                            className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
-                                            placeholder="Internal notes about this lead..."
-                                          />
-                                          <div className="flex gap-2 mt-1">
-                                            <button onClick={() => handleSaveNotes(lead)} className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Save</button>
-                                            <button onClick={() => setEditingNotes(null)} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancel</button>
-                                          </div>
-                                        </div>
-                                      ) : lead.notes ? (
-                                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{lead.notes}</p>
-                                      ) : (
-                                        <p className="text-sm text-gray-300 italic">No notes</p>
-                                      )}
-                                    </div>
-
-                                    <div>
-                                      <div className="flex items-center justify-between mb-2">
-                                        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response Notes</h4>
-                                        {editingResponseNotes !== lead.id && (
-                                          <button
-                                            onClick={() => { setEditingResponseNotes(lead.id); setResponseNotesValue(lead.response_notes || ''); }}
-                                            className="text-xs text-blue-600 hover:underline"
-                                          >
-                                            {lead.response_notes ? 'Edit' : 'Add'}
-                                          </button>
-                                        )}
-                                      </div>
-                                      {editingResponseNotes === lead.id ? (
-                                        <div>
-                                          <textarea
-                                            value={responseNotesValue}
-                                            onChange={e => setResponseNotesValue(e.target.value)}
-                                            rows={4}
-                                            className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
-                                            placeholder="Notes about their response..."
-                                          />
-                                          <div className="flex gap-2 mt-1">
-                                            <button onClick={() => handleSaveResponseNotes(lead)} className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Save</button>
-                                            <button onClick={() => setEditingResponseNotes(null)} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancel</button>
-                                          </div>
-                                        </div>
-                                      ) : lead.response_notes ? (
-                                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{lead.response_notes}</p>
-                                      ) : (
-                                        <p className="text-sm text-gray-300 italic">No response notes</p>
-                                      )}
+                                    <textarea value={notesValue} onChange={e => setNotesValue(e.target.value)} rows={4} className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none" placeholder="Internal notes about this lead..." />
+                                    <div className="flex gap-2 mt-1">
+                                      <button onClick={() => handleSaveNotes(lead)} className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Save</button>
+                                      <button onClick={() => setEditingNotes(null)} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancel</button>
                                     </div>
                                   </div>
+                                ) : lead.notes ? (
+                                  <p className="text-sm text-gray-600 whitespace-pre-wrap">{lead.notes}</p>
+                                ) : (
+                                  <p className="text-sm text-gray-300 italic">No notes</p>
+                                )}
+                              </div>
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Response Notes</h4>
+                                  {editingResponseNotes !== lead.id && (
+                                    <button onClick={() => { setEditingResponseNotes(lead.id); setResponseNotesValue(lead.response_notes || ''); }} className="text-xs text-blue-600 hover:underline">
+                                      {lead.response_notes ? 'Edit' : 'Add'}
+                                    </button>
+                                  )}
                                 </div>
+                                {editingResponseNotes === lead.id ? (
+                                  <div>
+                                    <textarea value={responseNotesValue} onChange={e => setResponseNotesValue(e.target.value)} rows={4} className="w-full px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none" placeholder="Notes about their response..." />
+                                    <div className="flex gap-2 mt-1">
+                                      <button onClick={() => handleSaveResponseNotes(lead)} className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Save</button>
+                                      <button onClick={() => setEditingResponseNotes(null)} className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancel</button>
+                                    </div>
+                                  </div>
+                                ) : lead.response_notes ? (
+                                  <p className="text-sm text-gray-600 whitespace-pre-wrap">{lead.response_notes}</p>
+                                ) : (
+                                  <p className="text-sm text-gray-300 italic">No response notes</p>
+                                )}
                               </div>
                             </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
       )}
