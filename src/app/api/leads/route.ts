@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
 
     const records = await pb.collection('wholesale_leads').getFullList({
       filter: filter || undefined,
-      sort: '-created',
     });
 
     return NextResponse.json({ success: true, data: records });
