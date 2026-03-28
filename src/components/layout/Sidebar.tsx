@@ -82,7 +82,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900">
+    <aside className="hidden md:block fixed inset-y-0 left-0 z-50 w-64 bg-gray-900">
       <div className="flex flex-col h-full">
         {/* Logo */}
         <div className="flex items-center h-16 px-6 border-b border-gray-800">

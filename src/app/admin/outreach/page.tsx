@@ -162,7 +162,7 @@ export default function OutreachPage() {
       />
 
       {/* Pipeline Summary */}
-      <div className="grid grid-cols-6 gap-3 mb-6">
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3 mb-6">
         {PIPELINE_STAGES.map(stage => (
           <button
             key={stage}
@@ -208,7 +208,7 @@ export default function OutreachPage() {
         <Card className="mb-6">
           <CardContent className="p-6">
             <h3 className="font-semibold text-gray-900 mb-4">Add New Lead</h3>
-            <form onSubmit={addLead} className="grid grid-cols-3 gap-4">
+            <form onSubmit={addLead} className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <input name="business_name" placeholder="Business Name *" required className="px-3 py-2 border rounded text-sm" />
               <input name="contact_name" placeholder="Contact Name" className="px-3 py-2 border rounded text-sm" />
               <input name="contact_email" placeholder="Email" type="email" className="px-3 py-2 border rounded text-sm" />
@@ -253,8 +253,8 @@ export default function OutreachPage() {
         <div className="text-center py-12 text-gray-500">No leads found</div>
       ) : (
         <Card>
-          <CardContent className="p-0">
-            <table className="w-full text-sm">
+          <CardContent className="p-0 overflow-x-auto">
+            <table className="w-full text-sm min-w-[640px]">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="text-left px-4 py-3 font-medium text-gray-500">Business</th>
