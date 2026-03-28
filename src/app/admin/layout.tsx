@@ -8,7 +8,7 @@ export default function AdminLayout({
   return (
     <>
       <Sidebar />
-      <main className="md:ml-64 min-h-screen">
+      <main className="md:ml-64 min-h-screen bg-white" style={{ color: '#111827' }}>
         <div className="p-4 md:p-8">
           {children}
         </div>
