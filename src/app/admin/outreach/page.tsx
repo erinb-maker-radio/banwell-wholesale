@@ -221,8 +221,10 @@ export default function OutreachPage() {
   }, [leads]);
 
   const allLeads = useMemo(() => {
+    if (statusFilter === 'dead') return leads.filter(l => l.status === 'dead');
+    if (statusFilter === 'all') return leads.filter(l => l.status !== 'dead' && l.status !== 'declined');
     return leads;
-  }, [leads]);
+  }, [leads, statusFilter]);
 
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
