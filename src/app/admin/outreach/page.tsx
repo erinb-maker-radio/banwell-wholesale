@@ -244,7 +244,7 @@ export default function OutreachPage() {
       <PageHeader
         title="Wholesale Outreach"
         description={
-          `${leads.length} leads in pipeline` +
+          `${leads.filter(l => l.status !== 'dead' && l.status !== 'declined').length} active leads` +
           (draftReadyCount > 0 ? ` \u2022 ${draftReadyCount} drafts to review` : '') +
           (overdueCount > 0 ? ` \u2022 ${overdueCount} overdue follow-ups` : '')
         }
