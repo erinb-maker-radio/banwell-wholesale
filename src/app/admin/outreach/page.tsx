@@ -86,7 +86,7 @@ export default function OutreachPage() {
 
   useEffect(() => {
     fetchLeads();
-  }, [statusFilter, shopTypeFilter]);
+  }, []);
 
   // Clear action feedback after 4 seconds
   useEffect(() => {
@@ -98,10 +98,7 @@ export default function OutreachPage() {
 
   async function fetchLeads() {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (statusFilter !== 'all') params.set('status', statusFilter);
-    if (shopTypeFilter !== 'all') params.set('shop_type', shopTypeFilter);
-    const res = await fetch('/api/leads?' + params.toString());
+    const res = await fetch('/api/leads');
     const json = await res.json();
     if (json.success) setLeads(json.data);
     setLoading(false);
@@ -221,10 +218,15 @@ export default function OutreachPage() {
   }, [leads]);
 
   const allLeads = useMemo(() => {
-    if (statusFilter === 'dead') return leads.filter(l => l.status === 'dead');
-    if (statusFilter === 'all') return leads.filter(l => l.status !== 'dead' && l.status !== 'declined');
-    return leads;
-  }, [leads, statusFilter]);
+    let filtered = leads;
+    // Status filter
+    if (statusFilter === 'dead') filtered = filtered.filter(l => l.status === 'dead');
+    else if (statusFilter === 'all') filtered = filtered.filter(l => l.status !== 'dead' && l.status !== 'declined');
+    else if (statusFilter !== 'all') filtered = filtered.filter(l => l.status === statusFilter);
+    // Shop type filter
+    if (shopTypeFilter !== 'all') filtered = filtered.filter(l => l.shop_type === shopTypeFilter);
+    return filtered;
+  }, [leads, statusFilter, shopTypeFilter]);
 
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
