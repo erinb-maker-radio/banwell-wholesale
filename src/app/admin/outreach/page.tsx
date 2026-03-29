@@ -65,7 +65,7 @@ const STATUS_COLORS: Record<string, string> = {
   dead: 'bg-gray-200 text-gray-500',
 };
 
-const PIPELINE_STAGES = ['researched', 'verified', 'qualified', 'contacted', 'replied', 'converted'];
+const PIPELINE_STAGES = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted', 'replied', 'converted'];
 
 export default function OutreachPage() {
   const [leads, setLeads] = useState<WholesaleLead[]>([]);
@@ -259,7 +259,7 @@ export default function OutreachPage() {
       />
 
       {/* Pipeline Summary */}
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3 mb-6">
+      <div className="grid grid-cols-3 md:grid-cols-7 gap-2 md:gap-3 mb-6">
         {PIPELINE_STAGES.map(stage => (
           <button
             key={stage}
