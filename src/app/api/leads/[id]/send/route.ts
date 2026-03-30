@@ -69,6 +69,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           { type: 'text/plain', value: cleanPlain },
           { type: 'text/html', value: `<div style="font-family:sans-serif;font-size:14px;color:#222;">${htmlBody}</div>` },
         ],
+        tracking_settings: {
+          click_tracking: { enable: false, enable_text: false },
+          open_tracking: { enable: false },
+        },
       }),
     });
 
