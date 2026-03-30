@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
+import nodemailer from 'nodemailer';
+
+const GMAIL_USER = 'erin@banwelldesigns.com';
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'pdyt bxvd zbxi xyof';
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,46 +29,29 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const subjectMatch = body.match(/^Subject:\s*(.+)$/m);
     if (subjectMatch) {
       subject = subjectMatch[1].trim();
-      // Remove the Subject: line from body
       body = body.replace(/^Subject:\s*.+\n?/m, '').trim();
     }
 
-    // Send via SendGrid
-    const sgApiKey = process.env.SENDGRID_API_KEY;
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'erin@banwelldesigns.com';
-
-    if (!sgApiKey) {
-      return NextResponse.json({ error: 'SendGrid API key not configured' }, { status: 500 });
-    }
-
-    const sgResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${sgApiKey}`,
-        'Content-Type': 'application/json',
+    // Send via Gmail SMTP
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: GMAIL_USER,
+        pass: GMAIL_APP_PASSWORD,
       },
-      body: JSON.stringify({
-        personalizations: [{
-          to: [{ email: lead.contact_email, name: lead.contact_name || lead.business_name }],
-        }],
-        from: { email: fromEmail, name: 'Erin Banwell' },
-        reply_to: { email: 'erin@banwelldesigns.com', name: 'Erin Banwell' },
-        subject,
-        content: [
-          { type: 'text/plain', value: body },
-        ],
-        tracking_settings: {
-          click_tracking: { enable: false, enable_text: false },
-          open_tracking: { enable: false },
-        },
-      }),
     });
 
-    if (!sgResponse.ok) {
-      const errText = await sgResponse.text();
-      console.error('SendGrid error:', sgResponse.status, errText);
-      return NextResponse.json({ error: `SendGrid error: ${sgResponse.status}` }, { status: 500 });
-    }
+    await transporter.sendMail({
+      from: `"Erin Banwell" <${GMAIL_USER}>`,
+      replyTo: GMAIL_USER,
+      to: lead.contact_name
+        ? `"${lead.contact_name}" <${lead.contact_email}>`
+        : lead.contact_email,
+      subject,
+      text: body,
+    });
 
     // Update lead status and sent timestamp
     const now = new Date().toISOString();
