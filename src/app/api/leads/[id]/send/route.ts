@@ -37,21 +37,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'SendGrid API key not configured' }, { status: 500 });
     }
 
-    // Convert plain text to minimal HTML — looks like a personal email but links work properly
-    // Replace the raw URL with a call-to-action link
-    const plainBody = body;
-    const htmlBody = body
-      .replace(/https:\/\/www\.banwelldesigns\.com/g, '<a href="https://www.banwelldesigns.com" style="color:#2563eb;">Explore our collection at banwelldesigns.com</a>')
-      .split('\n\n')
-      .map((para: string) => `<p style="margin:0 0 16px 0;line-height:1.5;">${para.replace(/\n/g, '<br>')}</p>`)
-      .join('');
-
-    // Also clean the plain text version — keep the URL but on its own line
-    const cleanPlain = plainBody.replace(
-      /https:\/\/www\.banwelldesigns\.com/g,
-      'banwelldesigns.com'
-    );
-
     const sgResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
       method: 'POST',
       headers: {
@@ -66,8 +51,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         reply_to: { email: 'erin@banwelldesigns.com', name: 'Erin Banwell' },
         subject,
         content: [
-          { type: 'text/plain', value: cleanPlain },
-          { type: 'text/html', value: `<div style="font-family:sans-serif;font-size:14px;color:#222;">${htmlBody}</div>` },
+          { type: 'text/plain', value: body },
         ],
         tracking_settings: {
           click_tracking: { enable: false, enable_text: false },
