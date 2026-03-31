@@ -11,6 +11,9 @@ export const TIER_THRESHOLDS = {
 export const CATEGORY_PRICES: Record<string, number> = {
   'Glass Ornaments': 3500,
   'Paper Cut Ornaments': 1500,
+  'Plague Doctor Masks': 28500,
+  'Fashion Masks': 4900,
+  'Plague Doctor Accessories': 9500,
 };
 
 // Sun catcher prices by size (in cents)

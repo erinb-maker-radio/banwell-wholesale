@@ -252,6 +252,19 @@ function ShopLayoutInner({ children }: { children: React.ReactNode }) {
         )}
       </header>
 
+      {/* Wholesale Pricing Tiers Bar */}
+      {!isDark && !isPaper && (
+        <div className="bg-blue-50 border-b border-blue-200">
+          <div className="max-w-[1140px] mx-auto px-4 py-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-sm">
+            <span className="font-semibold text-gray-800">Wholesale Tiers:</span>
+            <span className="text-gray-600"><span className="font-medium text-gray-900">40% off</span> at $400+</span>
+            <span className="text-gray-400 hidden sm:inline">|</span>
+            <span className="text-gray-600"><span className="font-medium text-gray-900">50% off</span> at $800+</span>
+            <span className="text-gray-400 hidden sm:inline">|</span>
+            <span className="text-gray-600"><span className="font-semibold text-emerald-700">55% off</span> at $1,200+</span>
+          </div>
+        </div>
+      )}
 
       <main className={`${pageBg} ${mainText}`}>{children}</main>
       <Footer isDark={isDark} />

@@ -21,6 +21,9 @@ const CATEGORY_PRICES: Record<string, number> = {
   'Paper Cut Ornaments': 1500,
   'Wooden Ornaments': 3500,
   'Glass Sun Catchers': 7200, // default 6-inch
+  'Plague Doctor Masks': 28500,
+  'Fashion Masks': 4900,
+  'Plague Doctor Accessories': 9500,
 };
 
 const SUN_CATCHER_SIZES: [RegExp, string, number][] = [
@@ -35,6 +38,9 @@ const CATEGORIES = [
   { name: 'Glass Sun Catchers', slug: 'glass-sun-catchers', default_price: 7200, sort_order: 2, description: 'Stained glass-style window hangings in multiple sizes' },
   { name: 'Paper Cut Ornaments', slug: 'paper-cut-ornaments', default_price: 1500, sort_order: 3, description: 'Paper cut style Christmas ornaments' },
   { name: 'Wooden Ornaments', slug: 'wooden-ornaments', default_price: 3500, sort_order: 4, description: 'Laser-cut wooden ornaments' },
+  { name: 'Plague Doctor Masks', slug: 'plague-doctor-masks', default_price: 28500, sort_order: 5, description: 'Handcrafted leather plague doctor masks — 9 characters currently available' },
+  { name: 'Fashion Masks', slug: 'fashion-masks', default_price: 4900, sort_order: 6, description: 'Hand-crafted leather masquerade masks — 39 designs' },
+  { name: 'Plague Doctor Accessories', slug: 'plague-doctor-accessories', default_price: 9500, sort_order: 7, description: 'Plague doctor costume accessories — hats, hoods, mantles, pouches, staffs' },
 ];
 
 const DISCOUNT_TIERS = [

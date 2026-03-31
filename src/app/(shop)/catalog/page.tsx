@@ -40,6 +40,30 @@ export default function CatalogPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Wholesale Pricing Tiers */}
+      <div className="mb-6 bg-gray-50 border border-gray-200 rounded-lg px-5 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <p className="font-semibold text-gray-900">Wholesale Pricing Tiers</p>
+            <p className="text-xs text-gray-500">Discount applied to your entire cart based on total retail value.</p>
+          </div>
+          <div className="flex gap-4 sm:gap-6 text-sm">
+            <div className="text-center">
+              <p className="font-semibold text-gray-900">40% off</p>
+              <p className="text-xs text-gray-500">$400+</p>
+            </div>
+            <div className="text-center">
+              <p className="font-semibold text-gray-900">50% off</p>
+              <p className="text-xs text-gray-500">$800+</p>
+            </div>
+            <div className="text-center">
+              <p className="font-semibold text-emerald-700">55% off</p>
+              <p className="text-xs text-gray-500">$1,200+</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
         <p className="text-gray-500 mt-1">Browse our full collection of wholesale products</p>
