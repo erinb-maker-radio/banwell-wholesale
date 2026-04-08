@@ -84,6 +84,7 @@ export default function OutreachPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [shopTypeFilter, setShopTypeFilter] = useState('all');
+  const [channelFilter, setChannelFilter] = useState('all');
   const [expandedLead, setExpandedLead] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -306,8 +307,12 @@ export default function OutreachPage() {
     }
     // Shop type filter
     if (shopTypeFilter !== 'all') filtered = filtered.filter(l => l.shop_type === shopTypeFilter);
+    // Channel filter
+    if (channelFilter === 'email') filtered = filtered.filter(l => l.contact_email);
+    else if (channelFilter === 'instagram_dm') filtered = filtered.filter(l => !l.contact_email && l.contact_instagram);
+    else if (channelFilter === 'no_email') filtered = filtered.filter(l => !l.contact_email);
     return filtered;
-  }, [leads, statusFilter, shopTypeFilter, searchQuery]);
+  }, [leads, statusFilter, shopTypeFilter, searchQuery, channelFilter]);
 
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
@@ -444,6 +449,16 @@ export default function OutreachPage() {
           <option value="ren_faire">Ren Faire</option>
           <option value="other">Other</option>
         </select>
+        <select
+          value={channelFilter}
+          onChange={e => setChannelFilter(e.target.value)}
+          className="px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
+        >
+          <option value="all">All Channels</option>
+          <option value="email">Email Only</option>
+          <option value="instagram_dm">IG DM Only</option>
+          <option value="no_email">No Email</option>
+        </select>
       </div>
 
       {/* Add Lead Form */}
@@ -533,6 +548,15 @@ export default function OutreachPage() {
                           <div className="font-medium text-gray-900">{lead.business_name}</div>
                           <div className="text-xs text-gray-400">
                             {lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}
+                            {!lead.contact_email && lead.contact_instagram && (
+                              <span className="ml-1.5 px-1 py-0.5 bg-pink-100 text-pink-600 rounded text-[9px] font-medium">IG DM</span>
+                            )}
+                            {!lead.contact_email && !lead.contact_instagram && lead.contact_phone && (
+                              <span className="ml-1.5 px-1 py-0.5 bg-gray-100 text-gray-500 rounded text-[9px] font-medium">Phone</span>
+                            )}
+                            {!lead.contact_email && !lead.contact_instagram && !lead.contact_phone && (
+                              <span className="ml-1.5 px-1 py-0.5 bg-red-50 text-red-400 rounded text-[9px] font-medium">No contact</span>
+                            )}
                           </div>
                         </div>
                       </div>
