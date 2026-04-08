@@ -41,7 +41,7 @@ const STATUS_LABELS: Record<string, string> = {
   outreach_approved: 'Approved',
   contacted: 'Contacted',
   replied: 'Replied',
-  application_required: 'Application Required',
+  application_required: 'Apply to Be Vendor',
   samples_requested: 'Samples Requested',
   samples_sent: 'Samples Sent',
   follow_up_1: 'Follow-up 1',
@@ -590,7 +590,7 @@ export default function OutreachPage() {
                                   {lead.status === 'replied' && (
                                     <>
                                       <button onClick={() => handleSamplesRequested(lead)} className="px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors">Samples Requested</button>
-                                      <button onClick={() => handleApplicationRequired(lead)} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors">Application Required</button>
+                                      <button onClick={() => handleApplicationRequired(lead)} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors">Apply to Be Vendor</button>
                                     </>
                                   )}
                                   {lead.status === 'application_required' && (
