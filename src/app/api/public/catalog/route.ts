@@ -13,7 +13,21 @@ export async function GET(request: Request) {
     const search = searchParams.get('search') || '';
 
     let filter = 'is_active=true';
-    if (category) filter += ` && category="${category}"`;
+    if (category) {
+      // Support both category ID and slug
+      if (category.match(/^[a-z0-9]{15}$/)) {
+        filter += ` && category="${category}"`;
+      } else {
+        // Look up by slug
+        try {
+          const cat = await pb.collection('product_categories').getFirstListItem(`slug="${category}"`);
+          filter += ` && category="${cat.id}"`;
+        } catch {
+          // slug not found, return empty
+          return NextResponse.json({ success: true, items: [], totalPages: 0, totalItems: 0 });
+        }
+      }
+    }
     if (search) filter += ` && (title~"${search}" || sku~"${search}")`;
 
     const result = await pb.collection('products').getList(page, perPage, {

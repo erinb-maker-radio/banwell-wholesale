@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 
 export default function GlassCatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -13,25 +12,14 @@ export default function GlassCatalogPage() {
 
   useEffect(() => {
     setLoading(true);
-    // Fetch both glass categories
+    // Fetch both glass categories via server-side API
     Promise.all([
-      pb.collection('product_categories').getFirstListItem('slug="glass-ornaments"'),
-      pb.collection('product_categories').getFirstListItem('slug="glass-sun-catchers"'),
-    ]).then(async ([ornCat, scCat]) => {
-      const ornaments = await pb.collection('products').getFullList({
-        filter: `is_active=true && category="${ornCat.id}"`,
-        sort: 'sort_order',
-      });
-      const suncatchers = await pb.collection('products').getFullList({
-        filter: `is_active=true && category="${scCat.id}"`,
-        sort: 'sort_order',
-      });
-      // Tag each product with its sub-category for filtering
-      const all = [
-        ...suncatchers.map(p => ({ ...p, _sub: 'suncatchers' as const })),
-        ...ornaments.map(p => ({ ...p, _sub: 'ornaments' as const })),
-      ];
-      setProducts(all as unknown as (Product & { _sub: string })[]);
+      fetch('/api/public/catalog?perPage=500&category=glass-ornaments').then(r => r.json()),
+      fetch('/api/public/catalog?perPage=500&category=glass-sun-catchers').then(r => r.json()),
+    ]).then(([ornData, scData]) => {
+      const ornaments = (ornData.items || []).map((p: Product) => ({ ...p, _sub: 'ornaments' }));
+      const suncatchers = (scData.items || []).map((p: Product) => ({ ...p, _sub: 'suncatchers' }));
+      setProducts([...suncatchers, ...ornaments]);
     }).catch(console.error).finally(() => setLoading(false));
   }, []);
 
@@ -67,6 +55,8 @@ export default function GlassCatalogPage() {
 
       {loading ? (
         <div className="text-center py-12 text-gray-500">Loading...</div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">No products found</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {filtered.map(product => (
