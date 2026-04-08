@@ -73,8 +73,10 @@ const STATUS_COLORS: Record<string, string> = {
   dead: 'bg-gray-200 text-gray-500',
 };
 
-const PIPELINE_TOP = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted'];
-const PIPELINE_BOTTOM = ['replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent', 'converted'];
+const PIPELINE_FUNNEL = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted'];
+const PIPELINE_DIRECT = ['replied', 'samples_requested', 'samples_sent'];
+const PIPELINE_VENDOR = ['application_required', 'application_submitted'];
+const PIPELINE_OUTCOMES = ['converted', 'declined'];
 
 export default function OutreachPage() {
   const [leads, setLeads] = useState<WholesaleLead[]>([]);
@@ -341,9 +343,9 @@ export default function OutreachPage() {
         }
       />
 
-      {/* Pipeline Summary — Outreach Funnel */}
-      <div className="grid grid-cols-5 gap-2 md:gap-3 mb-2">
-        {PIPELINE_TOP.map(stage => (
+      {/* Pipeline — Outreach Funnel */}
+      <div className="grid grid-cols-5 gap-2 md:gap-3 mb-3">
+        {PIPELINE_FUNNEL.map(stage => (
           <button
             key={stage}
             onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
@@ -354,18 +356,59 @@ export default function OutreachPage() {
           </button>
         ))}
       </div>
-      {/* Pipeline Summary — Post-Reply Journey */}
-      <div className="grid grid-cols-6 gap-2 md:gap-3 mb-6">
-        {PIPELINE_BOTTOM.map(stage => (
-          <button
-            key={stage}
-            onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
-            className={`rounded-lg p-2 md:p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
-          >
-            <div className="text-xl md:text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
-            <div className="text-[10px] md:text-xs font-medium leading-tight">{STATUS_LABELS[stage]}</div>
-          </button>
-        ))}
+
+      {/* Pipeline — After Reply (two tracks + outcomes) */}
+      <div className="grid grid-cols-[3fr_2fr_2fr] gap-3 mb-6">
+        {/* Path A: Direct */}
+        <div className="border border-green-200 rounded-lg p-2 bg-green-50/30">
+          <div className="text-[10px] font-semibold text-green-600 uppercase tracking-wider mb-1.5 px-1">Direct</div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {PIPELINE_DIRECT.map(stage => (
+              <button
+                key={stage}
+                onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
+                className={`rounded-lg p-2 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+              >
+                <div className="text-lg md:text-xl font-bold">{pipelineCounts[stage] || 0}</div>
+                <div className="text-[9px] md:text-[10px] font-medium leading-tight">{STATUS_LABELS[stage]}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Path B: Vendor Form */}
+        <div className="border border-blue-200 rounded-lg p-2 bg-blue-50/30">
+          <div className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider mb-1.5 px-1">Vendor Form</div>
+          <div className="grid grid-cols-2 gap-1.5">
+            {PIPELINE_VENDOR.map(stage => (
+              <button
+                key={stage}
+                onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
+                className={`rounded-lg p-2 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+              >
+                <div className="text-lg md:text-xl font-bold">{pipelineCounts[stage] || 0}</div>
+                <div className="text-[9px] md:text-[10px] font-medium leading-tight">{STATUS_LABELS[stage]}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Outcomes */}
+        <div className="border border-gray-200 rounded-lg p-2 bg-gray-50/30">
+          <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5 px-1">Outcomes</div>
+          <div className="grid grid-cols-2 gap-1.5">
+            {PIPELINE_OUTCOMES.map(stage => (
+              <button
+                key={stage}
+                onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
+                className={`rounded-lg p-2 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+              >
+                <div className="text-lg md:text-xl font-bold">{pipelineCounts[stage] || 0}</div>
+                <div className="text-[9px] md:text-[10px] font-medium leading-tight">{STATUS_LABELS[stage]}</div>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Search + Filters */}
