@@ -42,6 +42,7 @@ const STATUS_LABELS: Record<string, string> = {
   contacted: 'Contacted',
   replied: 'Replied',
   application_required: 'Apply to Be Vendor',
+  application_submitted: 'Application Submitted',
   samples_requested: 'Samples Requested',
   samples_sent: 'Samples Sent',
   follow_up_1: 'Follow-up 1',
@@ -61,6 +62,7 @@ const STATUS_COLORS: Record<string, string> = {
   contacted: 'bg-purple-100 text-purple-700',
   replied: 'bg-green-100 text-green-700',
   application_required: 'bg-blue-100 text-blue-700',
+  application_submitted: 'bg-cyan-100 text-cyan-700',
   samples_requested: 'bg-amber-100 text-amber-700',
   samples_sent: 'bg-teal-100 text-teal-700',
   follow_up_1: 'bg-purple-50 text-purple-600',
@@ -192,6 +194,18 @@ export default function OutreachPage() {
       response_notes: existingNotes + `[Application required ${new Date().toLocaleDateString()}] ${notes}`,
     });
     setActionFeedback({ id: lead.id, message: 'Application required — complete their vendor form', type: 'success' });
+    fetchLeads();
+  }
+
+  async function handleApplicationSubmitted(lead: WholesaleLead) {
+    const nextFollowUp = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const existingNotes = lead.response_notes ? lead.response_notes + '\n\n' : '';
+    await updateLead(lead.id, {
+      status: 'application_submitted',
+      next_follow_up: nextFollowUp,
+      response_notes: existingNotes + `[Application submitted ${new Date().toLocaleDateString()}] Waiting for response.`,
+    });
+    setActionFeedback({ id: lead.id, message: `Application submitted — follow-up set for ${new Date(nextFollowUp).toLocaleDateString()}`, type: 'success' });
     fetchLeads();
   }
 
@@ -558,7 +572,7 @@ export default function OutreachPage() {
                             )}
 
                             {/* Contacted info */}
-                            {['contacted', 'replied', 'application_required', 'samples_requested', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
+                            {['contacted', 'replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
                               <div>
                                 <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Outreach History</h4>
                                 <div className="space-y-1.5 text-sm">
@@ -594,15 +608,18 @@ export default function OutreachPage() {
                                     </>
                                   )}
                                   {lead.status === 'application_required' && (
+                                    <button onClick={() => handleApplicationSubmitted(lead)} className="px-3 py-1.5 bg-cyan-600 text-white text-xs font-medium rounded hover:bg-cyan-700 transition-colors">Application Submitted</button>
+                                  )}
+                                  {lead.status === 'application_submitted' && (
                                     <button onClick={() => handleSamplesRequested(lead)} className="px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors">Samples Requested</button>
                                   )}
                                   {['samples_requested', 'application_required'].includes(lead.status) && (
                                     <button onClick={() => handleSamplesSent(lead)} className="px-3 py-1.5 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition-colors">Samples Sent</button>
                                   )}
-                                  {['replied', 'application_required', 'samples_requested', 'samples_sent'].includes(lead.status) && (
+                                  {['replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent'].includes(lead.status) && (
                                     <button onClick={() => handleMarkConverted(lead)} className="px-3 py-1.5 bg-green-700 text-white text-xs font-medium rounded hover:bg-green-800 transition-colors">Converted</button>
                                   )}
-                                  {['replied', 'application_required', 'samples_requested', 'samples_sent'].includes(lead.status) && (
+                                  {['replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent'].includes(lead.status) && (
                                     <button onClick={() => handleMarkDeclined(lead)} className="px-3 py-1.5 bg-red-100 text-red-700 text-xs font-medium rounded hover:bg-red-200 transition-colors">Declined</button>
                                   )}
                                   {['follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
