@@ -73,7 +73,8 @@ const STATUS_COLORS: Record<string, string> = {
   dead: 'bg-gray-200 text-gray-500',
 };
 
-const PIPELINE_STAGES = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted', 'replied', 'samples_requested', 'samples_sent', 'converted'];
+const PIPELINE_TOP = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted'];
+const PIPELINE_BOTTOM = ['replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent', 'converted'];
 
 export default function OutreachPage() {
   const [leads, setLeads] = useState<WholesaleLead[]>([]);
@@ -340,16 +341,29 @@ export default function OutreachPage() {
         }
       />
 
-      {/* Pipeline Summary */}
-      <div className="grid grid-cols-3 md:grid-cols-7 gap-2 md:gap-3 mb-6">
-        {PIPELINE_STAGES.map(stage => (
+      {/* Pipeline Summary — Outreach Funnel */}
+      <div className="grid grid-cols-5 gap-2 md:gap-3 mb-2">
+        {PIPELINE_TOP.map(stage => (
           <button
             key={stage}
             onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
-            className={`rounded-lg p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+            className={`rounded-lg p-2 md:p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
           >
-            <div className="text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
-            <div className="text-xs font-medium">{STATUS_LABELS[stage]}</div>
+            <div className="text-xl md:text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
+            <div className="text-[10px] md:text-xs font-medium">{STATUS_LABELS[stage]}</div>
+          </button>
+        ))}
+      </div>
+      {/* Pipeline Summary — Post-Reply Journey */}
+      <div className="grid grid-cols-6 gap-2 md:gap-3 mb-6">
+        {PIPELINE_BOTTOM.map(stage => (
+          <button
+            key={stage}
+            onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
+            className={`rounded-lg p-2 md:p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+          >
+            <div className="text-xl md:text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
+            <div className="text-[10px] md:text-xs font-medium leading-tight">{STATUS_LABELS[stage]}</div>
           </button>
         ))}
       </div>
