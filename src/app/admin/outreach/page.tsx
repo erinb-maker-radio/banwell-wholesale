@@ -41,6 +41,7 @@ const STATUS_LABELS: Record<string, string> = {
   outreach_approved: 'Approved',
   contacted: 'Contacted',
   replied: 'Replied',
+  samples_sent: 'Samples Sent',
   follow_up_1: 'Follow-up 1',
   follow_up_2: 'Follow-up 2',
   follow_up_3: 'Follow-up 3',
@@ -57,6 +58,7 @@ const STATUS_COLORS: Record<string, string> = {
   outreach_approved: 'bg-orange-100 text-orange-700',
   contacted: 'bg-purple-100 text-purple-700',
   replied: 'bg-green-100 text-green-700',
+  samples_sent: 'bg-teal-100 text-teal-700',
   follow_up_1: 'bg-purple-50 text-purple-600',
   follow_up_2: 'bg-purple-50 text-purple-600',
   follow_up_3: 'bg-purple-50 text-purple-600',
@@ -65,11 +67,12 @@ const STATUS_COLORS: Record<string, string> = {
   dead: 'bg-gray-200 text-gray-500',
 };
 
-const PIPELINE_STAGES = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted', 'replied', 'converted'];
+const PIPELINE_STAGES = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted', 'replied', 'samples_sent', 'converted'];
 
 export default function OutreachPage() {
   const [leads, setLeads] = useState<WholesaleLead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [shopTypeFilter, setShopTypeFilter] = useState('all');
   const [expandedLead, setExpandedLead] = useState<string | null>(null);
@@ -176,6 +179,27 @@ export default function OutreachPage() {
     fetchLeads();
   }
 
+  async function handleSamplesSent(lead: WholesaleLead) {
+    const nextFollowUp = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    await updateLead(lead.id, { status: 'samples_sent', next_follow_up: nextFollowUp });
+    setActionFeedback({ id: lead.id, message: `Samples sent — follow-up set for ${new Date(nextFollowUp).toLocaleDateString()}`, type: 'success' });
+    fetchLeads();
+  }
+
+  async function handleMarkConverted(lead: WholesaleLead) {
+    if (!confirm(`Mark "${lead.business_name}" as converted (wholesale customer)?`)) return;
+    await updateLead(lead.id, { status: 'converted' });
+    setActionFeedback({ id: lead.id, message: 'Converted to wholesale customer!', type: 'success' });
+    fetchLeads();
+  }
+
+  async function handleMarkDeclined(lead: WholesaleLead) {
+    if (!confirm(`Mark "${lead.business_name}" as declined?`)) return;
+    await updateLead(lead.id, { status: 'declined' });
+    setActionFeedback({ id: lead.id, message: 'Marked as declined', type: 'success' });
+    fetchLeads();
+  }
+
   async function handleSetFollowUp(lead: WholesaleLead, date: string) {
     await updateLead(lead.id, { next_follow_up: date });
     setActionFeedback({ id: lead.id, message: `Follow-up set for ${new Date(date).toLocaleDateString()}`, type: 'success' });
@@ -219,14 +243,26 @@ export default function OutreachPage() {
 
   const allLeads = useMemo(() => {
     let filtered = leads;
-    // Status filter
-    if (statusFilter === 'dead') filtered = filtered.filter(l => l.status === 'dead');
-    else if (statusFilter === 'all') filtered = filtered.filter(l => l.status !== 'dead' && l.status !== 'declined');
-    else if (statusFilter !== 'all') filtered = filtered.filter(l => l.status === statusFilter);
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(l =>
+        l.business_name?.toLowerCase().includes(q) ||
+        l.contact_name?.toLowerCase().includes(q) ||
+        l.contact_email?.toLowerCase().includes(q) ||
+        l.city?.toLowerCase().includes(q) ||
+        l.state?.toLowerCase().includes(q)
+      );
+    } else {
+      // Status filter (only when not searching)
+      if (statusFilter === 'dead') filtered = filtered.filter(l => l.status === 'dead');
+      else if (statusFilter === 'all') filtered = filtered.filter(l => l.status !== 'dead' && l.status !== 'declined');
+      else if (statusFilter !== 'all') filtered = filtered.filter(l => l.status === statusFilter);
+    }
     // Shop type filter
     if (shopTypeFilter !== 'all') filtered = filtered.filter(l => l.shop_type === shopTypeFilter);
     return filtered;
-  }, [leads, statusFilter, shopTypeFilter]);
+  }, [leads, statusFilter, shopTypeFilter, searchQuery]);
 
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
@@ -276,8 +312,15 @@ export default function OutreachPage() {
         ))}
       </div>
 
-      {/* Filters */}
+      {/* Search + Filters */}
       <div className="flex gap-3 mb-6">
+        <input
+          type="text"
+          placeholder="Search leads..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white w-64 focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
+        />
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
@@ -487,7 +530,7 @@ export default function OutreachPage() {
                             )}
 
                             {/* Contacted info */}
-                            {['contacted', 'replied', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
+                            {['contacted', 'replied', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
                               <div>
                                 <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Outreach History</h4>
                                 <div className="space-y-1.5 text-sm">
@@ -512,14 +555,26 @@ export default function OutreachPage() {
                                   />
                                 </div>
 
-                                {lead.status === 'contacted' && (
-                                  <button
-                                    onClick={() => handleMarkReplied(lead)}
-                                    className="mt-3 px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors"
-                                  >
-                                    Mark Replied
-                                  </button>
-                                )}
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {lead.status === 'contacted' && (
+                                    <button onClick={() => handleMarkReplied(lead)} className="px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors">Mark Replied</button>
+                                  )}
+                                  {lead.status === 'replied' && (
+                                    <button onClick={() => handleSamplesSent(lead)} className="px-3 py-1.5 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition-colors">Samples Sent</button>
+                                  )}
+                                  {['replied', 'samples_sent'].includes(lead.status) && (
+                                    <button onClick={() => handleMarkConverted(lead)} className="px-3 py-1.5 bg-green-700 text-white text-xs font-medium rounded hover:bg-green-800 transition-colors">Converted</button>
+                                  )}
+                                  {['replied', 'samples_sent'].includes(lead.status) && (
+                                    <button onClick={() => handleMarkDeclined(lead)} className="px-3 py-1.5 bg-red-100 text-red-700 text-xs font-medium rounded hover:bg-red-200 transition-colors">Declined</button>
+                                  )}
+                                  {['follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
+                                    <>
+                                      <button onClick={() => handleMarkReplied(lead)} className="px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors">Mark Replied</button>
+                                      <button onClick={() => handleRejectDraft(lead)} className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors">Mark Dead</button>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             )}
                           </div>
