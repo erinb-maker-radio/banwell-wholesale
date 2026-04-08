@@ -41,6 +41,7 @@ const STATUS_LABELS: Record<string, string> = {
   outreach_approved: 'Approved',
   contacted: 'Contacted',
   replied: 'Replied',
+  samples_requested: 'Samples Requested',
   samples_sent: 'Samples Sent',
   follow_up_1: 'Follow-up 1',
   follow_up_2: 'Follow-up 2',
@@ -58,6 +59,7 @@ const STATUS_COLORS: Record<string, string> = {
   outreach_approved: 'bg-orange-100 text-orange-700',
   contacted: 'bg-purple-100 text-purple-700',
   replied: 'bg-green-100 text-green-700',
+  samples_requested: 'bg-amber-100 text-amber-700',
   samples_sent: 'bg-teal-100 text-teal-700',
   follow_up_1: 'bg-purple-50 text-purple-600',
   follow_up_2: 'bg-purple-50 text-purple-600',
@@ -67,7 +69,7 @@ const STATUS_COLORS: Record<string, string> = {
   dead: 'bg-gray-200 text-gray-500',
 };
 
-const PIPELINE_STAGES = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted', 'replied', 'samples_sent', 'converted'];
+const PIPELINE_STAGES = ['researched', 'qualified', 'outreach_drafted', 'outreach_approved', 'contacted', 'replied', 'samples_requested', 'samples_sent', 'converted'];
 
 export default function OutreachPage() {
   const [leads, setLeads] = useState<WholesaleLead[]>([]);
@@ -176,6 +178,18 @@ export default function OutreachPage() {
   async function handleMarkReplied(lead: WholesaleLead) {
     await updateLead(lead.id, { status: 'replied' });
     setActionFeedback({ id: lead.id, message: 'Marked as replied', type: 'success' });
+    fetchLeads();
+  }
+
+  async function handleSamplesRequested(lead: WholesaleLead) {
+    const notes = prompt('What did they request? (e.g. "science-themed pieces, smaller price points")');
+    if (notes === null) return; // cancelled
+    const existingNotes = lead.response_notes ? lead.response_notes + '\n\n' : '';
+    await updateLead(lead.id, {
+      status: 'samples_requested',
+      response_notes: existingNotes + `[Samples requested ${new Date().toLocaleDateString()}] ${notes}`,
+    });
+    setActionFeedback({ id: lead.id, message: 'Samples requested — design + ship when ready', type: 'success' });
     fetchLeads();
   }
 
@@ -530,7 +544,7 @@ export default function OutreachPage() {
                             )}
 
                             {/* Contacted info */}
-                            {['contacted', 'replied', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
+                            {['contacted', 'replied', 'samples_requested', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
                               <div>
                                 <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Outreach History</h4>
                                 <div className="space-y-1.5 text-sm">
@@ -560,12 +574,15 @@ export default function OutreachPage() {
                                     <button onClick={() => handleMarkReplied(lead)} className="px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition-colors">Mark Replied</button>
                                   )}
                                   {lead.status === 'replied' && (
+                                    <button onClick={() => handleSamplesRequested(lead)} className="px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors">Samples Requested</button>
+                                  )}
+                                  {lead.status === 'samples_requested' && (
                                     <button onClick={() => handleSamplesSent(lead)} className="px-3 py-1.5 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition-colors">Samples Sent</button>
                                   )}
-                                  {['replied', 'samples_sent'].includes(lead.status) && (
+                                  {['replied', 'samples_requested', 'samples_sent'].includes(lead.status) && (
                                     <button onClick={() => handleMarkConverted(lead)} className="px-3 py-1.5 bg-green-700 text-white text-xs font-medium rounded hover:bg-green-800 transition-colors">Converted</button>
                                   )}
-                                  {['replied', 'samples_sent'].includes(lead.status) && (
+                                  {['replied', 'samples_requested', 'samples_sent'].includes(lead.status) && (
                                     <button onClick={() => handleMarkDeclined(lead)} className="px-3 py-1.5 bg-red-100 text-red-700 text-xs font-medium rounded hover:bg-red-200 transition-colors">Declined</button>
                                   )}
                                   {['follow_up_1', 'follow_up_2', 'follow_up_3'].includes(lead.status) && (
