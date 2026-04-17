@@ -251,6 +251,36 @@ export default function OutreachPage() {
     setActionFeedback({ id: lead.id, message: `Follow-up set for ${new Date(date).toLocaleDateString()}`, type: 'success' });
   }
 
+  async function handleMarkFormSubmitted(lead: WholesaleLead) {
+    const nextFollowUp = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const existingNotes = lead.response_notes ? lead.response_notes + '\n\n' : '';
+    await updateLead(lead.id, {
+      status: 'contacted',
+      outreach_sent_at: new Date().toISOString(),
+      next_follow_up: nextFollowUp,
+      response_notes: existingNotes + `[Form submitted ${new Date().toLocaleDateString()}]`,
+    });
+    setActionFeedback({ id: lead.id, message: `Form submitted — follow-up set for ${new Date(nextFollowUp).toLocaleDateString()}`, type: 'success' });
+    fetchLeads();
+  }
+
+  async function handleMarkDMSent(lead: WholesaleLead) {
+    const nextFollowUp = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    await updateLead(lead.id, {
+      status: 'contacted',
+      outreach_sent_at: new Date().toISOString(),
+      next_follow_up: nextFollowUp,
+    });
+    setActionFeedback({ id: lead.id, message: `DM marked sent — follow-up set for ${new Date(nextFollowUp).toLocaleDateString()}`, type: 'success' });
+    fetchLeads();
+  }
+
+  function extractFormUrl(notes: string): string | null {
+    if (!notes) return null;
+    const match = notes.match(/https?:\/\/\S+/);
+    return match ? match[0].replace(/[.,)]+$/, '') : null;
+  }
+
   async function addLead(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -309,7 +339,8 @@ export default function OutreachPage() {
     if (shopTypeFilter !== 'all') filtered = filtered.filter(l => l.shop_type === shopTypeFilter);
     // Channel filter
     if (channelFilter === 'email') filtered = filtered.filter(l => l.contact_email);
-    else if (channelFilter === 'instagram_dm') filtered = filtered.filter(l => !l.contact_email && l.contact_instagram);
+    else if (channelFilter === 'instagram_dm') filtered = filtered.filter(l => l.outreach_channel === 'instagram_dm' || (!l.contact_email && l.contact_instagram));
+    else if (channelFilter === 'form') filtered = filtered.filter(l => l.outreach_channel === 'form');
     else if (channelFilter === 'no_email') filtered = filtered.filter(l => !l.contact_email);
     return filtered;
   }, [leads, statusFilter, shopTypeFilter, searchQuery, channelFilter]);
@@ -457,6 +488,7 @@ export default function OutreachPage() {
           <option value="all">All Channels</option>
           <option value="email">Email Only</option>
           <option value="instagram_dm">IG DM Only</option>
+          <option value="form">Form Only</option>
           <option value="no_email">No Email</option>
         </select>
       </div>
@@ -548,13 +580,16 @@ export default function OutreachPage() {
                           <div className="font-medium text-gray-900">{lead.business_name}</div>
                           <div className="text-xs text-gray-400">
                             {lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}
-                            {!lead.contact_email && lead.contact_instagram && (
+                            {lead.outreach_channel === 'form' && (
+                              <span className="ml-1.5 px-1 py-0.5 bg-blue-100 text-blue-600 rounded text-[9px] font-medium">Form</span>
+                            )}
+                            {lead.outreach_channel !== 'form' && !lead.contact_email && lead.contact_instagram && (
                               <span className="ml-1.5 px-1 py-0.5 bg-pink-100 text-pink-600 rounded text-[9px] font-medium">IG DM</span>
                             )}
-                            {!lead.contact_email && !lead.contact_instagram && lead.contact_phone && (
+                            {lead.outreach_channel !== 'form' && !lead.contact_email && !lead.contact_instagram && lead.contact_phone && (
                               <span className="ml-1.5 px-1 py-0.5 bg-gray-100 text-gray-500 rounded text-[9px] font-medium">Phone</span>
                             )}
-                            {!lead.contact_email && !lead.contact_instagram && !lead.contact_phone && (
+                            {lead.outreach_channel !== 'form' && !lead.contact_email && !lead.contact_instagram && !lead.contact_phone && (
                               <span className="ml-1.5 px-1 py-0.5 bg-red-50 text-red-400 rounded text-[9px] font-medium">No contact</span>
                             )}
                           </div>
@@ -754,12 +789,52 @@ export default function OutreachPage() {
 
                               {lead.status === 'outreach_drafted' && editingDraft !== lead.id && lead.outreach_draft && (
                                 <div className="flex flex-wrap gap-2 mt-3">
-                                  <button
-                                    onClick={() => handleApprove(lead)}
-                                    className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
-                                  >
-                                    Approve
-                                  </button>
+                                  {lead.outreach_channel === 'form' ? (
+                                    <>
+                                      {extractFormUrl(lead.notes) && (
+                                        <a
+                                          href={extractFormUrl(lead.notes)!}
+                                          target="_blank"
+                                          rel="noopener"
+                                          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                                        >
+                                          Open Form &rarr;
+                                        </a>
+                                      )}
+                                      <button
+                                        onClick={() => handleMarkFormSubmitted(lead)}
+                                        className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                                      >
+                                        Mark Submitted
+                                      </button>
+                                    </>
+                                  ) : lead.outreach_channel === 'instagram_dm' ? (
+                                    <>
+                                      {lead.contact_instagram && (
+                                        <a
+                                          href={'https://instagram.com/' + lead.contact_instagram}
+                                          target="_blank"
+                                          rel="noopener"
+                                          className="px-4 py-2 bg-pink-600 text-white text-sm font-medium rounded-lg hover:bg-pink-700 transition-colors"
+                                        >
+                                          Open IG &rarr;
+                                        </a>
+                                      )}
+                                      <button
+                                        onClick={() => handleMarkDMSent(lead)}
+                                        className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                                      >
+                                        Mark DM Sent
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleApprove(lead)}
+                                      className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                                    >
+                                      Approve
+                                    </button>
+                                  )}
                                   <button
                                     onClick={() => { setEditingDraft(lead.id); setDraftValue(lead.outreach_draft); }}
                                     className="px-4 py-2 bg-blue-100 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-200 transition-colors"
