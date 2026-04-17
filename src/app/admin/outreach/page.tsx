@@ -561,6 +561,16 @@ export default function OutreachPage() {
                 const isExpanded = expandedLead === lead.id;
                 const isOverdue = lead.next_follow_up && lead.next_follow_up.split('T')[0] <= new Date().toISOString().split('T')[0] && !['converted', 'declined', 'dead'].includes(lead.status);
                 const feedback = actionFeedback?.id === lead.id ? actionFeedback : null;
+                // Data integrity: status claims pre-send but sent_at is set, OR status claims post-send but no contact exists
+                const preSendStatuses = ['researched', 'verified', 'qualified', 'outreach_drafted', 'outreach_approved'];
+                const postSendStatuses = ['contacted', 'replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'];
+                const inconsistentSent = preSendStatuses.includes(lead.status) && !!lead.outreach_sent_at;
+                const inconsistentContact = postSendStatuses.includes(lead.status) && !lead.contact_email && !lead.contact_instagram && lead.outreach_channel !== 'form';
+                const integrityIssue = inconsistentSent
+                  ? `Status is "${STATUS_LABELS[lead.status]}" but outreach was already sent on ${new Date(lead.outreach_sent_at).toLocaleDateString()}. Either revert sent_at (if send didn't actually happen) or advance status to Contacted.`
+                  : inconsistentContact
+                  ? `Status is "${STATUS_LABELS[lead.status]}" but no contact exists. Add email/IG or revert status.`
+                  : null;
 
                 return (
                   <div key={lead.id}>
@@ -577,7 +587,12 @@ export default function OutreachPage() {
                       <div className="flex items-center gap-2">
                         <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>&#9654;</span>
                         <div>
-                          <div className="font-medium text-gray-900">{lead.business_name}</div>
+                          <div className="font-medium text-gray-900 flex items-center gap-1.5">
+                            {integrityIssue && (
+                              <span title={integrityIssue} className="text-amber-600 text-xs" aria-label="Data integrity issue">&#9888;</span>
+                            )}
+                            {lead.business_name}
+                          </div>
                           <div className="text-xs text-gray-400">
                             {lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}
                             {lead.outreach_channel === 'form' && (
@@ -646,6 +661,12 @@ export default function OutreachPage() {
                     {/* Expanded detail panel */}
                     {isExpanded && (
                       <div className="border-t border-blue-100 bg-blue-50/30 px-6 py-5">
+                        {/* Integrity warning */}
+                        {integrityIssue && (
+                          <div className="mb-4 px-4 py-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-900">
+                            <span className="font-semibold">&#9888; Inconsistent state:</span> {integrityIssue}
+                          </div>
+                        )}
                         {/* Feedback banner */}
                         {feedback && (
                           <div className={`mb-4 px-4 py-2 rounded-lg text-sm font-medium ${feedback.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
