@@ -5,6 +5,22 @@ import PageHeader from '@/components/layout/PageHeader';
 import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
+interface PendingApproval {
+  id: string;
+  title: string;
+  content: string;
+  metadata: {
+    leadId?: string;
+    followUpNumber?: number;
+    channel?: string;
+    contact_email?: string;
+    contact_instagram?: string;
+    business_name?: string;
+  };
+  created: string;
+  status: string;
+}
+
 interface WholesaleLead {
   id: string;
   business_name: string;
@@ -86,6 +102,10 @@ export default function OutreachPage() {
   const [shopTypeFilter, setShopTypeFilter] = useState('all');
   const [channelFilter, setChannelFilter] = useState('all');
   const [overdueOnly, setOverdueOnly] = useState(false);
+  const [pendingApprovalsOnly, setPendingApprovalsOnly] = useState(false);
+  const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([]);
+  const [editingFollowUp, setEditingFollowUp] = useState<string | null>(null);
+  const [followUpEditValue, setFollowUpEditValue] = useState('');
   const [expandedLead, setExpandedLead] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -104,7 +124,18 @@ export default function OutreachPage() {
 
   useEffect(() => {
     fetchLeads();
+    fetchPendingApprovals();
   }, []);
+
+  async function fetchPendingApprovals() {
+    try {
+      const res = await fetch('/api/outreach/approval-queue');
+      const json = await res.json();
+      if (json.success) setPendingApprovals(json.items || []);
+    } catch {
+      // silent — approvals are supplementary
+    }
+  }
 
   // Clear action feedback after 4 seconds
   useEffect(() => {
@@ -273,6 +304,69 @@ export default function OutreachPage() {
     }
   }
 
+  async function handleApproveFollowUp(approval: PendingApproval, leadId: string) {
+    try {
+      const res = await fetch(`/api/outreach/approve/${approval.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+      const json = await res.json();
+      if (json.success) {
+        setPendingApprovals(prev => prev.filter(a => a.id !== approval.id));
+        setActionFeedback({ id: leadId, message: 'Follow-up approved — will send next 10am PDT batch', type: 'success' });
+      } else {
+        setActionFeedback({ id: leadId, message: `Error: ${json.error}`, type: 'error' });
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setActionFeedback({ id: leadId, message: `Error: ${message}`, type: 'error' });
+    }
+  }
+
+  async function handleRejectFollowUp(approval: PendingApproval, leadId: string) {
+    const reason = prompt('Reason for rejecting this follow-up? (optional)');
+    if (reason === null) return;
+    try {
+      const res = await fetch(`/api/outreach/approve/${approval.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reject', reason }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setPendingApprovals(prev => prev.filter(a => a.id !== approval.id));
+        setActionFeedback({ id: leadId, message: 'Follow-up rejected', type: 'success' });
+      } else {
+        setActionFeedback({ id: leadId, message: `Error: ${json.error}`, type: 'error' });
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setActionFeedback({ id: leadId, message: `Error: ${message}`, type: 'error' });
+    }
+  }
+
+  async function handleSaveFollowUpEdit(approval: PendingApproval, leadId: string) {
+    try {
+      const res = await fetch(`/api/outreach/approve/${approval.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editedContent: followUpEditValue }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setPendingApprovals(prev => prev.filter(a => a.id !== approval.id));
+        setEditingFollowUp(null);
+        setActionFeedback({ id: leadId, message: 'Edited & approved — will send next 10am PDT batch', type: 'success' });
+      } else {
+        setActionFeedback({ id: leadId, message: `Error: ${json.error}`, type: 'error' });
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setActionFeedback({ id: leadId, message: `Error: ${message}`, type: 'error' });
+    }
+  }
+
   async function handleRunFollowUp() {
     if (runningFollowUp) return;
     setRunningFollowUp(true);
@@ -281,7 +375,8 @@ export default function OutreachPage() {
       const res = await fetch('/api/outreach/run-followup', { method: 'POST' });
       const json = await res.json();
       if (json.success) {
-        setFollowUpResult(`Drafted ${json.drafted}/${json.overdue} follow-ups — review in Approvals`);
+        setFollowUpResult(`Drafted ${json.drafted}/${json.overdue} follow-ups`);
+        await fetchPendingApprovals();
       } else {
         setFollowUpResult(`Error: ${json.error || 'unknown'}`);
       }
@@ -356,6 +451,18 @@ export default function OutreachPage() {
     fetchLeads();
   }
 
+  // leadId → pending follow-up approval (first match wins)
+  const approvalByLeadId = useMemo(() => {
+    const map = new Map<string, PendingApproval>();
+    for (const a of pendingApprovals) {
+      const lid = a.metadata?.leadId;
+      if (lid && !map.has(lid)) map.set(lid, a);
+    }
+    return map;
+  }, [pendingApprovals]);
+
+  const pendingFollowUpCount = approvalByLeadId.size;
+
   // Pipeline summary counts
   const pipelineCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -399,8 +506,12 @@ export default function OutreachPage() {
         !['converted', 'declined', 'dead'].includes(l.status)
       );
     }
+    // Pending follow-up approval filter
+    if (pendingApprovalsOnly) {
+      filtered = filtered.filter(l => approvalByLeadId.has(l.id));
+    }
     return filtered;
-  }, [leads, statusFilter, shopTypeFilter, searchQuery, channelFilter, overdueOnly]);
+  }, [leads, statusFilter, shopTypeFilter, searchQuery, channelFilter, overdueOnly, pendingApprovalsOnly, approvalByLeadId]);
 
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
@@ -573,6 +684,13 @@ export default function OutreachPage() {
         >
           {overdueOnly ? `✓ Overdue only (${overdueCount})` : `Overdue only (${overdueCount})`}
         </button>
+        <button
+          onClick={() => setPendingApprovalsOnly(!pendingApprovalsOnly)}
+          className={`px-3 py-2 border rounded-lg text-sm transition-colors ${pendingApprovalsOnly ? 'bg-blue-100 border-blue-300 text-blue-800 font-medium' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+          title="Show only leads with a pending follow-up draft awaiting approval"
+        >
+          {pendingApprovalsOnly ? `✓ Pending follow-ups (${pendingFollowUpCount})` : `Pending follow-ups (${pendingFollowUpCount})`}
+        </button>
       </div>
 
       {/* Add Lead Form */}
@@ -643,6 +761,7 @@ export default function OutreachPage() {
                 const isExpanded = expandedLead === lead.id;
                 const isOverdue = lead.next_follow_up && lead.next_follow_up.split('T')[0] <= new Date().toISOString().split('T')[0] && !['converted', 'declined', 'dead'].includes(lead.status);
                 const feedback = actionFeedback?.id === lead.id ? actionFeedback : null;
+                const pendingFollowUp = approvalByLeadId.get(lead.id) || null;
                 // Data integrity: status claims pre-send but sent_at is set, OR status claims post-send but no contact exists
                 const preSendStatuses = ['researched', 'verified', 'qualified', 'outreach_drafted', 'outreach_approved'];
                 const postSendStatuses = ['contacted', 'replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'];
@@ -669,11 +788,19 @@ export default function OutreachPage() {
                       <div className="flex items-center gap-2">
                         <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>&#9654;</span>
                         <div>
-                          <div className="font-medium text-gray-900 flex items-center gap-1.5">
+                          <div className="font-medium text-gray-900 flex items-center gap-1.5 flex-wrap">
                             {integrityIssue && (
                               <span title={integrityIssue} className="text-amber-600 text-xs" aria-label="Data integrity issue">&#9888;</span>
                             )}
                             {lead.business_name}
+                            {pendingFollowUp && (
+                              <span
+                                className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-medium"
+                                title={`Follow-up #${pendingFollowUp.metadata.followUpNumber || '?'} drafted, awaiting approval`}
+                              >
+                                Follow-up ready
+                              </span>
+                            )}
                           </div>
                           <div className="text-xs text-gray-400">
                             {lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}
@@ -753,6 +880,67 @@ export default function OutreachPage() {
                         {feedback && (
                           <div className={`mb-4 px-4 py-2 rounded-lg text-sm font-medium ${feedback.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                             {feedback.message}
+                          </div>
+                        )}
+
+                        {/* Pending follow-up draft (from approval queue) */}
+                        {pendingFollowUp && (
+                          <div className="mb-4 border-2 border-blue-300 bg-blue-50 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="text-sm font-semibold text-blue-900">
+                                Pending Follow-up{pendingFollowUp.metadata.followUpNumber ? ` #${pendingFollowUp.metadata.followUpNumber}` : ''}
+                              </h4>
+                              <span className="text-xs text-blue-600">
+                                Drafted {new Date(pendingFollowUp.created).toLocaleString()}
+                              </span>
+                            </div>
+                            {editingFollowUp === pendingFollowUp.id ? (
+                              <div>
+                                <textarea
+                                  value={followUpEditValue}
+                                  onChange={e => setFollowUpEditValue(e.target.value)}
+                                  rows={12}
+                                  className="w-full px-3 py-2 border rounded-lg text-sm font-mono text-gray-900 bg-white focus:ring-2 focus:ring-blue-300 outline-none"
+                                />
+                                <div className="flex gap-2 mt-2">
+                                  <button onClick={() => handleSaveFollowUpEdit(pendingFollowUp, lead.id)} className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700">
+                                    Save & Approve
+                                  </button>
+                                  <button onClick={() => setEditingFollowUp(null)} className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300">
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="bg-white border border-blue-200 rounded p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-[300px] overflow-y-auto mb-3">
+                                  {pendingFollowUp.content}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  <button
+                                    onClick={() => handleApproveFollowUp(pendingFollowUp, lead.id)}
+                                    className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700"
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => { setEditingFollowUp(pendingFollowUp.id); setFollowUpEditValue(pendingFollowUp.content); }}
+                                    className="px-4 py-2 bg-blue-100 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-200"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectFollowUp(pendingFollowUp, lead.id)}
+                                    className="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200"
+                                  >
+                                    Reject
+                                  </button>
+                                </div>
+                                <p className="text-xs text-blue-600 mt-2">
+                                  Approving queues this for the next 10am PDT batch send (weekdays). Edit lets you tweak before approving.
+                                </p>
+                              </>
+                            )}
                           </div>
                         )}
 
