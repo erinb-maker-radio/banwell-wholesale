@@ -106,6 +106,9 @@ export default function OutreachPage() {
   const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([]);
   const [editingFollowUp, setEditingFollowUp] = useState<string | null>(null);
   const [followUpEditValue, setFollowUpEditValue] = useState('');
+  const [selectedFollowUps, setSelectedFollowUps] = useState<Set<string>>(new Set());
+  const [bulkRunning, setBulkRunning] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<string | null>(null);
   const [expandedLead, setExpandedLead] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -365,6 +368,94 @@ export default function OutreachPage() {
       const message = err instanceof Error ? err.message : String(err);
       setActionFeedback({ id: leadId, message: `Error: ${message}`, type: 'error' });
     }
+  }
+
+  function toggleFollowUpSelection(approvalId: string) {
+    setSelectedFollowUps(prev => {
+      const next = new Set(prev);
+      if (next.has(approvalId)) next.delete(approvalId);
+      else next.add(approvalId);
+      return next;
+    });
+  }
+
+  function selectAllVisiblePending() {
+    const visibleApprovalIds = allLeads
+      .map(l => approvalByLeadId.get(l.id)?.id)
+      .filter((id): id is string => !!id);
+    const allSelected = visibleApprovalIds.every(id => selectedFollowUps.has(id));
+    if (allSelected) {
+      setSelectedFollowUps(new Set());
+    } else {
+      setSelectedFollowUps(new Set(visibleApprovalIds));
+    }
+  }
+
+  async function handleBulkApprove() {
+    const ids = Array.from(selectedFollowUps);
+    if (ids.length === 0) return;
+    if (!confirm(`Approve ${ids.length} follow-up${ids.length === 1 ? '' : 's'}? They'll queue for the next 10am PDT batch send.`)) return;
+    setBulkRunning(true);
+    let ok = 0, fail = 0;
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
+      setBulkProgress(`Approving ${i + 1}/${ids.length}…`);
+      try {
+        const res = await fetch(`/api/outreach/approve/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}',
+        });
+        const json = await res.json();
+        if (json.success) {
+          ok++;
+          setPendingApprovals(prev => prev.filter(a => a.id !== id));
+        } else {
+          fail++;
+        }
+      } catch {
+        fail++;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    setSelectedFollowUps(new Set());
+    setBulkRunning(false);
+    setBulkProgress(`Done: ${ok} approved${fail > 0 ? `, ${fail} failed` : ''}`);
+    setTimeout(() => setBulkProgress(null), 8000);
+  }
+
+  async function handleBulkReject() {
+    const ids = Array.from(selectedFollowUps);
+    if (ids.length === 0) return;
+    const reason = prompt(`Reject ${ids.length} follow-up${ids.length === 1 ? '' : 's'}? (optional reason, applied to all)`);
+    if (reason === null) return;
+    setBulkRunning(true);
+    let ok = 0, fail = 0;
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
+      setBulkProgress(`Rejecting ${i + 1}/${ids.length}…`);
+      try {
+        const res = await fetch(`/api/outreach/approve/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'reject', reason }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          ok++;
+          setPendingApprovals(prev => prev.filter(a => a.id !== id));
+        } else {
+          fail++;
+        }
+      } catch {
+        fail++;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    setSelectedFollowUps(new Set());
+    setBulkRunning(false);
+    setBulkProgress(`Done: ${ok} rejected${fail > 0 ? `, ${fail} failed` : ''}`);
+    setTimeout(() => setBulkProgress(null), 8000);
   }
 
   async function handleRunFollowUp() {
@@ -691,7 +782,50 @@ export default function OutreachPage() {
         >
           {pendingApprovalsOnly ? `✓ Pending follow-ups (${pendingFollowUpCount})` : `Pending follow-ups (${pendingFollowUpCount})`}
         </button>
+        {pendingFollowUpCount > 0 && (
+          <button
+            onClick={selectAllVisiblePending}
+            className="px-3 py-2 border rounded-lg text-sm bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+            title="Select (or clear) all follow-ups in the current filter"
+          >
+            Select all visible
+          </button>
+        )}
       </div>
+
+      {/* Bulk action bar — visible when selections exist */}
+      {(selectedFollowUps.size > 0 || bulkProgress) && (
+        <div className="sticky top-0 z-10 mb-3 flex items-center justify-between gap-3 bg-blue-900 text-white px-4 py-3 rounded-lg shadow">
+          <div className="text-sm font-medium">
+            {bulkProgress
+              ? bulkProgress
+              : `${selectedFollowUps.size} follow-up${selectedFollowUps.size === 1 ? '' : 's'} selected`}
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleBulkApprove}
+              disabled={bulkRunning || selectedFollowUps.size === 0}
+              className="px-4 py-1.5 bg-green-500 hover:bg-green-400 text-white text-sm font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Approve {selectedFollowUps.size}
+            </button>
+            <button
+              onClick={handleBulkReject}
+              disabled={bulkRunning || selectedFollowUps.size === 0}
+              className="px-4 py-1.5 bg-red-500 hover:bg-red-400 text-white text-sm font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Reject {selectedFollowUps.size}
+            </button>
+            <button
+              onClick={() => setSelectedFollowUps(new Set())}
+              disabled={bulkRunning}
+              className="px-4 py-1.5 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Add Lead Form */}
       {showAddForm && (
@@ -794,12 +928,27 @@ export default function OutreachPage() {
                             )}
                             {lead.business_name}
                             {pendingFollowUp && (
-                              <span
-                                className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-medium"
-                                title={`Follow-up #${pendingFollowUp.metadata.followUpNumber || '?'} drafted, awaiting approval`}
-                              >
-                                Follow-up ready
-                              </span>
+                              <>
+                                <span
+                                  className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-medium"
+                                  title={`Follow-up #${pendingFollowUp.metadata.followUpNumber || '?'} drafted, awaiting approval`}
+                                >
+                                  Follow-up ready
+                                </span>
+                                <label
+                                  onClick={e => e.stopPropagation()}
+                                  className="inline-flex items-center gap-1 ml-1 text-xs text-gray-600 cursor-pointer select-none"
+                                  title="Select for batch approval"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedFollowUps.has(pendingFollowUp.id)}
+                                    onChange={() => toggleFollowUpSelection(pendingFollowUp.id)}
+                                    className="w-3.5 h-3.5"
+                                  />
+                                  select
+                                </label>
+                              </>
                             )}
                           </div>
                           <div className="text-xs text-gray-400">
@@ -886,10 +1035,20 @@ export default function OutreachPage() {
                         {/* Pending follow-up draft (from approval queue) */}
                         {pendingFollowUp && (
                           <div className="mb-4 border-2 border-blue-300 bg-blue-50 rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="text-sm font-semibold text-blue-900">
-                                Pending Follow-up{pendingFollowUp.metadata.followUpNumber ? ` #${pendingFollowUp.metadata.followUpNumber}` : ''}
-                              </h4>
+                            <div className="flex items-center justify-between mb-2 gap-3">
+                              <div className="flex items-center gap-2">
+                                <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedFollowUps.has(pendingFollowUp.id)}
+                                    onChange={() => toggleFollowUpSelection(pendingFollowUp.id)}
+                                    className="w-4 h-4"
+                                  />
+                                  <h4 className="text-sm font-semibold text-blue-900">
+                                    Pending Follow-up{pendingFollowUp.metadata.followUpNumber ? ` #${pendingFollowUp.metadata.followUpNumber}` : ''}
+                                  </h4>
+                                </label>
+                              </div>
                               <span className="text-xs text-blue-600">
                                 Drafted {new Date(pendingFollowUp.created).toLocaleString()}
                               </span>
