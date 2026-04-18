@@ -96,6 +96,8 @@ export default function OutreachPage() {
   const [editingResponseNotes, setEditingResponseNotes] = useState<string | null>(null);
   const [responseNotesValue, setResponseNotesValue] = useState('');
   const [actionFeedback, setActionFeedback] = useState<{ id: string; message: string; type: 'success' | 'error' } | null>(null);
+  const [runningPrep, setRunningPrep] = useState(false);
+  const [prepResult, setPrepResult] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLeads();
@@ -246,6 +248,28 @@ export default function OutreachPage() {
     fetchLeads();
   }
 
+  async function handleRunPrep() {
+    if (runningPrep) return;
+    setRunningPrep(true);
+    setPrepResult(null);
+    try {
+      const res = await fetch('/api/outreach/run-prep', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        setPrepResult(`Drafted ${json.drafted}/${json.total} leads`);
+        await fetchLeads();
+      } else {
+        setPrepResult(`Error: ${json.error || 'unknown'}`);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setPrepResult(`Error: ${message}`);
+    } finally {
+      setRunningPrep(false);
+      setTimeout(() => setPrepResult(null), 8000);
+    }
+  }
+
   async function handleSetFollowUp(lead: WholesaleLead, date: string) {
     await updateLead(lead.id, { next_follow_up: date });
     setActionFeedback({ id: lead.id, message: `Follow-up set for ${new Date(date).toLocaleDateString()}`, type: 'success' });
@@ -366,7 +390,15 @@ export default function OutreachPage() {
           (overdueCount > 0 ? ` \u2022 ${overdueCount} overdue follow-ups` : '')
         }
         actions={
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            {prepResult && (
+              <span className={`text-xs px-2 py-1 rounded ${prepResult.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                {prepResult}
+              </span>
+            )}
+            <Button variant="secondary" onClick={handleRunPrep} disabled={runningPrep}>
+              {runningPrep ? 'Drafting…' : 'Draft Qualified Leads'}
+            </Button>
             {draftReadyCount > 0 && (
               <Button variant="secondary" onClick={handleApproveAll}>
                 Approve All ({draftReadyCount})
