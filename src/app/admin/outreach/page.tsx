@@ -85,6 +85,7 @@ export default function OutreachPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [shopTypeFilter, setShopTypeFilter] = useState('all');
   const [channelFilter, setChannelFilter] = useState('all');
+  const [overdueOnly, setOverdueOnly] = useState(false);
   const [expandedLead, setExpandedLead] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -98,6 +99,8 @@ export default function OutreachPage() {
   const [actionFeedback, setActionFeedback] = useState<{ id: string; message: string; type: 'success' | 'error' } | null>(null);
   const [runningPrep, setRunningPrep] = useState(false);
   const [prepResult, setPrepResult] = useState<string | null>(null);
+  const [runningFollowUp, setRunningFollowUp] = useState(false);
+  const [followUpResult, setFollowUpResult] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLeads();
@@ -270,6 +273,27 @@ export default function OutreachPage() {
     }
   }
 
+  async function handleRunFollowUp() {
+    if (runningFollowUp) return;
+    setRunningFollowUp(true);
+    setFollowUpResult(null);
+    try {
+      const res = await fetch('/api/outreach/run-followup', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        setFollowUpResult(`Drafted ${json.drafted}/${json.overdue} follow-ups — review in Approvals`);
+      } else {
+        setFollowUpResult(`Error: ${json.error || 'unknown'}`);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setFollowUpResult(`Error: ${message}`);
+    } finally {
+      setRunningFollowUp(false);
+      setTimeout(() => setFollowUpResult(null), 10000);
+    }
+  }
+
   async function handleSetFollowUp(lead: WholesaleLead, date: string) {
     await updateLead(lead.id, { next_follow_up: date });
     setActionFeedback({ id: lead.id, message: `Follow-up set for ${new Date(date).toLocaleDateString()}`, type: 'success' });
@@ -366,8 +390,17 @@ export default function OutreachPage() {
     else if (channelFilter === 'instagram_dm') filtered = filtered.filter(l => l.outreach_channel === 'instagram_dm' || (!l.contact_email && l.contact_instagram));
     else if (channelFilter === 'form') filtered = filtered.filter(l => l.outreach_channel === 'form');
     else if (channelFilter === 'no_email') filtered = filtered.filter(l => !l.contact_email);
+    // Overdue follow-up filter
+    if (overdueOnly) {
+      const today = new Date().toISOString().split('T')[0];
+      filtered = filtered.filter(l =>
+        l.next_follow_up &&
+        l.next_follow_up.split('T')[0] <= today &&
+        !['converted', 'declined', 'dead'].includes(l.status)
+      );
+    }
     return filtered;
-  }, [leads, statusFilter, shopTypeFilter, searchQuery, channelFilter]);
+  }, [leads, statusFilter, shopTypeFilter, searchQuery, channelFilter, overdueOnly]);
 
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
@@ -390,15 +423,25 @@ export default function OutreachPage() {
           (overdueCount > 0 ? ` \u2022 ${overdueCount} overdue follow-ups` : '')
         }
         actions={
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center flex-wrap">
             {prepResult && (
               <span className={`text-xs px-2 py-1 rounded ${prepResult.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
                 {prepResult}
               </span>
             )}
+            {followUpResult && (
+              <span className={`text-xs px-2 py-1 rounded ${followUpResult.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                {followUpResult}
+              </span>
+            )}
             <Button variant="secondary" onClick={handleRunPrep} disabled={runningPrep}>
               {runningPrep ? 'Drafting…' : 'Draft Qualified Leads'}
             </Button>
+            {overdueCount > 0 && (
+              <Button variant="secondary" onClick={handleRunFollowUp} disabled={runningFollowUp}>
+                {runningFollowUp ? 'Drafting follow-ups…' : `Draft Follow-ups (${overdueCount})`}
+              </Button>
+            )}
             {draftReadyCount > 0 && (
               <Button variant="secondary" onClick={handleApproveAll}>
                 Approve All ({draftReadyCount})
@@ -523,6 +566,13 @@ export default function OutreachPage() {
           <option value="form">Form Only</option>
           <option value="no_email">No Email</option>
         </select>
+        <button
+          onClick={() => setOverdueOnly(!overdueOnly)}
+          className={`px-3 py-2 border rounded-lg text-sm transition-colors ${overdueOnly ? 'bg-red-100 border-red-300 text-red-800 font-medium' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+          title="Show only leads with an overdue follow-up date"
+        >
+          {overdueOnly ? `✓ Overdue only (${overdueCount})` : `Overdue only (${overdueCount})`}
+        </button>
       </div>
 
       {/* Add Lead Form */}
