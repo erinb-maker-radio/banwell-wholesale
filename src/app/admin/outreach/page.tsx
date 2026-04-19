@@ -1461,6 +1461,131 @@ export default function OutreachPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Mobile Filter Modal */}
+      {showMobileFilters && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowMobileFilters(false)}
+          />
+
+          {/* Modal */}
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[80vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Filters</h3>
+              <button
+                onClick={() => setShowMobileFilters(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              {/* Status Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select
+                  value={statusFilter}
+                  onChange={e => setStatusFilter(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg text-base text-gray-900 bg-white"
+                >
+                  <option value="all">All Statuses</option>
+                  {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Shop Type Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Shop Type</label>
+                <select
+                  value={shopTypeFilter}
+                  onChange={e => setShopTypeFilter(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg text-base text-gray-900 bg-white"
+                >
+                  <option value="all">All Shop Types</option>
+                  <option value="gothic">Gothic</option>
+                  <option value="metaphysical">Metaphysical</option>
+                  <option value="museum">Museum</option>
+                  <option value="chain">Chain</option>
+                  <option value="boutique">Boutique</option>
+                  <option value="ren_faire">Ren Faire</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              {/* Channel Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Channel</label>
+                <select
+                  value={channelFilter}
+                  onChange={e => setChannelFilter(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg text-base text-gray-900 bg-white"
+                >
+                  <option value="all">All Channels</option>
+                  <option value="email">Email Only</option>
+                  <option value="instagram_dm">IG DM Only</option>
+                  <option value="form">Form Only</option>
+                  <option value="no_email">No Email</option>
+                </select>
+              </div>
+
+              {/* Checkboxes */}
+              <div className="space-y-3 pt-2">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={overdueOnly}
+                    onChange={e => setOverdueOnly(e.target.checked)}
+                    className="w-5 h-5 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                  />
+                  <span className="text-base text-gray-700">
+                    Overdue only ({overdueCount})
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={pendingApprovalsOnly}
+                    onChange={e => setPendingApprovalsOnly(e.target.checked)}
+                    className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-base text-gray-700">
+                    Pending follow-ups ({pendingFollowUpCount})
+                  </span>
+                </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    setStatusFilter('all');
+                    setShopTypeFilter('all');
+                    setChannelFilter('all');
+                    setOverdueOnly(false);
+                    setPendingApprovalsOnly(false);
+                  }}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-base font-medium text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Clear All
+                </button>
+                <button
+                  onClick={() => setShowMobileFilters(false)}
+                  className="flex-1 px-4 py-3 rounded-lg text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
