@@ -636,42 +636,90 @@ export default function OutreachPage() {
                 {followUpResult}
               </span>
             )}
-            <Button variant="secondary" onClick={handleRunPrep} disabled={runningPrep}>
-              {runningPrep ? 'Drafting…' : 'Draft Qualified Leads'}
-            </Button>
-            {overdueCount > 0 && (
-              <Button variant="secondary" onClick={handleRunFollowUp} disabled={runningFollowUp}>
-                {runningFollowUp ? 'Drafting follow-ups…' : `Draft Follow-ups (${overdueCount})`}
+            {/* Mobile: Show only primary actions */}
+            <div className="flex md:hidden gap-2 flex-wrap">
+              {draftReadyCount > 0 && (
+                <Button variant="secondary" onClick={handleApproveAll} className="flex-1">
+                  ✓ Approve ({draftReadyCount})
+                </Button>
+              )}
+              <Button onClick={() => setShowAddForm(!showAddForm)} className="flex-1">
+                + Add
               </Button>
-            )}
-            {draftReadyCount > 0 && (
-              <Button variant="secondary" onClick={handleApproveAll}>
-                Approve All ({draftReadyCount})
+              {(overdueCount > 0 || runningPrep) && (
+                <button
+                  onClick={handleRunFollowUp}
+                  disabled={runningFollowUp}
+                  className="px-3 py-2 border rounded-lg text-sm bg-white hover:bg-gray-50 disabled:opacity-50"
+                  title="Draft follow-ups"
+                >
+                  ⋮
+                </button>
+              )}
+            </div>
+
+            {/* Desktop: Show all actions */}
+            <div className="hidden md:flex gap-2 flex-wrap">
+              <Button variant="secondary" onClick={handleRunPrep} disabled={runningPrep}>
+                {runningPrep ? 'Drafting…' : 'Draft Qualified Leads'}
               </Button>
-            )}
-            <Button onClick={() => setShowAddForm(!showAddForm)}>
-              + Add Lead
-            </Button>
+              {overdueCount > 0 && (
+                <Button variant="secondary" onClick={handleRunFollowUp} disabled={runningFollowUp}>
+                  {runningFollowUp ? 'Drafting follow-ups…' : `Draft Follow-ups (${overdueCount})`}
+                </Button>
+              )}
+              {draftReadyCount > 0 && (
+                <Button variant="secondary" onClick={handleApproveAll}>
+                  Approve All ({draftReadyCount})
+                </Button>
+              )}
+              <Button onClick={() => setShowAddForm(!showAddForm)}>
+                + Add Lead
+              </Button>
+            </div>
           </div>
         }
       />
 
       {/* Pipeline — Outreach Funnel */}
-      <div className="grid grid-cols-5 gap-2 md:gap-3 mb-3">
+      {/* Mobile: 2-column, top 4 metrics only */}
+      <div className="grid grid-cols-2 gap-3 mb-3 md:hidden">
+        {['qualified', 'outreach_drafted', 'contacted'].map(stage => (
+          <button
+            key={stage}
+            onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
+            className={`rounded-lg p-4 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+          >
+            <div className="text-3xl font-bold mb-1">{pipelineCounts[stage] || 0}</div>
+            <div className="text-sm font-medium">{STATUS_LABELS[stage]}</div>
+          </button>
+        ))}
+        {/* Overdue count as 4th metric on mobile */}
+        <button
+          onClick={() => setOverdueOnly(!overdueOnly)}
+          className={`rounded-lg p-4 text-center transition-colors ${overdueOnly ? 'ring-2 ring-red-500 bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}
+        >
+          <div className="text-3xl font-bold mb-1">{overdueCount}</div>
+          <div className="text-sm font-medium">Overdue</div>
+        </button>
+      </div>
+
+      {/* Desktop: Original 5-column layout */}
+      <div className="hidden md:grid grid-cols-5 gap-3 mb-3">
         {PIPELINE_FUNNEL.map(stage => (
           <button
             key={stage}
             onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
-            className={`rounded-lg p-2 md:p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+            className={`rounded-lg p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
           >
-            <div className="text-xl md:text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
-            <div className="text-[10px] md:text-xs font-medium">{STATUS_LABELS[stage]}</div>
+            <div className="text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
+            <div className="text-xs font-medium">{STATUS_LABELS[stage]}</div>
           </button>
         ))}
       </div>
 
-      {/* Pipeline — After Reply (two tracks + outcomes) */}
-      <div className="grid grid-cols-[3fr_2fr_2fr] gap-3 mb-6">
+      {/* Pipeline — After Reply (two tracks + outcomes) - Hidden on mobile */}
+      <div className="hidden md:grid grid-cols-[3fr_2fr_2fr] gap-3 mb-6">
         {/* Path A: Direct */}
         <div className="border border-green-200 rounded-lg p-2 bg-green-50/30">
           <div className="text-[10px] font-semibold text-green-600 uppercase tracking-wider mb-1.5 px-1">Direct</div>
@@ -909,9 +957,55 @@ export default function OutreachPage() {
 
                 return (
                   <div key={lead.id}>
-                    {/* Main row */}
+                    {/* Mobile Card View */}
                     <div
-                      className={`grid grid-cols-1 md:grid-cols-[1fr_90px_100px_50px_120px_100px_80px] gap-2 md:gap-0 items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors text-sm ${isExpanded ? 'bg-blue-50/50' : ''}`}
+                      className={`md:hidden p-4 border-b cursor-pointer transition-colors ${isExpanded ? 'bg-blue-50' : 'bg-white hover:bg-gray-50'}`}
+                      onClick={() => {
+                        setExpandedLead(isExpanded ? null : lead.id);
+                        setEditingDraft(null);
+                        setEditingNotes(null);
+                        setEditingResponseNotes(null);
+                      }}
+                    >
+                      {/* Business Name & Status */}
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex-1">
+                          <div className="font-semibold text-base text-gray-900 mb-1 flex items-center gap-2">
+                            <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>▶</span>
+                            {lead.business_name}
+                          </div>
+                          <div className="text-sm text-gray-500">{lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}</div>
+                        </div>
+                        <div className={`px-2 py-1 rounded text-xs font-medium ${STATUS_COLORS[lead.status] || 'bg-gray-100'}`}>
+                          {STATUS_LABELS[lead.status]}
+                        </div>
+                      </div>
+
+                      {/* Products & Shop Type */}
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{lead.shop_type}</span>
+                        {(lead.product_fit || []).slice(0, 2).map(p => (
+                          <span key={p} className={`text-xs px-2 py-1 rounded ${p === 'glass' ? 'bg-blue-50 text-blue-600' : p === 'leather' ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-600'}`}>{p}</span>
+                        ))}
+                      </div>
+
+                      {/* Follow-up Badge or Date */}
+                      {pendingFollowUp ? (
+                        <div className="mt-2">
+                          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm font-medium">
+                            Follow-up ready
+                          </span>
+                        </div>
+                      ) : isOverdue ? (
+                        <div className="mt-2 text-sm text-red-600 font-medium">
+                          Follow-up overdue: {new Date(lead.next_follow_up!).toLocaleDateString()}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {/* Desktop Table Row */}
+                    <div
+                      className={`hidden md:grid grid-cols-[1fr_90px_100px_50px_120px_100px_80px] gap-0 items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors text-sm ${isExpanded ? 'bg-blue-50/50' : ''}`}
                       onClick={() => {
                         setExpandedLead(isExpanded ? null : lead.id);
                         setEditingDraft(null);
