@@ -53,7 +53,7 @@ const STATUS_LABELS: Record<string, string> = {
   researched: 'Researched',
   verified: 'Verified',
   qualified: 'Qualified',
-  outreach_drafted: 'Draft Ready',
+  outreach_drafted: '1st Contact Draft Ready',
   outreach_approved: 'Approved',
   contacted: 'Contacted',
   replied: 'Replied',
