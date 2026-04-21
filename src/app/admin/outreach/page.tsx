@@ -588,10 +588,14 @@ export default function OutreachPage() {
     // Shop type filter
     if (shopTypeFilter !== 'all') filtered = filtered.filter(l => l.shop_type === shopTypeFilter);
     // Channel filter
-    if (channelFilter === 'email') filtered = filtered.filter(l => l.contact_email);
-    else if (channelFilter === 'instagram_dm') filtered = filtered.filter(l => l.outreach_channel === 'instagram_dm' || (!l.contact_email && l.contact_instagram));
+    if (channelFilter === 'email') filtered = filtered.filter(l => l.outreach_channel === 'email' || (!l.outreach_channel && l.contact_email));
+    else if (channelFilter === 'instagram_dm') filtered = filtered.filter(l => l.outreach_channel === 'instagram_dm' || (!l.outreach_channel && !l.contact_email && l.contact_instagram));
     else if (channelFilter === 'form') filtered = filtered.filter(l => l.outreach_channel === 'form');
     else if (channelFilter === 'no_email') filtered = filtered.filter(l => !l.contact_email);
+    // Defensive: when viewing 1st-contact drafts, exclude any lead that also has a pending follow-up
+    if (statusFilter === 'outreach_drafted') {
+      filtered = filtered.filter(l => !approvalByLeadId.has(l.id));
+    }
     // Overdue follow-up filter
     if (overdueOnly) {
       const today = new Date().toISOString().split('T')[0];
@@ -614,10 +618,32 @@ export default function OutreachPage() {
     return leads.filter(l => l.next_follow_up && l.next_follow_up.split('T')[0] <= now && !['converted', 'declined', 'dead'].includes(l.status)).length;
   }, [leads]);
 
-  // Draft ready count for header
+  // Draft ready count for header (total across all channels)
   const draftReadyCount = useMemo(() => {
     return leads.filter(l => l.status === 'outreach_drafted').length;
   }, [leads]);
+
+  // Channel-specific 1st-contact draft counts
+  const emailDraftCount = useMemo(() =>
+    leads.filter(l => l.status === 'outreach_drafted' && (l.outreach_channel === 'email' || (!l.outreach_channel && l.contact_email))).length
+  , [leads]);
+  const formDraftCount = useMemo(() =>
+    leads.filter(l => l.status === 'outreach_drafted' && l.outreach_channel === 'form').length
+  , [leads]);
+  const igDraftCount = useMemo(() =>
+    leads.filter(l => l.status === 'outreach_drafted' && l.outreach_channel === 'instagram_dm').length
+  , [leads]);
+
+  function activateDraftChannelFilter(channel: 'email' | 'form' | 'instagram_dm') {
+    const wasActive = statusFilter === 'outreach_drafted' && channelFilter === channel;
+    if (wasActive) {
+      setStatusFilter('all');
+      setChannelFilter('all');
+    } else {
+      setStatusFilter('outreach_drafted');
+      setChannelFilter(channel);
+    }
+  }
 
   return (
     <div>
@@ -708,18 +734,43 @@ export default function OutreachPage() {
         </button>
       </div>
 
-      {/* Desktop: Original 5-column layout */}
+      {/* Desktop: Original 5-column layout (middle stage splits into 3 channel sub-buttons) */}
       <div className="hidden md:grid grid-cols-5 gap-3 mb-3">
-        {PIPELINE_FUNNEL.map(stage => (
-          <button
-            key={stage}
-            onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
-            className={`rounded-lg p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
-          >
-            <div className="text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
-            <div className="text-xs font-medium">{STATUS_LABELS[stage]}</div>
-          </button>
-        ))}
+        {PIPELINE_FUNNEL.map(stage => {
+          if (stage === 'outreach_drafted') {
+            const activeChannel = statusFilter === 'outreach_drafted' ? channelFilter : null;
+            const subButton = (ch: 'email' | 'form' | 'instagram_dm', label: string, count: number, color: string) => (
+              <button
+                key={ch}
+                onClick={() => activateDraftChannelFilter(ch)}
+                className={`w-full flex items-center justify-between px-2 py-1 rounded text-xs font-medium transition-colors ${activeChannel === ch ? 'ring-2 ring-blue-500 ' : ''}${color}`}
+              >
+                <span>{label}</span>
+                <span className="font-bold">{count}</span>
+              </button>
+            );
+            return (
+              <div key="drafts" className="rounded-lg p-2 bg-yellow-50 border border-yellow-200">
+                <div className="text-[10px] text-yellow-800 text-center font-semibold uppercase tracking-wider mb-1.5">1st Contact Drafts</div>
+                <div className="flex flex-col gap-1">
+                  {subButton('email', 'Email', emailDraftCount, 'bg-white hover:bg-yellow-100 text-yellow-900')}
+                  {subButton('form', 'Form', formDraftCount, 'bg-white hover:bg-blue-50 text-blue-700')}
+                  {subButton('instagram_dm', 'IG DM', igDraftCount, 'bg-white hover:bg-pink-50 text-pink-700')}
+                </div>
+              </div>
+            );
+          }
+          return (
+            <button
+              key={stage}
+              onClick={() => setStatusFilter(statusFilter === stage ? 'all' : stage)}
+              className={`rounded-lg p-3 text-center transition-colors ${statusFilter === stage ? 'ring-2 ring-blue-500' : ''} ${STATUS_COLORS[stage] || 'bg-gray-100 text-gray-700'}`}
+            >
+              <div className="text-2xl font-bold">{pipelineCounts[stage] || 0}</div>
+              <div className="text-xs font-medium">{STATUS_LABELS[stage]}</div>
+            </button>
+          );
+        })}
       </div>
 
       {/* Pipeline — After Reply (two tracks + outcomes) - Hidden on mobile */}
