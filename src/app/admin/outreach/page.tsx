@@ -156,8 +156,9 @@ export default function OutreachPage() {
     setLoading(false);
   }
 
-  async function updateLead(id: string, updates: Partial<WholesaleLead>) {
-    const res = await fetch('/api/leads/' + id, {
+  async function updateLead(id: string, updates: Partial<WholesaleLead>, opts?: { force?: boolean }) {
+    const url = '/api/leads/' + id + (opts?.force ? '?force=true' : '');
+    const res = await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
@@ -166,6 +167,8 @@ export default function OutreachPage() {
     if (json.success) {
       // Update local state immediately for responsiveness
       setLeads(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
+    } else if (json.error) {
+      setActionFeedback({ id, message: json.error, type: 'error' });
     }
     return json;
   }
@@ -199,7 +202,7 @@ export default function OutreachPage() {
   }
 
   async function handleRequestNewDraft(lead: WholesaleLead) {
-    await updateLead(lead.id, { status: 'qualified', outreach_draft: '' });
+    await updateLead(lead.id, { status: 'qualified', outreach_draft: '' }, { force: true });
     setActionFeedback({ id: lead.id, message: 'Sent back for re-drafting', type: 'success' });
     fetchLeads();
   }
