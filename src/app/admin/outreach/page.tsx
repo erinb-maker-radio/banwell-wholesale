@@ -103,6 +103,7 @@ export default function OutreachPage() {
   const [channelFilter, setChannelFilter] = useState('all');
   const [overdueOnly, setOverdueOnly] = useState(false);
   const [pendingApprovalsOnly, setPendingApprovalsOnly] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([]);
   const [editingFollowUp, setEditingFollowUp] = useState<string | null>(null);
   const [followUpEditValue, setFollowUpEditValue] = useState('');
