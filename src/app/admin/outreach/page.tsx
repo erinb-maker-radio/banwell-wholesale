@@ -125,6 +125,10 @@ export default function OutreachPage() {
   const [prepResult, setPrepResult] = useState<string | null>(null);
   const [runningFollowUp, setRunningFollowUp] = useState(false);
   const [followUpResult, setFollowUpResult] = useState<string | null>(null);
+  const [runningResearch, setRunningResearch] = useState(false);
+  const [researchResult, setResearchResult] = useState<string | null>(null);
+  const [runningQualify, setRunningQualify] = useState(false);
+  const [qualifyResult, setQualifyResult] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLeads();
@@ -462,6 +466,48 @@ export default function OutreachPage() {
     setTimeout(() => setBulkProgress(null), 8000);
   }
 
+  async function handleRunResearch() {
+    if (runningResearch) return;
+    setRunningResearch(true);
+    setResearchResult(null);
+    try {
+      const res = await fetch('/api/outreach/run-research', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        setResearchResult(json.message || 'Research started');
+      } else {
+        setResearchResult(`Error: ${json.error || 'unknown'}`);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setResearchResult(`Error: ${message}`);
+    } finally {
+      setRunningResearch(false);
+      setTimeout(() => setResearchResult(null), 20000);
+    }
+  }
+
+  async function handleRunQualify() {
+    if (runningQualify) return;
+    setRunningQualify(true);
+    setQualifyResult(null);
+    try {
+      const res = await fetch('/api/outreach/run-qualify', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        setQualifyResult(json.message || 'Qualify started');
+      } else {
+        setQualifyResult(`Error: ${json.error || 'unknown'}`);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setQualifyResult(`Error: ${message}`);
+    } finally {
+      setRunningQualify(false);
+      setTimeout(() => setQualifyResult(null), 15000);
+    }
+  }
+
   async function handleRunFollowUp() {
     if (runningFollowUp) return;
     setRunningFollowUp(true);
@@ -666,6 +712,16 @@ export default function OutreachPage() {
                 {followUpResult}
               </span>
             )}
+            {researchResult && (
+              <span className={`text-xs px-2 py-1 rounded max-w-md ${researchResult.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
+                {researchResult}
+              </span>
+            )}
+            {qualifyResult && (
+              <span className={`text-xs px-2 py-1 rounded max-w-md ${qualifyResult.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-indigo-100 text-indigo-700'}`}>
+                {qualifyResult}
+              </span>
+            )}
             {/* Mobile: Show only primary actions */}
             <div className="flex md:hidden gap-2 flex-wrap">
               {draftReadyCount > 0 && (
@@ -690,6 +746,12 @@ export default function OutreachPage() {
 
             {/* Desktop: Show all actions */}
             <div className="hidden md:flex gap-2 flex-wrap">
+              <Button variant="secondary" onClick={handleRunResearch} disabled={runningResearch}>
+                {runningResearch ? 'Starting…' : 'Research New Leads'}
+              </Button>
+              <Button variant="secondary" onClick={handleRunQualify} disabled={runningQualify}>
+                {runningQualify ? 'Starting…' : 'Qualify Researched'}
+              </Button>
               <Button variant="secondary" onClick={handleRunPrep} disabled={runningPrep}>
                 {runningPrep ? 'Drafting…' : 'Draft Qualified Leads'}
               </Button>
