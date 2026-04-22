@@ -661,7 +661,7 @@ export default function OutreachPage() {
   // Overdue follow-ups
   const overdueCount = useMemo(() => {
     const now = new Date().toISOString().split('T')[0];
-    return leads.filter(l => l.next_follow_up && l.next_follow_up.split('T')[0] <= now && !['converted', 'declined', 'dead'].includes(l.status)).length;
+    return leads.filter(l => l.next_follow_up && l.next_follow_up.split('T')[0] <= now && !['converted', 'declined', 'dead', 'outreach_drafted', 'outreach_approved'].includes(l.status)).length;
   }, [leads]);
 
   // Draft ready count for header (total across all channels)
@@ -671,14 +671,18 @@ export default function OutreachPage() {
 
   // Channel-specific 1st-contact draft counts
   const emailDraftCount = useMemo(() =>
-    leads.filter(l => l.status === 'outreach_drafted' && (l.outreach_channel === 'email' || (!l.outreach_channel && l.contact_email))).length
+    leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) === 0 && (l.outreach_channel === 'email' || (!l.outreach_channel && l.contact_email))).length
   , [leads]);
   const formDraftCount = useMemo(() =>
-    leads.filter(l => l.status === 'outreach_drafted' && l.outreach_channel === 'form').length
+    leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) === 0 && l.outreach_channel === 'form').length
   , [leads]);
   const igDraftCount = useMemo(() =>
-    leads.filter(l => l.status === 'outreach_drafted' && l.outreach_channel === 'instagram_dm').length
+    leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) === 0 && l.outreach_channel === 'instagram_dm').length
   , [leads]);
+  const followUpDraftCount = useMemo(() =>
+    leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) > 0).length
+  , [leads]);
+  const firstContactDraftCount = emailDraftCount + formDraftCount + igDraftCount;
 
   function activateDraftChannelFilter(channel: 'email' | 'form' | 'instagram_dm') {
     const wasActive = statusFilter === 'outreach_drafted' && channelFilter === channel;
@@ -697,7 +701,8 @@ export default function OutreachPage() {
         title="Wholesale Outreach"
         description={
           `${leads.filter(l => l.status !== 'dead' && l.status !== 'declined').length} active leads` +
-          (draftReadyCount > 0 ? ` \u2022 ${draftReadyCount} drafts to review` : '') +
+          (firstContactDraftCount > 0 ? ` \u2022 ${firstContactDraftCount} 1st-contact drafts` : '') +
+          (followUpDraftCount > 0 ? ` \u2022 ${followUpDraftCount} follow-up drafts` : '') +
           (overdueCount > 0 ? ` \u2022 ${overdueCount} overdue follow-ups` : '')
         }
         actions={
@@ -813,11 +818,15 @@ export default function OutreachPage() {
             );
             return (
               <div key="drafts" className="rounded-lg p-2 bg-yellow-50 border border-yellow-200">
-                <div className="text-[10px] text-yellow-800 text-center font-semibold uppercase tracking-wider mb-1.5">1st Contact Drafts</div>
+                <div className="text-[10px] text-yellow-800 text-center font-semibold uppercase tracking-wider mb-1.5">Drafts Ready</div>
                 <div className="flex flex-col gap-1">
-                  {subButton('email', 'Email', emailDraftCount, 'bg-white hover:bg-yellow-100 text-yellow-900')}
-                  {subButton('form', 'Form', formDraftCount, 'bg-white hover:bg-blue-50 text-blue-700')}
-                  {subButton('instagram_dm', 'IG DM', igDraftCount, 'bg-white hover:bg-pink-50 text-pink-700')}
+                  {subButton('email', '1st Email', emailDraftCount, 'bg-white hover:bg-yellow-100 text-yellow-900')}
+                  {subButton('form', '1st Form', formDraftCount, 'bg-white hover:bg-blue-50 text-blue-700')}
+                  {subButton('instagram_dm', '1st IG DM', igDraftCount, 'bg-white hover:bg-pink-50 text-pink-700')}
+                  <div className="w-full flex items-center justify-between px-2 py-1 rounded text-xs font-medium bg-white text-purple-700">
+                    <span>Follow-up</span>
+                    <span className="font-bold">{followUpDraftCount}</span>
+                  </div>
                 </div>
               </div>
             );
@@ -1058,13 +1067,13 @@ export default function OutreachPage() {
             <div className="divide-y">
               {allLeads.map(lead => {
                 const isExpanded = expandedLead === lead.id;
-                const isOverdue = lead.next_follow_up && lead.next_follow_up.split('T')[0] <= new Date().toISOString().split('T')[0] && !['converted', 'declined', 'dead'].includes(lead.status);
+                const isOverdue = lead.next_follow_up && lead.next_follow_up.split('T')[0] <= new Date().toISOString().split('T')[0] && !['converted', 'declined', 'dead', 'outreach_drafted', 'outreach_approved'].includes(lead.status);
                 const feedback = actionFeedback?.id === lead.id ? actionFeedback : null;
                 const pendingFollowUp = approvalByLeadId.get(lead.id) || null;
                 // Data integrity: status claims pre-send but sent_at is set, OR status claims post-send but no contact exists
                 const preSendStatuses = ['researched', 'verified', 'qualified', 'outreach_drafted', 'outreach_approved'];
                 const postSendStatuses = ['contacted', 'replied', 'application_required', 'application_submitted', 'samples_requested', 'samples_sent', 'follow_up_1', 'follow_up_2', 'follow_up_3'];
-                const inconsistentSent = preSendStatuses.includes(lead.status) && !!lead.outreach_sent_at;
+                const inconsistentSent = preSendStatuses.includes(lead.status) && !!lead.outreach_sent_at && (lead.follow_up_count || 0) === 0;
                 const inconsistentContact = postSendStatuses.includes(lead.status) && !lead.contact_email && !lead.contact_instagram && lead.outreach_channel !== 'form';
                 const integrityIssue = inconsistentSent
                   ? `Status is "${STATUS_LABELS[lead.status]}" but outreach was already sent on ${new Date(lead.outreach_sent_at).toLocaleDateString()}. Either revert sent_at (if send didn't actually happen) or advance status to Contacted.`
@@ -1094,7 +1103,9 @@ export default function OutreachPage() {
                           <div className="text-sm text-gray-500">{lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}</div>
                         </div>
                         <div className={`px-2 py-1 rounded text-xs font-medium ${STATUS_COLORS[lead.status] || 'bg-gray-100'}`}>
-                          {STATUS_LABELS[lead.status]}
+                          {lead.status === 'outreach_drafted' && (lead.follow_up_count || 0) > 0
+                            ? `Follow-up #${lead.follow_up_count} Draft Ready`
+                            : STATUS_LABELS[lead.status]}
                         </div>
                       </div>
 
@@ -1138,6 +1149,14 @@ export default function OutreachPage() {
                               <span title={integrityIssue} className="text-amber-600 text-xs" aria-label="Data integrity issue">&#9888;</span>
                             )}
                             {lead.business_name}
+                            {lead.status === 'outreach_drafted' && (lead.follow_up_count || 0) > 0 && (
+                              <span
+                                className="ml-1 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-medium"
+                                title={`Follow-up #${lead.follow_up_count} draft ready to approve`}
+                              >
+                                Follow-up #{lead.follow_up_count}
+                              </span>
+                            )}
                             {pendingFollowUp && (
                               <>
                                 <span
