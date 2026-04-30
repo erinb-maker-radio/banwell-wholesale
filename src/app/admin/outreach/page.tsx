@@ -1383,6 +1383,8 @@ export default function OutreachPage() {
                                   )}
                                 </div>
 
+                                {/* Hide follow-up scheduling for application_required leads (no email follow-ups) */}
+                                {lead.status !== 'application_required' && (
                                 <div className="mt-3 flex items-center gap-2">
                                   <label className="text-xs text-gray-500">Next follow-up:</label>
                                   <input
@@ -1392,6 +1394,7 @@ export default function OutreachPage() {
                                     className="text-xs px-2 py-1 border rounded text-gray-900 bg-white"
                                   />
                                 </div>
+                                )}
 
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   {lead.status === 'contacted' && (
