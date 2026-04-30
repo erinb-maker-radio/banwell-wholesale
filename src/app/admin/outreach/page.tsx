@@ -294,11 +294,16 @@ export default function OutreachPage() {
   }
 
   async function handleNoFormFound(lead: WholesaleLead) {
-    if (!confirm(`Mark "${lead.business_name}" as dead? (No valid vendor form found)`)) return;
+    if (!confirm(`Send "${lead.business_name}" back to research? (Vendor form link invalid - will try different outreach method)`)) return;
     const timestamp = new Date().toLocaleString();
-    const note = `[${timestamp}] No valid vendor form found at provided link. Marked as dead.\n\n${lead.notes || ''}`;
-    await updateLead(lead.id, { status: 'dead', notes: note });
-    setActionFeedback({ id: lead.id, message: 'Marked as dead - no form found', type: 'success' });
+    const note = `[${timestamp}] VENDOR FORM APPROACH FAILED - form link was invalid/not found. Sent back to research for alternate outreach method (try email/IG instead).\n\n${lead.notes || ''}`;
+    await updateLead(lead.id, {
+      status: 'researched',
+      notes: note,
+      outreach_channel: '',
+      outreach_draft: ''
+    });
+    setActionFeedback({ id: lead.id, message: 'Sent back to research - will try different approach', type: 'success' });
     fetchLeads();
   }
 
