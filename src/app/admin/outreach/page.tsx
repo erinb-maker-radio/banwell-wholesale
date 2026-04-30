@@ -293,6 +293,15 @@ export default function OutreachPage() {
     fetchLeads();
   }
 
+  async function handleNoFormFound(lead: WholesaleLead) {
+    if (!confirm(`Mark "${lead.business_name}" as dead? (No valid vendor form found)`)) return;
+    const timestamp = new Date().toLocaleString();
+    const note = `[${timestamp}] No valid vendor form found at provided link. Marked as dead.\n\n${lead.notes || ''}`;
+    await updateLead(lead.id, { status: 'dead', notes: note });
+    setActionFeedback({ id: lead.id, message: 'Marked as dead - no form found', type: 'success' });
+    fetchLeads();
+  }
+
   async function handleRunPrep() {
     if (runningPrep) return;
     setRunningPrep(true);
@@ -1407,7 +1416,10 @@ export default function OutreachPage() {
                                     </>
                                   )}
                                   {lead.status === 'application_required' && (
-                                    <button onClick={() => handleApplicationSubmitted(lead)} className="px-3 py-1.5 bg-cyan-600 text-white text-xs font-medium rounded hover:bg-cyan-700 transition-colors">Filled Out Vendor Form</button>
+                                    <>
+                                      <button onClick={() => handleApplicationSubmitted(lead)} className="px-3 py-1.5 bg-cyan-600 text-white text-xs font-medium rounded hover:bg-cyan-700 transition-colors">Filled Out Vendor Form</button>
+                                      <button onClick={() => handleNoFormFound(lead)} className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors">No Form Found</button>
+                                    </>
                                   )}
                                   {lead.status === 'application_submitted' && (
                                     <button onClick={() => handleSamplesRequested(lead)} className="px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors">Samples Requested</button>
