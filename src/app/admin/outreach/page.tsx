@@ -1431,6 +1431,8 @@ export default function OutreachPage() {
 
                           {/* Right column: Draft + Notes */}
                           <div className="lg:col-span-2 space-y-4">
+                            {/* Hide draft section for application_required leads */}
+                            {lead.status !== 'application_required' && (
                             <div>
                               <div className="flex items-center justify-between mb-2">
                                 <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Outreach Draft</h4>
@@ -1536,6 +1538,31 @@ export default function OutreachPage() {
                                 </div>
                               )}
                             </div>
+                            )}
+
+                            {/* Vendor Form Link for application_required leads */}
+                            {lead.status === 'application_required' && (
+                              <div>
+                                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Vendor Application</h4>
+                                {extractFormUrl(lead.notes) ? (
+                                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <p className="text-sm text-gray-700 mb-3">This shop requires a vendor application form.</p>
+                                    <a
+                                      href={extractFormUrl(lead.notes)!}
+                                      target="_blank"
+                                      rel="noopener"
+                                      className="inline-block px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                                    >
+                                      Open Vendor Application Form &rarr;
+                                    </a>
+                                  </div>
+                                ) : (
+                                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <p className="text-sm text-gray-700">Vendor application required, but form URL not found in notes.</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
 
                             {/* Notes */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
