@@ -108,6 +108,7 @@ export default function OutreachPage() {
   const [editingFollowUp, setEditingFollowUp] = useState<string | null>(null);
   const [followUpEditValue, setFollowUpEditValue] = useState('');
   const [selectedFollowUps, setSelectedFollowUps] = useState<Set<string>>(new Set());
+  const [selectedDrafts, setSelectedDrafts] = useState<Set<string>>(new Set());
   const [bulkRunning, setBulkRunning] = useState(false);
   const [bulkProgress, setBulkProgress] = useState<string | null>(null);
   const [expandedLead, setExpandedLead] = useState<string | null>(null);
@@ -129,6 +130,8 @@ export default function OutreachPage() {
   const [researchResult, setResearchResult] = useState<string | null>(null);
   const [runningQualify, setRunningQualify] = useState(false);
   const [qualifyResult, setQualifyResult] = useState<string | null>(null);
+  const [editingEmail, setEditingEmail] = useState<string | null>(null);
+  const [emailValue, setEmailValue] = useState('');
 
   useEffect(() => {
     fetchLeads();
@@ -480,6 +483,60 @@ export default function OutreachPage() {
     setTimeout(() => setBulkProgress(null), 8000);
   }
 
+  function toggleDraftSelection(leadId: string) {
+    setSelectedDrafts(prev => {
+      const next = new Set(prev);
+      if (next.has(leadId)) next.delete(leadId);
+      else next.add(leadId);
+      return next;
+    });
+  }
+
+  function selectAllVisibleDrafts() {
+    const visibleDraftIds = allLeads
+      .filter(l => l.status === 'outreach_drafted' && l.contact_email && l.outreach_draft)
+      .map(l => l.id);
+    const allSelected = visibleDraftIds.every(id => selectedDrafts.has(id));
+    if (allSelected) {
+      setSelectedDrafts(new Set());
+    } else {
+      setSelectedDrafts(new Set(visibleDraftIds));
+    }
+  }
+
+  async function handleBulkApproveDrafts() {
+    const ids = Array.from(selectedDrafts);
+    if (ids.length === 0) return;
+    const leadsToApprove = leads.filter(l => ids.includes(l.id));
+    const noEmail = leadsToApprove.filter(l => !l.contact_email);
+    if (noEmail.length > 0) {
+      alert(`Cannot approve ${noEmail.length} lead(s) without email: ${noEmail.map(l => l.business_name).join(', ')}`);
+      return;
+    }
+    if (!confirm(`Approve ${ids.length} draft${ids.length === 1 ? '' : 's'}? They'll be sent next business morning.`)) return;
+    setBulkRunning(true);
+    let ok = 0, fail = 0;
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
+      setBulkProgress(`Approving ${i + 1}/${ids.length}…`);
+      try {
+        const result = await updateLead(id, { status: 'outreach_approved' });
+        if (result.success) {
+          ok++;
+        } else {
+          fail++;
+        }
+      } catch {
+        fail++;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    setSelectedDrafts(new Set());
+    setBulkRunning(false);
+    setBulkProgress(`Done: ${ok} approved${fail > 0 ? `, ${fail} failed` : ''}`);
+    setTimeout(() => { setBulkProgress(null); fetchLeads(); }, 2000);
+  }
+
   async function handleRunResearch() {
     if (runningResearch) return;
     setRunningResearch(true);
@@ -570,6 +627,27 @@ export default function OutreachPage() {
       next_follow_up: nextFollowUp,
     });
     setActionFeedback({ id: lead.id, message: `DM marked sent — follow-up set for ${new Date(nextFollowUp).toLocaleDateString()}`, type: 'success' });
+    fetchLeads();
+  }
+
+  async function handleFixEmailAndRestart(lead: WholesaleLead) {
+    if (!emailValue.trim()) {
+      setActionFeedback({ id: lead.id, message: 'Email address cannot be empty', type: 'error' });
+      return;
+    }
+    // Update email and reset to outreach_drafted status, keeping the existing draft
+    await updateLead(lead.id, {
+      contact_email: emailValue.trim(),
+      status: 'outreach_drafted',
+      outreach_sent_at: '',
+      outreach_channel: 'email',
+      follow_up_count: 0,
+      last_follow_up: '',
+      next_follow_up: '',
+    });
+    setEditingEmail(null);
+    setEmailValue('');
+    setActionFeedback({ id: lead.id, message: `Email updated to ${emailValue.trim()} — reset to draft ready for approval`, type: 'success' });
     fetchLeads();
   }
 
@@ -976,13 +1054,22 @@ export default function OutreachPage() {
             className="px-3 py-2 border rounded-lg text-sm bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
             title="Select (or clear) all follow-ups in the current filter"
           >
-            Select all visible
+            Select all visible follow-ups
+          </button>
+        )}
+        {statusFilter === 'outreach_drafted' && draftReadyCount > 0 && (
+          <button
+            onClick={selectAllVisibleDrafts}
+            className="px-3 py-2 border rounded-lg text-sm bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+            title="Select (or clear) all drafts in the current filter"
+          >
+            Select all visible drafts
           </button>
         )}
       </div>
 
       {/* Bulk action bar — visible when selections exist */}
-      {(selectedFollowUps.size > 0 || bulkProgress) && (
+      {(selectedFollowUps.size > 0 || (bulkProgress && selectedDrafts.size === 0)) && (
         <div className="sticky top-0 z-10 mb-3 flex items-center justify-between gap-3 bg-blue-900 text-white px-4 py-3 rounded-lg shadow">
           <div className="text-sm font-medium">
             {bulkProgress
@@ -1006,6 +1093,33 @@ export default function OutreachPage() {
             </button>
             <button
               onClick={() => setSelectedFollowUps(new Set())}
+              disabled={bulkRunning}
+              className="px-4 py-1.5 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk action bar for drafts — visible when draft selections exist */}
+      {(selectedDrafts.size > 0 || (bulkProgress && selectedFollowUps.size === 0)) && (
+        <div className="sticky top-0 z-10 mb-3 flex items-center justify-between gap-3 bg-green-900 text-white px-4 py-3 rounded-lg shadow">
+          <div className="text-sm font-medium">
+            {bulkProgress
+              ? bulkProgress
+              : `${selectedDrafts.size} draft${selectedDrafts.size === 1 ? '' : 's'} selected`}
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleBulkApproveDrafts}
+              disabled={bulkRunning || selectedDrafts.size === 0}
+              className="px-4 py-1.5 bg-green-500 hover:bg-green-400 text-white text-sm font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Approve {selectedDrafts.size}
+            </button>
+            <button
+              onClick={() => setSelectedDrafts(new Set())}
               disabled={bulkRunning}
               className="px-4 py-1.5 bg-gray-600 hover:bg-gray-500 text-white text-sm rounded disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -1067,7 +1181,8 @@ export default function OutreachPage() {
         <Card>
           <CardContent className="p-0">
             {/* Header row */}
-            <div className="hidden md:grid grid-cols-[1fr_90px_100px_50px_120px_100px_80px] gap-0 bg-gray-50 border-b text-xs font-medium text-gray-500 px-4 py-3">
+            <div className="hidden md:grid grid-cols-[32px_1fr_90px_100px_50px_120px_100px_80px] gap-0 bg-gray-50 border-b text-xs font-medium text-gray-500 px-4 py-3">
+              <div></div>
               <div>Business</div>
               <div>Type</div>
               <div>Products</div>
@@ -1112,6 +1227,16 @@ export default function OutreachPage() {
                         <div className="flex-1">
                           <div className="font-semibold text-base text-gray-900 mb-1 flex items-center gap-2">
                             <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>▶</span>
+                            {lead.status === 'outreach_drafted' && lead.contact_email && lead.outreach_draft && (lead.follow_up_count || 0) === 0 && (
+                              <input
+                                type="checkbox"
+                                checked={selectedDrafts.has(lead.id)}
+                                onChange={(e) => { e.stopPropagation(); toggleDraftSelection(lead.id); }}
+                                onClick={e => e.stopPropagation()}
+                                className="w-4 h-4 cursor-pointer"
+                                title="Select for batch approval"
+                              />
+                            )}
                             {lead.business_name}
                           </div>
                           <div className="text-sm text-gray-500">{lead.city}{lead.city && lead.state ? ', ' : ''}{lead.state}</div>
@@ -1147,14 +1272,28 @@ export default function OutreachPage() {
 
                     {/* Desktop Table Row */}
                     <div
-                      className={`hidden md:grid grid-cols-[1fr_90px_100px_50px_120px_100px_80px] gap-0 items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors text-sm ${isExpanded ? 'bg-blue-50/50' : ''}`}
-                      onClick={() => {
+                      className={`hidden md:grid grid-cols-[32px_1fr_90px_100px_50px_120px_100px_80px] gap-0 items-center px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors text-sm ${isExpanded ? 'bg-blue-50/50' : ''}`}
+                      onClick={(e) => {
+                        // Don't toggle expand if clicking checkbox
+                        if ((e.target as HTMLElement).closest('input[type="checkbox"]')) return;
                         setExpandedLead(isExpanded ? null : lead.id);
                         setEditingDraft(null);
                         setEditingNotes(null);
                         setEditingResponseNotes(null);
                       }}
                     >
+                      {/* Checkbox column */}
+                      <div className="flex items-center justify-center" onClick={e => e.stopPropagation()}>
+                        {lead.status === 'outreach_drafted' && lead.contact_email && lead.outreach_draft && (lead.follow_up_count || 0) === 0 && (
+                          <input
+                            type="checkbox"
+                            checked={selectedDrafts.has(lead.id)}
+                            onChange={() => toggleDraftSelection(lead.id)}
+                            className="w-4 h-4 cursor-pointer"
+                            title="Select for batch approval"
+                          />
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         <span className={`text-xs transition-transform inline-block ${isExpanded ? 'rotate-90' : ''}`}>&#9654;</span>
                         <div>
@@ -1357,7 +1496,45 @@ export default function OutreachPage() {
                                   <div><span className="text-gray-500">Name:</span> <span className="text-gray-900">{lead.contact_name}</span></div>
                                 )}
                                 {lead.contact_email && (
-                                  <div><span className="text-gray-500">Email:</span> <a href={`mailto:${lead.contact_email}`} className="text-blue-600 hover:underline">{lead.contact_email}</a></div>
+                                  <div>
+                                    <span className="text-gray-500">Email:</span>{' '}
+                                    {editingEmail === lead.id ? (
+                                      <span className="inline-flex items-center gap-2">
+                                        <input
+                                          type="email"
+                                          value={emailValue}
+                                          onChange={e => setEmailValue(e.target.value)}
+                                          className="px-2 py-1 border rounded text-sm text-gray-900 bg-white"
+                                          placeholder="new-email@example.com"
+                                          autoFocus
+                                        />
+                                        <button
+                                          onClick={() => handleFixEmailAndRestart(lead)}
+                                          className="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700"
+                                        >
+                                          Save & Restart
+                                        </button>
+                                        <button
+                                          onClick={() => { setEditingEmail(null); setEmailValue(''); }}
+                                          className="px-2 py-1 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300"
+                                        >
+                                          Cancel
+                                        </button>
+                                      </span>
+                                    ) : (
+                                      <span>
+                                        <a href={`mailto:${lead.contact_email}`} className="text-blue-600 hover:underline">{lead.contact_email}</a>
+                                        {['contacted', 'follow_up_1', 'follow_up_2', 'follow_up_3', 'outreach_drafted', 'outreach_approved'].includes(lead.status) && (
+                                          <button
+                                            onClick={() => { setEditingEmail(lead.id); setEmailValue(lead.contact_email); }}
+                                            className="ml-2 text-xs text-blue-600 hover:underline"
+                                          >
+                                            Fix Email
+                                          </button>
+                                        )}
+                                      </span>
+                                    )}
+                                  </div>
                                 )}
                                 {lead.contact_phone && (
                                   <div><span className="text-gray-500">Phone:</span> <a href={`tel:${lead.contact_phone}`} className="text-blue-600 hover:underline">{lead.contact_phone}</a></div>
