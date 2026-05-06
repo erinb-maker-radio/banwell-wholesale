@@ -310,6 +310,28 @@ export default function OutreachPage() {
     fetchLeads();
   }
 
+  async function handleNotFormRequired(lead: WholesaleLead) {
+    const reason = prompt(`Recategorize "${lead.business_name}" as a regular email outreach lead?\n\nUse this when the lead was wrongly tagged as form-required (the shop doesn't actually require a vendor application).\n\nOptional: brief reason for the audit log:`, '');
+    if (reason === null) return; // cancelled
+    const timestamp = new Date().toLocaleString();
+    const reasonSuffix = reason.trim() ? ` — ${reason.trim()}` : '';
+    const note = `[${timestamp}] Recategorized: not a form-required lead${reasonSuffix}. Routed back to qualified for email outreach.\n\n${lead.notes || ''}`;
+    // Backward transition (application_required/outreach_drafted → qualified) requires force.
+    // Clear channel/draft/sent_at so the lead re-enters the email-drafting pipeline cleanly.
+    await updateLead(lead.id, {
+      status: 'qualified',
+      outreach_channel: '',
+      outreach_draft: '',
+      outreach_sent_at: '',
+      follow_up_count: 0,
+      last_follow_up: '',
+      next_follow_up: '',
+      notes: note,
+    }, { force: true });
+    setActionFeedback({ id: lead.id, message: 'Recategorized as email lead — BDA will re-draft outreach', type: 'success' });
+    fetchLeads();
+  }
+
   async function handleRunPrep() {
     if (runningPrep) return;
     setRunningPrep(true);
@@ -1651,7 +1673,8 @@ export default function OutreachPage() {
                                   {lead.status === 'application_required' && (
                                     <>
                                       <button onClick={() => handleApplicationSubmitted(lead)} className="px-3 py-1.5 bg-cyan-600 text-white text-xs font-medium rounded hover:bg-cyan-700 transition-colors">Filled Out Vendor Form</button>
-                                      <button onClick={() => handleNoFormFound(lead)} className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors">No Form Found</button>
+                                      <button onClick={() => handleNotFormRequired(lead)} className="px-3 py-1.5 bg-orange-100 text-orange-700 text-xs font-medium rounded hover:bg-orange-200 transition-colors" title="Wrongly categorized — this shop doesn't actually require a vendor form. Re-route to email outreach.">Not Form-Required</button>
+                                      <button onClick={() => handleNoFormFound(lead)} className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded hover:bg-gray-300 transition-colors" title="Form link is broken or doesn't exist — send back to research to try a different approach.">No Form Found</button>
                                     </>
                                   )}
                                   {lead.status === 'application_submitted' && (
@@ -1736,6 +1759,13 @@ export default function OutreachPage() {
                                         className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
                                       >
                                         Mark Submitted
+                                      </button>
+                                      <button
+                                        onClick={() => handleNotFormRequired(lead)}
+                                        className="px-4 py-2 bg-orange-100 text-orange-700 text-sm font-medium rounded-lg hover:bg-orange-200 transition-colors"
+                                        title="Wrongly categorized — this shop doesn't actually require a vendor form. Re-route to email outreach."
+                                      >
+                                        Not Form-Required
                                       </button>
                                     </>
                                   ) : lead.outreach_channel === 'instagram_dm' ? (
