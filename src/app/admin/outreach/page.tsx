@@ -1597,14 +1597,13 @@ export default function OutreachPage() {
                                     ) : (
                                       <span>
                                         <a href={`mailto:${lead.contact_email}`} className="text-blue-600 hover:underline">{lead.contact_email}</a>
-                                        {['contacted', 'follow_up_1', 'follow_up_2', 'follow_up_3', 'outreach_drafted', 'outreach_approved'].includes(lead.status) && (
-                                          <button
-                                            onClick={() => { setEditingEmail(lead.id); setEmailValue(lead.contact_email); }}
-                                            className="ml-2 text-xs text-blue-600 hover:underline"
-                                          >
-                                            Fix Email
-                                          </button>
-                                        )}
+                                        <button
+                                          onClick={() => { setEditingEmail(lead.id); setEmailValue(lead.contact_email); }}
+                                          className="ml-2 text-xs text-blue-600 hover:underline"
+                                          title="Edit the email address (use to correct a typo or recover from a bounce)"
+                                        >
+                                          Fix Email
+                                        </button>
                                       </span>
                                     )}
                                   </div>
