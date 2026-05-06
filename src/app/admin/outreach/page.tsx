@@ -635,7 +635,8 @@ export default function OutreachPage() {
       setActionFeedback({ id: lead.id, message: 'Email address cannot be empty', type: 'error' });
       return;
     }
-    // Update email and reset to outreach_drafted status, keeping the existing draft
+    // Update email and reset to outreach_drafted status, keeping the existing draft.
+    // force=true because contacted/follow_up_* → outreach_drafted is a backward transition.
     await updateLead(lead.id, {
       contact_email: emailValue.trim(),
       status: 'outreach_drafted',
@@ -644,11 +645,50 @@ export default function OutreachPage() {
       follow_up_count: 0,
       last_follow_up: '',
       next_follow_up: '',
-    });
+    }, { force: true });
     setEditingEmail(null);
     setEmailValue('');
     setActionFeedback({ id: lead.id, message: `Email updated to ${emailValue.trim()} — reset to draft ready for approval`, type: 'success' });
     fetchLeads();
+  }
+
+  async function handleFixEmailAndResend(lead: WholesaleLead) {
+    const newEmail = emailValue.trim();
+    if (!newEmail) {
+      setActionFeedback({ id: lead.id, message: 'Email address cannot be empty', type: 'error' });
+      return;
+    }
+    if (!lead.outreach_draft) {
+      setActionFeedback({ id: lead.id, message: 'No outreach draft on this lead — cannot resend', type: 'error' });
+      return;
+    }
+    if (!confirm(`Resend the original first-contact email to ${newEmail}?\n\nThe previous send to ${lead.contact_email} bounced — this will update the email on file and immediately send the same draft to the new address.`)) {
+      return;
+    }
+    // Update email only (no status change → no force needed).
+    const updateRes = await updateLead(lead.id, {
+      contact_email: newEmail,
+      outreach_channel: 'email',
+    });
+    if (!updateRes?.success) {
+      // updateLead already surfaces the error
+      return;
+    }
+    // Trigger the existing send endpoint which reuses outreach_draft and re-stamps outreach_sent_at.
+    try {
+      const sendRes = await fetch(`/api/leads/${lead.id}/send`, { method: 'POST' });
+      const json = await sendRes.json();
+      if (json.success) {
+        setEditingEmail(null);
+        setEmailValue('');
+        setActionFeedback({ id: lead.id, message: `Email corrected to ${newEmail} and resent`, type: 'success' });
+        fetchLeads();
+      } else {
+        setActionFeedback({ id: lead.id, message: json.error || 'Resend failed', type: 'error' });
+      }
+    } catch (err) {
+      setActionFeedback({ id: lead.id, message: `Resend failed: ${(err as Error).message}`, type: 'error' });
+    }
   }
 
   function extractFormUrl(notes: string): string | null {
@@ -1499,7 +1539,7 @@ export default function OutreachPage() {
                                   <div>
                                     <span className="text-gray-500">Email:</span>{' '}
                                     {editingEmail === lead.id ? (
-                                      <span className="inline-flex items-center gap-2">
+                                      <span className="inline-flex flex-wrap items-center gap-2">
                                         <input
                                           type="email"
                                           value={emailValue}
@@ -1508,11 +1548,22 @@ export default function OutreachPage() {
                                           placeholder="new-email@example.com"
                                           autoFocus
                                         />
+                                        {/* Resend now: only when the original outreach was already sent. Sends the existing draft to the new address. */}
+                                        {lead.outreach_sent_at && lead.outreach_draft && (
+                                          <button
+                                            onClick={() => handleFixEmailAndResend(lead)}
+                                            className="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700"
+                                            title="Update the email and immediately resend the original first-contact email (use when the previous send bounced)."
+                                          >
+                                            Save & Resend Now
+                                          </button>
+                                        )}
                                         <button
                                           onClick={() => handleFixEmailAndRestart(lead)}
-                                          className="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700"
+                                          className="px-2 py-1 bg-yellow-600 text-white text-xs font-medium rounded hover:bg-yellow-700"
+                                          title="Update the email and put the draft back in the approval queue."
                                         >
-                                          Save & Restart
+                                          Save & Restart Approval
                                         </button>
                                         <button
                                           onClick={() => { setEditingEmail(null); setEmailValue(''); }}
