@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { margin: 0.75in; }
+        body {
+            font-family: 'Georgia', serif;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.5in;
+            color: #2c2c2c;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2c5530;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28pt;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+        .header p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 11pt;
+        }
+        .letter {
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 11pt;
+        }
+        .letter p { margin-bottom: 12pt; }
+        .signature { margin-top: 20px; }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 10pt;
+        }
+        .pricing-table th {
+            background: #2c5530;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: normal;
+        }
+        .pricing-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .pricing-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        h2 {
+            color: #2c5530;
+            font-size: 16pt;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2c5530;
+            padding-bottom: 8px;
+        }
+
+        .design-item {
+            page-break-inside: avoid;
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .design-header {
+            font-size: 13pt;
+            color: #2c5530;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .product-versions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .version {
+            text-align: center;
+        }
+        .version img {
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            object-fit: contain;
+            background: white;
+            border: 1px solid #ddd;
+            margin-bottom: 8px;
+        }
+        .version .type {
+            font-size: 9pt;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .version .sku {
+            font-size: 8pt;
+            color: #999;
+        }
+        .availability {
+            font-size: 10pt;
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #2c5530;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            font-size: 9pt;
+            color: #777;
+        }
+        @media print {
+            body { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BANWELL DESIGNS</h1>
+        <p>Handmade Stained Glass Style Art</p>
+        <p>Wholesale Catalog - Science Museum Collection</p>
+    </div>
+
+    <div class="letter">
+        <p><strong>Science Museum of Minnesota — Explore Store</strong><br>
+        Kate Johnson<br>
+        April 30, 2026</p>
+
+        <p>Dear Kate,</p>
+
+        <p>Thank you for your interest in Banwell Designs. My wife and I design and make these pieces in our small workshop in Chico, California. Each suncatcher is made with real glass and is lead-free in a faux stained glass style.</p>
+
+        <p>Below is our complete science-themed collection. Each design is available in multiple sizes — ornaments (3") and suncatchers (6", 10", 12", 15"). Mix and match any designs and sizes to reach wholesale tier minimums.</p>
+
+        <p class="signature">Looking forward to working together,<br><br>
+        <strong>Erin Banwell</strong><br>
+        erin@banwelldesigns.com | https://wholesale.banwelldesigns.com</p>
+    </div>
+
+    <h2>Pricing Guide</h2>
+    <table class="pricing-table">
+        <thead>
+            <tr>
+                <th>Size</th>
+                <th>Retail Price</th>
+                <th>Tier 1 (40% off)<br><span style="font-size: 8pt; font-weight: normal;">$400 minimum order</span></th>
+                <th>Tier 2 (50% off)<br><span style="font-size: 8pt; font-weight: normal;">$800 minimum order</span></th>
+                <th>Tier 3 (55% off)<br><span style="font-size: 8pt; font-weight: normal;">$1,200 minimum order</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>3" Ornament</td>
+                <td>$35</td>
+                <td>$21.00</td>
+                <td>$17.50</td>
+                <td>$15.75</td>
+            </tr>
+            <tr>
+                <td>6" Suncatcher</td>
+                <td>$72</td>
+                <td>$43.20</td>
+                <td>$36.00</td>
+                <td>$32.40</td>
+            </tr>
+            <tr>
+                <td>10" Suncatcher</td>
+                <td>$98</td>
+                <td>$58.80</td>
+                <td>$49.00</td>
+                <td>$44.10</td>
+            </tr>
+            <tr>
+                <td>12" Suncatcher</td>
+                <td>$119</td>
+                <td>$71.40</td>
+                <td>$59.50</td>
+                <td>$53.55</td>
+            </tr>
+            <tr>
+                <td>15" Suncatcher</td>
+                <td>$153</td>
+                <td>$91.80</td>
+                <td>$76.50</td>
+                <td>$68.85</td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="font-size: 9pt; color: #666; margin-top: -20px;"><em>All prices are per piece. Mix and match any designs and sizes to reach tier minimums.</em></p>
+
+    <h2 style="margin-top: 40px;">Complete Science-Themed Collection</h2>
+
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Astronomy & Space Science</h2>
+
+    <div class="design-item">
+        <div class="design-header">Aurora Borealis</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/214f2f/6597122899/il_340x270.6597122899_j605.jpg" alt="Aurora Borealis Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-015</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Aurora Borealis - Northern Lights</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/7c8e20/6549000592/il_340x270.6549000592_ktl8.jpg" alt="Aurora Borealis - Northern Lights Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-016</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Borealis Polar Bear</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/276536/6423131536/il_340x270.6423131536_14jf.jpg" alt="Borealis Polar Bear Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-057</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e2b649/5988150618/il_340x270.5988150618_jbi1.jpg" alt="Borealis Polar Bear Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-062</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Coyote Moon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9e5f46/6440745546/il_340x270.6440745546_b532.jpg" alt="Coyote Moon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-085</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/7de82d/6036245691/il_340x270.6036245691_nwy2.jpg" alt="Coyote Moon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-096</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Cratered Moon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/7dd67d/6443708764/il_340x270.6443708764_r8e6.jpg" alt="Cratered Moon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-086</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Full Moon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/6ffb4a/6424753250/il_340x270.6424753250_58sk.jpg" alt="Full Moon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-116</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/605a7e/6150091235/il_340x270.6150091235_2kpo.jpg" alt="Full Moon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-144</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Solar System</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/537781/6424941188/il_340x270.6424941188_922o.jpg" alt="Solar System Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-246</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Sunflowers</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/13701b/6473048261/il_340x270.6473048261_dwgp.jpg" alt="Sunflowers Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-260</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9acd1e/6551302006/il_340x270.6551302006_s2it.jpg" alt="Sunflowers Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-332</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Sunlight Humpback</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4f313b/6736972693/il_340x270.6736972693_ny7j.jpg" alt="Sunlight Humpback Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-333</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Sunny Strawberries</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/838795/6488997407/il_340x270.6488997407_ko28.jpg" alt="Sunny Strawberries Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-261</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3b678c/5852681378/il_340x270.5852681378_k9qh.jpg" alt="Sunny Strawberries Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-334</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Sunshine Bumblebee</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/340cf1/6425063596/il_340x270.6425063596_cwnf.jpg" alt="Sunshine Bumblebee Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-262</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3f5f36/5612985903/il_340x270.5612985903_kakt.jpg" alt="Sunshine Bumblebee Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-335</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">The Acropolis at Sunrise</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/0bd587/5830422351/il_340x270.5830422351_f0ml.jpg" alt="The Acropolis at Sunrise Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-342</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">The Solar System</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d60774/6443547524/il_340x270.6443547524_n70g.jpg" alt="The Solar System Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-344</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Tropical Sunshine</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/aaa9bf/6599414947/il_340x270.6599414947_o965.jpg" alt="Tropical Sunshine Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-282</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/0b4e33/6551287402/il_340x270.6551287402_pta1.jpg" alt="Tropical Sunshine Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-355</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Biology & Anatomy</h2>
+
+    <div class="design-item">
+        <div class="design-header">Anatomical Heart</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3e18c8/6551373236/il_340x270.6551373236_h5l1.jpg" alt="Anatomical Heart Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-007</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/081a1b/6551368296/il_340x270.6551368296_s61d.jpg" alt="Anatomical Heart Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-007</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Earth Science & Geology</h2>
+
+    <div class="design-item">
+        <div class="design-header">"Pillars of Hunan - Zhangjiajie National Forest Park, China</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a4b8af/6491816495/il_340x270.6491816495_p4ld.jpg" alt=""Pillars of Hunan - Zhangjiajie National Forest Park, China Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-195</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Arctic Glacier</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/53a1d2/6443573964/il_340x270.6443573964_7qki.jpg" alt="Arctic Glacier Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-009</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Bat Cave</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a41793/6471181213/il_340x270.6471181213_pne1.jpg" alt="Bat Cave Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-028</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/476f92/5815576838/il_340x270.5815576838_jo7c.jpg" alt="Bat Cave Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-029</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Desert Cactus</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/7f025b/6472163875/il_340x270.6472163875_n6p3.jpg" alt="Desert Cactus Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-090</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/211608/6443431666/il_340x270.6443431666_6hrm.jpg" alt="Desert Cactus Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-105</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Desert Sand Dunes</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d91aba/6952147690/il_340x270.6952147690_nhts.jpg" alt="Desert Sand Dunes Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-092</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/31d2be/6952140274/il_340x270.6952140274_tqpa.jpg" alt="Desert Sand Dunes Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-107</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Erupting Volcano</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/25d72a/6443824006/il_340x270.6443824006_1nmm.jpg" alt="Erupting Volcano Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-104</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/8c0cea/6150107629/il_340x270.6150107629_8wtd.jpg" alt="Erupting Volcano Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-125</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Mouse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/f1099c/6472831157/il_340x270.6472831157_m746.jpg" alt="Forest Mouse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-111</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/973ec0/5656538266/il_340x270.5656538266_5qwj.jpg" alt="Forest Mouse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-138</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Grand Canyon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c1c534/6549016432/il_340x270.6549016432_1t2o.jpg" alt="Grand Canyon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-157</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Grand Canyon National Park - Arizona</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/eddff5/6549022090/il_340x270.6549022090_qcno.jpg" alt="Grand Canyon National Park - Arizona Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-124</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Mountain Range</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/eec525/6472951067/il_340x270.6472951067_kkgb.jpg" alt="Mountain Range Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-175</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a9c165/6952168663/il_340x270.6952168663_rmyp.jpg" alt="Mountain Range Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-225</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Mushroom Forest</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a861a0/6472951905/il_340x270.6472951905_etyo.jpg" alt="Mushroom Forest Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-176</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ebdc96/5613057671/il_340x270.5613057671_6py1.jpg" alt="Mushroom Forest Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-226</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Smoky Mountains</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/fa928f/6473037145/il_340x270.6473037145_kej6.jpg" alt="Smoky Mountains Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-238</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/87297b/5898348933/il_340x270.5898348933_pc30.jpg" alt="Smoky Mountains Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-307</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Snowy Alpine Mountain Range</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b6911e/6473039205/il_340x270.6473039205_3yn9.jpg" alt="Snowy Alpine Mountain Range Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-243</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4df8f2/5868551646/il_340x270.5868551646_a3le.jpg" alt="Snowy Alpine Mountain Range Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-312</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Starry Sand Dunes</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/85b146/6913156581/il_340x270.6913156581_68u4.jpg" alt="Starry Sand Dunes Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-323</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">White Cliffs of Dover</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e80734/6472933235/il_340x270.6472933235_r0ck.jpg" alt="White Cliffs of Dover Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-288</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/db5747/5855015225/il_340x270.5855015225_1a4c.jpg" alt="White Cliffs of Dover Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-362</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Nature & Seasons</h2>
+
+    <div class="design-item">
+        <div class="design-header">Atlantic Coast Beach</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/914cab/6423061708/il_340x270.6423061708_eni8.jpg" alt="Atlantic Coast Beach Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-014</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b43f33/6020081102/il_340x270.6020081102_6g2z.jpg" alt="Atlantic Coast Beach Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-015</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Autumn Waterfall</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d38d24/6471162307/il_340x270.6471162307_lwbp.jpg" alt="Autumn Waterfall Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-017</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/0d10b7/6088062422/il_340x270.6088062422_a9il.jpg" alt="Autumn Waterfall Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-018</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Cabin on The Lake</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/fab1b7/5850212912/il_340x270.5850212912_g5zd.jpg" alt="Cabin on The Lake Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-076</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Cabin on the Lake</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/463b90/6423161644/il_340x270.6423161644_cbcx.jpg" alt="Cabin on the Lake Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-069</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Japanese River</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/5cbff3/5779316668/il_340x270.5779316668_92vq.jpg" alt="Japanese River Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-189</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Lazy River Kayaking</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c203df/6424836860/il_340x270.6424836860_s372.jpg" alt="Lazy River Kayaking Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-156</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/2c974f/6441013192/il_340x270.6441013192_gygk.jpg" alt="Lazy River Kayaking Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-203</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Majestic Waterfall</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/1f9e61/6491902543/il_340x270.6491902543_kzgb.jpg" alt="Majestic Waterfall Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-165</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Majestic Waterfalls</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a0bb2c/6137210044/il_340x270.6137210044_i36j.jpg" alt="Majestic Waterfalls Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-211</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Ocean Waves #1</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d482c3/6424875270/il_340x270.6424875270_has7.jpg" alt="Ocean Waves #1 Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-181</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e158c8/5613069567/il_340x270.5613069567_iuam.jpg" alt="Ocean Waves #1 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-235</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Ocean Waves #2</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/38f2eb/5613068677/il_340x270.5613068677_fwyk.jpg" alt="Ocean Waves #2 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-236</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Ocean Waves #3</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/bbc067/5565305368/il_340x270.5565305368_hdib.jpg" alt="Ocean Waves #3 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-237</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Quiet Snowy Creek</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b88c7b/6443819852/il_340x270.6443819852_3jh1.jpg" alt="Quiet Snowy Creek Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-206</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d23381/6052822815/il_340x270.6052822815_7wes.jpg" alt="Quiet Snowy Creek Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-267</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Snowy Doe</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b4b093/6424947996/il_340x270.6424947996_85kg.jpg" alt="Snowy Doe Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-244</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/253868/6441723725/il_340x270.6441723725_gro6.jpg" alt="Snowy Doe Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-313</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Spring Hen and Chicks</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/2d6576/6424949458/il_340x270.6424949458_c29o.jpg" alt="Spring Hen and Chicks Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-249</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/6c707c/5855001647/il_340x270.5855001647_8ykp.jpg" alt="Spring Hen and Chicks Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-318</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Tropical Beach</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/0cc029/6472974615/il_340x270.6472974615_2a9k.jpg" alt="Tropical Beach Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-280</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/63582f/6440988596/il_340x270.6440988596_817p.jpg" alt="Tropical Beach Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-353</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Weather & Natural Phenomena</h2>
+
+    <div class="design-item">
+        <div class="design-header">Lighthouse By The Sea</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/82d1bf/7478358443/il_340x270.7478358443_s5jt.jpg" alt="Lighthouse By The Sea Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">PAP-009</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Rainbow Heart</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/13b644/6473004589/il_340x270.6473004589_nj2s.jpg" alt="Rainbow Heart Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-209</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/050482/5757371107/il_340x270.5757371107_ovom.jpg" alt="Rainbow Heart Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-269</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Rainbow Spiral</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b306d0/6473006757/il_340x270.6473006757_jyu6.jpg" alt="Rainbow Spiral Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-210</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b7a20c/5734755076/il_340x270.5734755076_1snz.jpg" alt="Rainbow Spiral Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-270</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Rainbow Unicorn</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/584e66/6913179827/il_340x270.6913179827_d450.jpg" alt="Rainbow Unicorn Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-271</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Starlight Orca</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/00c3b8/6688918576/il_340x270.6688918576_png3.jpg" alt="Starlight Orca Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-321</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Stormy Rainbow</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c0f422/6734118446/il_340x270.6734118446_7jru.jpg" alt="Stormy Rainbow Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-256</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/80a229/6782139853/il_340x270.6782139853_95sg.jpg" alt="Stormy Rainbow Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-328</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Wildlife - Birds</h2>
+
+    <div class="design-item">
+        <div class="design-header">4th Of July Freedom Eagle</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/eb5fe0/6488880127/il_340x270.6488880127_5274.jpg" alt="4th Of July Freedom Eagle Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-001</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">4th of July Freedom Eagle</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9c9110/6020061864/il_340x270.6020061864_ii03.jpg" alt="4th of July Freedom Eagle Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-001</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">African Grey Parrot</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/fe4975/6423033374/il_340x270.6423033374_7fv2.jpg" alt="African Grey Parrot Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-004</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/082769/5734011052/il_340x270.5734011052_x149.jpg" alt="African Grey Parrot Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-004</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Autumn Raven</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/bea2a6/6551316770/il_340x270.6551316770_shyu.jpg" alt="Autumn Raven Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-016</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b836e5/6551307714/il_340x270.6551307714_b5sf.jpg" alt="Autumn Raven Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-017</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Aztec Parrot</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/abde41/6423070384/il_340x270.6423070384_hmr6.jpg" alt="Aztec Parrot Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-018</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ead2aa/6036315873/il_340x270.6036315873_hzs8.jpg" alt="Aztec Parrot Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-019</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Backyard Chicken</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e1307f/7478347099/il_340x270.7478347099_ep0a.jpg" alt="Backyard Chicken Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">PAP-001</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Backyard Chickens</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4108d8/6599505531/il_340x270.6599505531_gzd1.jpg" alt="Backyard Chickens Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-022</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/55649b/6599500323/il_340x270.6599500323_1fri.jpg" alt="Backyard Chickens Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-023</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Bald Eagle</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/886e2e/6423083344/il_340x270.6423083344_k9a4.jpg" alt="Bald Eagle Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-023</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/032056/5712133006/il_340x270.5712133006_hvqd.jpg" alt="Bald Eagle Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-024</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Barn Owl</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b3f4fd/6440766702/il_340x270.6440766702_nja6.jpg" alt="Barn Owl Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-024</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a8c442/6548963872/il_340x270.6548963872_jg4d.jpg" alt="Barn Owl Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-025</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Beagle</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/50d731/6999990877/il_340x270.6999990877_iu8d.jpg" alt="Beagle Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-030</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ed5ed4/6864978796/il_340x270.6864978796_nbrp.jpg" alt="Beagle Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-031</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Blue Heron</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/8f359a/6471210979/il_340x270.6471210979_d85v.jpg" alt="Blue Heron Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-051</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c7dd0d/6441698393/il_340x270.6441698393_q888.jpg" alt="Blue Heron Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-054</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Blue Parakeet</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/023090/6423126048/il_340x270.6423126048_729d.jpg" alt="Blue Parakeet Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-055</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/f1bdbf/6987097418/il_340x270.6987097418_nkpg.jpg" alt="Blue Parakeet Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-059</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Bluebird</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3b313e/5612992613/il_340x270.5612992613_ar6j.jpg" alt="Bluebird Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-060</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Burrowing Owl</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/885698/6440773002/il_340x270.6440773002_hk00.jpg" alt="Burrowing Owl Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-066</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/f421b2/6549044878/il_340x270.6549044878_a8f3.jpg" alt="Burrowing Owl Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-072</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Cardinal & Holly</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/61d08e/6488864213/il_340x270.6488864213_rwvc.jpg" alt="Cardinal & Holly Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-074</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/8c17ad/6224377023/il_340x270.6224377023_kkz1.jpg" alt="Cardinal & Holly Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-082</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Emperor Penguin</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a610e6/6599466209/il_340x270.6599466209_7m2x.jpg" alt="Emperor Penguin Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-100</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/5d7de8/6551340886/il_340x270.6551340886_inyv.jpg" alt="Emperor Penguin Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-120</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Owl</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e3b2cc/6424744794/il_340x270.6424744794_j4n1.jpg" alt="Forest Owl Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-112</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/f095c5/6495140919/il_340x270.6495140919_3ry8.jpg" alt="Forest Owl Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-139</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Hummingbird</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e339b4/6551337332/il_340x270.6551337332_fdh4.jpg" alt="Hummingbird Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-141</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d57dbe/6551328050/il_340x270.6551328050_hsvx.jpg" alt="Hummingbird Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-176</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Raven</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/607e64/6849369702/il_340x270.6849369702_cpzt.jpg" alt="Raven Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">PAP-011</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Red Berry Bluebird</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/edcbe0/5612997035/il_340x270.5612997035_7cbt.jpg" alt="Red Berry Bluebird Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-272</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Snowy Owl</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e2fec9/6597115837/il_340x270.6597115837_3qn8.jpg" alt="Snowy Owl Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-245</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b6cff3/6548992334/il_340x270.6548992334_j86y.jpg" alt="Snowy Owl Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-314</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Stormy Bluebird</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3b13a3/6473043687/il_340x270.6473043687_ci1a.jpg" alt="Stormy Bluebird Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-255</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/50c7ec/5564893576/il_340x270.5564893576_f1jb.jpg" alt="Stormy Bluebird Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-327</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Winter Raven</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/7f09b8/6424800202/il_340x270.6424800202_srnk.jpg" alt="Winter Raven Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-298</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4d46b0/6070982246/il_340x270.6070982246_kled.jpg" alt="Winter Raven Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-372</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Wildlife - Insects & Pollinators</h2>
+
+    <div class="design-item">
+        <div class="design-header">Apocalyptic Butterfly Ruins</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/1561e0/5734569080/il_340x270.5734569080_684d.jpg" alt="Apocalyptic Butterfly Ruins Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-008</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Art Nouveau Beetle</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4af78b/6423055944/il_340x270.6423055944_fjds.jpg" alt="Art Nouveau Beetle Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-011</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/f7d6f4/5734699846/il_340x270.5734699846_2t0g.jpg" alt="Art Nouveau Beetle Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-012</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Baby Jesus and The Holy Mother Mary</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c84755/6423077334/il_340x270.6423077334_hfgd.jpg" alt="Baby Jesus and The Holy Mother Mary Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-021</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Baby Jesus and the Holy Mother Mary</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/2ea08b/6441449823/il_340x270.6441449823_jqyv.jpg" alt="Baby Jesus and the Holy Mother Mary Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-022</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Bumblebee</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b6a6ce/5612990075/il_340x270.5612990075_dvjn.jpg" alt="Bumblebee Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-070</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Bumblebees and Blossoms</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e20d77/6471251397/il_340x270.6471251397_olti.jpg" alt="Bumblebees and Blossoms Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-065</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4d1541/6119036395/il_340x270.6119036395_hspy.jpg" alt="Bumblebees and Blossoms Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-071</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Butterflies</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/5295e4/6896057719/il_340x270.6896057719_fnnt.jpg" alt="Butterflies Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">PAP-003</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Butterfly #1</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/73c6da/5564899102/il_340x270.5564899102_g3zq.jpg" alt="Butterfly #1 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-073</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Butterfly #2</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/2fc38b/5613004497/il_340x270.5613004497_6zjl.jpg" alt="Butterfly #2 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-074</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Butterfly Sky</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a5b43a/6471253287/il_340x270.6471253287_kkbx.jpg" alt="Butterfly Sky Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-068</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/fde767/5815601182/il_340x270.5815601182_qam9.jpg" alt="Butterfly Sky Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-075</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Dragonfly</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d4215f/6424074230/il_340x270.6424074230_e8e6.jpg" alt="Dragonfly Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-097</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Ladybug</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/58e41b/6865162440/il_340x270.6865162440_38br.jpg" alt="Ladybug Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-199</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Luna Moth</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e18215/6424838380/il_340x270.6424838380_o7k6.jpg" alt="Luna Moth Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-159</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/930a20/6773568749/il_340x270.6773568749_3nbw.jpg" alt="Luna Moth Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-205</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Monarch Butterflies</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/337929/7430440988/il_340x270.7430440988_siz1.jpg" alt="Monarch Butterflies Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">PAP-010</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Purple Dragonfly</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9a52a9/5888199455/il_340x270.5888199455_can0.jpg" alt="Purple Dragonfly Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-263</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Wooly Mammoth</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b690ed/6952135166/il_340x270.6952135166_4ns5.jpg" alt="Wooly Mammoth Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-303</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e15d2d/7000083997/il_340x270.7000083997_ruwg.jpg" alt="Wooly Mammoth Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-380</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Wildlife - Mammals</h2>
+
+    <div class="design-item">
+        <div class="design-header">Bay Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/fee2d8/6491692947/il_340x270.6491692947_v145.jpg" alt="Bay Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-029</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/88f4cf/5652614448/il_340x270.5652614448_45eq.jpg" alt="Bay Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-030</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Black Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ebc326/6471199331/il_340x270.6471199331_b3a3.jpg" alt="Black Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-043</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/30242d/5700667897/il_340x270.5700667897_e3c8.jpg" alt="Black Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-046</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Chestnut Quarter Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e52683/6597102077/il_340x270.6597102077_lsfs.jpg" alt="Chestnut Quarter Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-077</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/49232e/6597096807/il_340x270.6597096807_g690.jpg" alt="Chestnut Quarter Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-086</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Coastal Elk</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9a0227/6488684349/il_340x270.6488684349_6fca.jpg" alt="Coastal Elk Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-081</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d8aa1f/5847012747/il_340x270.5847012747_o7xz.jpg" alt="Coastal Elk Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-092</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Cremello Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/69b7c5/7165677886/il_340x270.7165677886_mjdb.jpg" alt="Cremello Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-097</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Cuddle Foxes</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/559865/6488852301/il_340x270.6488852301_exw1.jpg" alt="Cuddle Foxes Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-087</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e1f167/6136142085/il_340x270.6136142085_790y.jpg" alt="Cuddle Foxes Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-098</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Fox</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/79d147/7478350961/il_340x270.7478350961_byhb.jpg" alt="Forest Fox Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">PAP-005</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Fox #1</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a713a2/5613050443/il_340x270.5613050443_quov.jpg" alt="Forest Fox #1 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-134</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Fox #2</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/5abb92/6424737190/il_340x270.6424737190_1lyj.jpg" alt="Forest Fox #2 Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-110</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a45254/5551152806/il_340x270.5551152806_o06b.jpg" alt="Forest Fox #2 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-135</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Fox #3</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e3bfab/5564947518/il_340x270.5564947518_a6tc.jpg" alt="Forest Fox #3 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-136</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Fox #4</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ccaca3/5564944940/il_340x270.5564944940_3f0j.jpg" alt="Forest Fox #4 Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-137</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Skunk</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/66c380/6472841435/il_340x270.6472841435_b5al.jpg" alt="Forest Skunk Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-113</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/89e5b8/5850249188/il_340x270.5850249188_ilge.jpg" alt="Forest Skunk Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-140</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Grizzly Bear</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/1cc5f1/6472888025/il_340x270.6472888025_hi5w.jpg" alt="Grizzly Bear Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-132</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3e2085/6489284893/il_340x270.6489284893_pgze.jpg" alt="Grizzly Bear Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-164</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Horse Friends</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a596c8/6443942464/il_340x270.6443942464_j1nb.jpg" alt="Horse Friends Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-139</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/2a3fa8/6185255115/il_340x270.6185255115_7qkl.jpg" alt="Horse Friends Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-173</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Irish Wolfhound</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/67ea00/6424825352/il_340x270.6424825352_3imo.jpg" alt="Irish Wolfhound Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-144</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/7d720d/5704620257/il_340x270.5704620257_9be6.jpg" alt="Irish Wolfhound Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-183</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Moose</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e21f94/7213672651/il_340x270.7213672651_nj3v.jpg" alt="Moose Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-222</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Paint Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/bd228b/6472973921/il_340x270.6472973921_5p56.jpg" alt="Paint Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-185</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/0406f0/6422465638/il_340x270.6422465638_d4rs.jpg" alt="Paint Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-242</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Palomino Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/1a5124/5652641610/il_340x270.5652641610_iynp.jpg" alt="Palomino Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-243</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Panda Bear</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e5946e/5712164344/il_340x270.5712164344_hgc4.jpg" alt="Panda Bear Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-244</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Rabbit</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/18d09a/6488696177/il_340x270.6488696177_mgxl.jpg" alt="Rabbit Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-207</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Red Dun Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/09deee/6491993693/il_340x270.6491993693_khr7.jpg" alt="Red Dun Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-212</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/5af31e/5700688097/il_340x270.5700688097_itqr.jpg" alt="Red Dun Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-274</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Reindeer</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e7353a/6440871194/il_340x270.6440871194_4vxu.jpg" alt="Reindeer Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-216</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/0a5cd6/6128172428/il_340x270.6128172428_hjjd.jpg" alt="Reindeer Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-279</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Santa Claus With a Reindeer</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/112160/6473029909/il_340x270.6473029909_ghsn.jpg" alt="Santa Claus With a Reindeer Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-226</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/67cb9e/6393639860/il_340x270.6393639860_e742.jpg" alt="Santa Claus With a Reindeer Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-291</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Snow Fox</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c7c593/6488836239/il_340x270.6488836239_p0le.jpg" alt="Snow Fox Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-241</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/306e31/6127281078/il_340x270.6127281078_ilcv.jpg" alt="Snow Fox Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-310</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Strawberry Roan Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ec9547/6443524450/il_340x270.6443524450_h2ou.jpg" alt="Strawberry Roan Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-257</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/8f2a13/5700682345/il_340x270.5700682345_7rxf.jpg" alt="Strawberry Roan Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-329</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">White Horse</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/dff14a/6472923639/il_340x270.6472923639_40ka.jpg" alt="White Horse Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-290</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/1d462a/5840153146/il_340x270.5840153146_m2gk.jpg" alt="White Horse Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-364</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Wolf Pack</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9be49a/6472887273/il_340x270.6472887273_7oop.jpg" alt="Wolf Pack Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-301</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/b66763/5656556388/il_340x270.5656556388_na1l.jpg" alt="Wolf Pack Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-378</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Woodland Raccoons</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e53f7c/6424785318/il_340x270.6424785318_b7ka.jpg" alt="Woodland Raccoons Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-302</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/55fa70/6548987058/il_340x270.6548987058_1ii2.jpg" alt="Woodland Raccoons Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-379</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Wildlife - Marine Life</h2>
+
+    <div class="design-item">
+        <div class="design-header">Breaching Humpback Whale</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/635aa6/6471229847/il_340x270.6471229847_ajwk.jpg" alt="Breaching Humpback Whale Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-060</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/bc3f49/6088088104/il_340x270.6088088104_onxy.jpg" alt="Breaching Humpback Whale Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-065</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Great White Shark</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/74af2b/6472413695/il_340x270.6472413695_8fy3.jpg" alt="Great White Shark Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-126</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/9260fe/6202247176/il_340x270.6202247176_crtr.jpg" alt="Great White Shark Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-159</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Jellyfish</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/191154/6424827086/il_340x270.6424827086_44fc.jpg" alt="Jellyfish Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-148</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e352b8/6286232731/il_340x270.6286232731_aiqw.jpg" alt="Jellyfish Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-190</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Kelp Forest Sea Lions</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/babb3e/6424836390/il_340x270.6424836390_mpws.jpg" alt="Kelp Forest Sea Lions Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-152</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/88173d/5815685806/il_340x270.5815685806_imp8.jpg" alt="Kelp Forest Sea Lions Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-195</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Octopus</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/268b9c/6472968613/il_340x270.6472968613_1t91.jpg" alt="Octopus Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-182</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/bf3906/5782794121/il_340x270.5782794121_n2i4.jpg" alt="Octopus Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-238</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Playful Dolphins</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/649f9a/6473000859/il_340x270.6473000859_ltyv.jpg" alt="Playful Dolphins Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-201</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/55b608/5850217974/il_340x270.5850217974_d5zc.jpg" alt="Playful Dolphins Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-259</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Sea Dragon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/3390ea/6424942400/il_340x270.6424942400_atpb.jpg" alt="Sea Dragon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-230</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/696eb0/5700743193/il_340x270.5700743193_qd2b.jpg" alt="Sea Dragon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-297</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <h2 style="font-size: 14pt; margin-top: 30px; border-bottom: 1px solid #ccc;">Wildlife - Reptiles & Amphibians</h2>
+
+    <div class="design-item">
+        <div class="design-header">Baby Dragon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4816f0/6423073084/il_340x270.6423073084_3c1l.jpg" alt="Baby Dragon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-019</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ccca0f/6101999010/il_340x270.6101999010_7wtn.jpg" alt="Baby Dragon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-020</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Blue Green Dragon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/25a593/6423115060/il_340x270.6423115060_o1pm.jpg" alt="Blue Green Dragon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-050</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/a7dee2/5874721999/il_340x270.5874721999_nmv2.jpg" alt="Blue Green Dragon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-053</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Dragon's Hoard</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/ce1de8/6492111523/il_340x270.6492111523_rt7i.jpg" alt="Dragon's Hoard Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-096</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/734c24/6226876959/il_340x270.6226876959_8fot.jpg" alt="Dragon's Hoard Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-112</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Forest Toad</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c0abb3/6472845535/il_340x270.6472845535_qvwx.jpg" alt="Forest Toad Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-114</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/244dcf/5613060863/il_340x270.5613060863_b4jf.jpg" alt="Forest Toad Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-141</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Rainbow Dragon</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/25385a/6473004041/il_340x270.6473004041_mia2.jpg" alt="Rainbow Dragon Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-208</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/80986a/5700739523/il_340x270.5700739523_ph7w.jpg" alt="Rainbow Dragon Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-268</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Snapdragons</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/c77478/6747105755/il_340x270.6747105755_d1xx.jpg" alt="Snapdragons Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-239</div>
+            </div>
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/e8e407/6739360601/il_340x270.6739360601_2m8m.jpg" alt="Snapdragons Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-308</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Witchy Toad</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/d2b8dd/6705927544/il_340x270.6705927544_4fpe.jpg" alt="Witchy Toad Suncatcher" onerror="this.style.display='none'">
+                <div class="type">Suncatcher</div>
+                <div class="sku">SUN-375</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+    <div class="design-item">
+        <div class="design-header">Yellow Gecko</div>
+        <div class="product-versions">
+            <div class="version">
+                <img src="https://i.etsystatic.com/27632250/r/il/4e151a/6440588518/il_340x270.6440588518_kuiw.jpg" alt="Yellow Gecko Ornament" onerror="this.style.display='none'">
+                <div class="type">Ornament</div>
+                <div class="sku">ORN-304</div>
+            </div>
+            <div class="version">
+                <div style="padding-top: 60px; color: #999; font-size: 9pt;">Suncatcher version available<br>(same design, sizes 6"-15")</div>
+            </div>
+        </div>
+        <div class="availability">
+            Available in 3" ornament and multiple suncatcher sizes (6", 10", 12", 15")
+        </div>
+    </div>
+
+    <div style="background: #f5f5f0; padding: 20px; margin-top: 30px; border-left: 4px solid #2c5530;">
+        <h3 style="margin-top: 0; color: #2c5530;">Wholesale Terms</h3>
+        <p style="margin: 8px 0; font-size: 10pt;"><strong>Lead Time:</strong> 2-3 weeks for initial orders | 1-2 weeks for reorders</p>
+        <p style="margin: 8px 0; font-size: 10pt;"><strong>Shipping:</strong> Calculated at cost | Free shipping on orders over $500</p>
+        <p style="margin: 8px 0; font-size: 10pt;"><strong>Payment Terms:</strong> Net 30 for established accounts</p>
+        <p style="margin: 8px 0; font-size: 10pt;"><strong>Total Designs:</strong> 158 unique designs, each available in 5 sizes</p>
+    </div>
+
+    <div class="footer">
+        <p><strong>Banwell Designs</strong> | Chico, California<br>
+        Wholesale: https://wholesale.banwelldesigns.com | Retail: https://www.etsy.com/shop/banwelldesigns<br>
+        4.9 stars | 2,600+ reviews | Featured in Disney Resorts</p>
+    </div>
+</body>
+</html>
