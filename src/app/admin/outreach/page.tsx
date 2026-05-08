@@ -38,6 +38,7 @@ interface WholesaleLead {
   status: string;
   outreach_channel: string;
   outreach_draft: string;
+  first_contact_draft: string;
   outreach_sent_at: string;
   last_follow_up: string;
   next_follow_up: string;
@@ -823,7 +824,7 @@ export default function OutreachPage() {
     return leads.filter(l => l.status === 'outreach_drafted').length;
   }, [leads]);
 
-  // Channel-specific 1st-contact draft counts
+  // Channel-specific 1st-contact draft counts (follow_up_count === 0)
   const emailDraftCount = useMemo(() =>
     leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) === 0 && (l.outreach_channel === 'email' || (!l.outreach_channel && l.contact_email))).length
   , [leads]);
@@ -833,6 +834,7 @@ export default function OutreachPage() {
   const igDraftCount = useMemo(() =>
     leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) === 0 && l.outreach_channel === 'instagram_dm').length
   , [leads]);
+  // Follow-up drafts — same status, follow_up_count > 0
   const followUpDraftCount = useMemo(() =>
     leads.filter(l => l.status === 'outreach_drafted' && (l.follow_up_count || 0) > 0).length
   , [leads]);
@@ -1701,8 +1703,37 @@ export default function OutreachPage() {
 
                           {/* Right column: Draft + Notes */}
                           <div className="lg:col-span-2 space-y-4">
-                            {/* Hide draft section for application_required leads */}
-                            {lead.status !== 'application_required' && (
+                            {/* 1st Contact Draft for vendor form workflow — paste into the vendor's contact form */}
+                            {(lead.status === 'application_required' || lead.status === 'application_submitted') && (
+                              <div>
+                                <div className="flex items-center justify-between mb-2">
+                                  <h4 className="text-xs font-semibold text-blue-700 uppercase tracking-wider">1st Contact Draft (paste into vendor form)</h4>
+                                  {lead.first_contact_draft && (
+                                    <button
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(lead.first_contact_draft);
+                                        setActionFeedback({ id: lead.id, message: 'Copied to clipboard', type: 'success' });
+                                      }}
+                                      className="px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors"
+                                    >
+                                      Copy
+                                    </button>
+                                  )}
+                                </div>
+                                {lead.first_contact_draft ? (
+                                  <div className="bg-white border-2 border-blue-200 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-wrap max-h-[400px] overflow-y-auto">
+                                    {lead.first_contact_draft}
+                                  </div>
+                                ) : (
+                                  <div className="bg-gray-50 border border-dashed rounded-lg p-4 text-sm text-gray-400 italic text-center">
+                                    No 1st contact draft saved for this lead. (Original was overwritten by a previous follow-up cycle, or never generated.)
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Standard outreach draft (hidden on vendor-form stages — those use first_contact_draft above) */}
+                            {lead.status !== 'application_required' && lead.status !== 'application_submitted' && (
                             <div>
                               <div className="flex items-center justify-between mb-2">
                                 <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Outreach Draft</h4>
