@@ -1374,7 +1374,7 @@ export default function OutreachPage() {
                                 Follow-up #{lead.follow_up_count}
                               </span>
                             )}
-                            {pendingFollowUp && (
+                            {pendingFollowUp && lead.status !== 'application_required' && lead.status !== 'application_submitted' && (
                               <>
                                 <span
                                   className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-medium"
@@ -1480,7 +1480,7 @@ export default function OutreachPage() {
                         )}
 
                         {/* Pending follow-up draft (from approval queue) */}
-                        {pendingFollowUp && (
+                        {pendingFollowUp && lead.status !== 'application_required' && lead.status !== 'application_submitted' && (
                           <div className="mb-4 border-2 border-blue-300 bg-blue-50 rounded-lg p-4">
                             <div className="flex items-center justify-between mb-2 gap-3">
                               <div className="flex items-center gap-2">
