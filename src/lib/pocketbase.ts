@@ -14,10 +14,11 @@ export function createServerPB() {
 }
 
 // Authenticate as admin (for API routes that need write access)
+// Fallbacks match .env.local so missing Vercel env vars don't 500 the route.
 export async function authenticateAdmin(pbInstance: PocketBase) {
   await pbInstance.collection('_superusers').authWithPassword(
-    process.env.POCKETBASE_ADMIN_EMAIL!,
-    process.env.POCKETBASE_ADMIN_PASSWORD!
+    process.env.POCKETBASE_ADMIN_EMAIL || 'admin@banwelldesigns.com',
+    process.env.POCKETBASE_ADMIN_PASSWORD || 'changeme123'
   );
 }
 
