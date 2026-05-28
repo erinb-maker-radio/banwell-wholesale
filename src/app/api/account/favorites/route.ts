@@ -23,6 +23,35 @@ export async function GET() {
   }
 }
 
+export async function POST(req: NextRequest) {
+  const auth = await getAuthenticatedPB();
+  if (!auth) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
+  try {
+    const { productId } = await req.json();
+    if (!productId) return NextResponse.json({ error: 'Missing productId' }, { status: 400 });
+
+    // Check if already favorited
+    const existing = await auth.pb.collection('favorites').getFullList({
+      filter: `customer="${auth.customerId}" && product="${productId}"`,
+    });
+
+    if (existing.length > 0) {
+      return NextResponse.json({ error: 'Already favorited' }, { status: 400 });
+    }
+
+    const fav = await auth.pb.collection('favorites').create({
+      customer: auth.customerId,
+      product: productId,
+    });
+
+    return NextResponse.json({ success: true, favoriteId: fav.id });
+  } catch (err) {
+    console.error('Failed to add favorite:', err);
+    return NextResponse.json({ error: 'Failed to add favorite' }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   const auth = await getAuthenticatedPB();
   if (!auth) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });

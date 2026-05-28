@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -13,6 +14,8 @@ export default function CatalogPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [favorites, setFavorites] = useState<Map<string, string>>(new Map());
+  const { customer, loading: authLoading } = useAuth();
   const perPage = 48;
 
   useEffect(() => {
@@ -21,6 +24,21 @@ export default function CatalogPage() {
       .then(data => { if (data.data) setCategories(data.data); })
       .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (authLoading || !customer) return;
+
+    fetch('/api/account/favorites')
+      .then(res => res.json())
+      .then(data => {
+        const favMap = new Map<string, string>();
+        (data.favorites || []).forEach((f: { id: string; product: { id: string } }) => {
+          favMap.set(f.product.id, f.id);
+        });
+        setFavorites(favMap);
+      })
+      .catch(console.error);
+  }, [customer, authLoading]);
 
   useEffect(() => {
     setLoading(true);
@@ -37,6 +55,48 @@ export default function CatalogPage() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [page, selectedCategory, search]);
+
+  async function toggleFavorite(e: React.MouseEvent, productId: string) {
+    e.preventDefault();
+    if (!customer) return;
+
+    const favoriteId = favorites.get(productId);
+
+    try {
+      if (favoriteId) {
+        // Remove favorite
+        const res = await fetch('/api/account/favorites', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ favoriteId }),
+        });
+        if (res.ok) {
+          setFavorites(prev => {
+            const newMap = new Map(prev);
+            newMap.delete(productId);
+            return newMap;
+          });
+        }
+      } else {
+        // Add favorite
+        const res = await fetch('/api/account/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setFavorites(prev => {
+            const newMap = new Map(prev);
+            newMap.set(productId, data.favoriteId);
+            return newMap;
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Failed to toggle favorite:', err);
+    }
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -105,36 +165,54 @@ export default function CatalogPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {products.map(product => (
-              <Link
-                key={product.id}
-                href={`/product/${product.id}`}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group"
-              >
-                <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                  {(product.image_url || product.image) && (
-                    <img
-                      src={etsyImageHD(product.image_url)}
-                      alt={product.short_title || product.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      loading="lazy"
-                    />
+            {products.map(product => {
+              const isFavorited = favorites.has(product.id);
+              return (
+                <div key={product.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group relative">
+                  <Link href={`/product/${product.id}`}>
+                    <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                      {(product.image_url || product.image) && (
+                        <img
+                          src={etsyImageHD(product.image_url)}
+                          alt={product.short_title || product.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <p className="text-sm font-medium text-gray-900 line-clamp-2">
+                        {product.short_title || product.title}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">{product.sku}</p>
+                      <p className="text-sm font-semibold text-blue-600 mt-1">
+                        {formatCurrency(product.retail_price)}
+                      </p>
+                      {product.size && (
+                        <p className="text-xs text-gray-500">{product.size}</p>
+                      )}
+                    </div>
+                  </Link>
+                  {customer && (
+                    <button
+                      onClick={(e) => toggleFavorite(e, product.id)}
+                      className="absolute top-2 right-2 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
+                      title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      {isFavorited ? (
+                        <svg className="w-5 h-5 text-yellow-500 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-gray-400 hover:text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      )}
+                    </button>
                   )}
                 </div>
-                <div className="p-3">
-                  <p className="text-sm font-medium text-gray-900 line-clamp-2">
-                    {product.short_title || product.title}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-0.5">{product.sku}</p>
-                  <p className="text-sm font-semibold text-blue-600 mt-1">
-                    {formatCurrency(product.retail_price)}
-                  </p>
-                  {product.size && (
-                    <p className="text-xs text-gray-500">{product.size}</p>
-                  )}
-                </div>
-              </Link>
-            ))}
+              );
+            })}
           </div>
 
           {/* Pagination */}
