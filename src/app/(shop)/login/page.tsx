@@ -46,7 +46,18 @@ function LoginForm() {
         return;
       }
 
-      router.push('/account');
+      // Check if there's a cart load parameter to preserve
+      const loadParam = searchParams.get('load');
+      console.log('[Login] Load param present:', loadParam ? 'YES' : 'NO');
+      if (loadParam) {
+        // Store in sessionStorage so cart page can pick it up
+        console.log('[Login] Saving to sessionStorage and redirecting to cart...');
+        sessionStorage.setItem('pending_cart_load', loadParam);
+        router.push('/account/cart');
+      } else {
+        console.log('[Login] No load param, redirecting to account...');
+        router.push('/account');
+      }
     } catch {
       setError('Network error. Please try again.');
       setLoading(false);

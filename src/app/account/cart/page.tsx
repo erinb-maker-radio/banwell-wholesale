@@ -23,27 +23,46 @@ export default function CartPage() {
     const params = new URLSearchParams(window.location.search);
     const loadParam = params.get('load');
 
-    if (loadParam) {
+    // Also check sessionStorage in case we came from a login redirect
+    const storedCartData = sessionStorage.getItem('pending_cart_load');
+
+    console.log('[Cart Preload] Checking for cart data...');
+    console.log('[Cart Preload] URL param:', loadParam ? 'present' : 'none');
+    console.log('[Cart Preload] SessionStorage:', storedCartData ? 'present' : 'none');
+
+    if (loadParam || storedCartData) {
       try {
-        const decoded = atob(loadParam);
+        const dataToLoad = loadParam || storedCartData;
+        if (!dataToLoad) return;
+
+        console.log('[Cart Preload] Decoding cart data...');
+        const decoded = atob(dataToLoad);
         const cartData = JSON.parse(decoded) as Array<{ productId: string; quantity: number }>;
 
+        console.log('[Cart Preload] Adding', cartData.length, 'items to cart');
         // Add each item to cart
         cartData.forEach(item => {
+          console.log('[Cart Preload] Adding item:', item.productId, 'qty:', item.quantity);
           addItem(item.productId, item.quantity);
         });
 
-        // Clean up URL (remove ?load= param)
-        params.delete('load');
-        const newUrl = params.toString()
-          ? `${window.location.pathname}?${params.toString()}`
-          : window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
+        console.log('[Cart Preload] Cart load complete!');
+
+        // Clean up
+        sessionStorage.removeItem('pending_cart_load');
+        if (loadParam) {
+          params.delete('load');
+          const newUrl = params.toString()
+            ? `${window.location.pathname}?${params.toString()}`
+            : window.location.pathname;
+          window.history.replaceState({}, '', newUrl);
+        }
       } catch (error) {
-        console.error('Failed to load cart from URL:', error);
+        console.error('[Cart Preload] Failed to load cart from URL:', error);
+        sessionStorage.removeItem('pending_cart_load');
       }
     }
-  }, []); // Run once on mount
+  }, [addItem]); // Include addItem in dependencies
 
   useEffect(() => {
     async function loadProducts() {
