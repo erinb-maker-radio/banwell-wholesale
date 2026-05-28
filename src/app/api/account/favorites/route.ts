@@ -12,7 +12,7 @@ export async function GET() {
     const records = await auth.pb.collection('favorites').getFullList({
       filter: `customer="${auth.customerId}"`,
       expand: 'product',
-      sort: '-created',
+      sort: '-id',
     });
 
     const favorites = records
