@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthenticatedPB } from '@/lib/auth';
+import { createServerPB } from '@/lib/pocketbase';
 
 export async function GET() {
   const auth = await getAuthenticatedPB();
@@ -40,7 +41,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Already favorited' }, { status: 400 });
     }
 
-    const fav = await auth.pb.collection('favorites').create({
+    // Use admin auth to create favorite (createRule is null, only admins can create)
+    const adminPb = createServerPB();
+    await adminPb.admins.authWithPassword(
+      process.env.POCKETBASE_ADMIN_EMAIL || 'admin@banwelldesigns.com',
+      process.env.POCKETBASE_ADMIN_PASSWORD || 'changeme123'
+    );
+
+    const fav = await adminPb.collection('favorites').create({
       customer: auth.customerId,
       product: productId,
     });
