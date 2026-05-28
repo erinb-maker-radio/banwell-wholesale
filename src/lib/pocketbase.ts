@@ -1,14 +1,14 @@
 import PocketBase from 'pocketbase';
 
 // Client-side singleton (for use in React components)
-const pb = new PocketBase(process.env.NEXT_PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8094');
+const pb = new PocketBase(process.env.NEXT_PUBLIC_POCKETBASE_URL || 'https://pb.banwelldesigns.com');
 pb.autoCancellation(false);
 
 export default pb;
 
 // Server-side: Create fresh instance per request (for API routes)
 export function createServerPB() {
-  const serverPb = new PocketBase(process.env.NEXT_PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8094');
+  const serverPb = new PocketBase(process.env.NEXT_PUBLIC_POCKETBASE_URL || 'https://pb.banwelldesigns.com');
   serverPb.autoCancellation(false);
   return serverPb;
 }
