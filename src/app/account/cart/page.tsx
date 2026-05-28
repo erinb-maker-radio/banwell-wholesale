@@ -11,12 +11,39 @@ import { useCart } from '@/components/CartProvider';
 import { useAuth } from '@/components/AuthProvider';
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, clearCart } = useCart();
+  const { items, updateQuantity, removeItem, clearCart, addItem } = useCart();
   const [products, setProducts] = useState<Map<string, Product>>(new Map());
   const [loading, setLoading] = useState(true);
   const { customer } = useAuth();
 
   const customerTier = customer?.discount_tier || 'auto';
+
+  // Load cart from URL parameter (?load=base64-encoded-cart-data)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const loadParam = params.get('load');
+
+    if (loadParam) {
+      try {
+        const decoded = atob(loadParam);
+        const cartData = JSON.parse(decoded) as Array<{ productId: string; quantity: number }>;
+
+        // Add each item to cart
+        cartData.forEach(item => {
+          addItem(item.productId, item.quantity);
+        });
+
+        // Clean up URL (remove ?load= param)
+        params.delete('load');
+        const newUrl = params.toString()
+          ? `${window.location.pathname}?${params.toString()}`
+          : window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+      } catch (error) {
+        console.error('Failed to load cart from URL:', error);
+      }
+    }
+  }, []); // Run once on mount
 
   useEffect(() => {
     async function loadProducts() {
