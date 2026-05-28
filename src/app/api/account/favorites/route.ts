@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthenticatedPB } from '@/lib/auth';
-import { createServerPB } from '@/lib/pocketbase';
+import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
+
+// favorites has listRule/viewRule/createRule/deleteRule = null (admin-only).
+// All operations use admin-authed PB; auth.customerId scopes ownership.
 
 export async function GET() {
   const auth = await getAuthenticatedPB();
   if (!auth) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
   try {
-    const records = await auth.pb.collection('favorites').getFullList({
+    const adminPb = createServerPB();
+    await authenticateAdmin(adminPb);
+
+    const records = await adminPb.collection('favorites').getFullList({
       filter: `customer="${auth.customerId}"`,
       expand: 'product',
       sort: '-created',
@@ -32,27 +38,20 @@ export async function POST(req: NextRequest) {
     const { productId } = await req.json();
     if (!productId) return NextResponse.json({ error: 'Missing productId' }, { status: 400 });
 
-    // Check if already favorited
-    const existing = await auth.pb.collection('favorites').getFullList({
+    const adminPb = createServerPB();
+    await authenticateAdmin(adminPb);
+
+    const existing = await adminPb.collection('favorites').getFullList({
       filter: `customer="${auth.customerId}" && product="${productId}"`,
     });
-
     if (existing.length > 0) {
       return NextResponse.json({ error: 'Already favorited' }, { status: 400 });
     }
-
-    // Use admin auth to create favorite (createRule is null, only admins can create)
-    const adminPb = createServerPB();
-    await adminPb.admins.authWithPassword(
-      process.env.POCKETBASE_ADMIN_EMAIL || 'admin@banwelldesigns.com',
-      process.env.POCKETBASE_ADMIN_PASSWORD || 'changeme123'
-    );
 
     const fav = await adminPb.collection('favorites').create({
       customer: auth.customerId,
       product: productId,
     });
-
     return NextResponse.json({ success: true, favoriteId: fav.id });
   } catch (err) {
     console.error('Failed to add favorite:', err);
@@ -68,13 +67,15 @@ export async function DELETE(req: NextRequest) {
     const { favoriteId } = await req.json();
     if (!favoriteId) return NextResponse.json({ error: 'Missing favoriteId' }, { status: 400 });
 
-    // Verify the favorite belongs to this customer
-    const fav = await auth.pb.collection('favorites').getOne(favoriteId);
+    const adminPb = createServerPB();
+    await authenticateAdmin(adminPb);
+
+    const fav = await adminPb.collection('favorites').getOne(favoriteId);
     if (fav.customer !== auth.customerId) {
       return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
     }
 
-    await auth.pb.collection('favorites').delete(favoriteId);
+    await adminPb.collection('favorites').delete(favoriteId);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('Failed to delete favorite:', err);
