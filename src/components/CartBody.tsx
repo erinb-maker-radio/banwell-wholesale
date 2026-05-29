@@ -127,7 +127,7 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
                           className="px-2 py-0.5 text-gray-500 hover:bg-gray-50"
                           aria-label="Decrease"
                         >−</button>
-                        <span className="px-2 text-xs font-medium tabular-nums">{item.quantity}</span>
+                        <span className="px-2.5 text-sm font-semibold tabular-nums text-gray-900 min-w-[1.75rem] text-center">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity + 1, item.color)}
                           className="px-2 py-0.5 text-gray-500 hover:bg-gray-50"

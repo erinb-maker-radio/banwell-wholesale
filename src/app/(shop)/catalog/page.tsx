@@ -20,6 +20,7 @@ export default function CatalogPage() {
   const { customer, loading: authLoading } = useAuth();
   const { addItem } = useCart();
   const [cardColors, setCardColors] = useState<Map<string, string>>(new Map());
+  const [cardQtys, setCardQtys] = useState<Map<string, number>>(new Map());
   const perPage = 48;
 
   useEffect(() => {
@@ -173,6 +174,8 @@ export default function CatalogPage() {
               const isFavorited = favorites.has(product.id);
               const isMask = isMaskSlug(product.expand?.category?.slug);
               const chosenColor = cardColors.get(product.id) || MASK_COLORS[0];
+              const qty = cardQtys.get(product.id) || 1;
+              const setQty = (n: number) => setCardQtys(prev => new Map(prev).set(product.id, Math.max(1, n)));
               return (
                 <div key={product.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group relative">
                   <Link href={`/product/${product.id}`}>
@@ -228,8 +231,21 @@ export default function CatalogPage() {
                           {MASK_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       )}
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => setQty(qty - 1)}
+                          className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50"
+                          aria-label="Decrease quantity"
+                        >−</button>
+                        <span className="text-xs font-semibold tabular-nums text-gray-900 min-w-[1.5rem] text-center">{qty}</span>
+                        <button
+                          onClick={() => setQty(qty + 1)}
+                          className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50"
+                          aria-label="Increase quantity"
+                        >+</button>
+                      </div>
                       <button
-                        onClick={() => addItem(product.id, 1, isMask ? chosenColor : undefined)}
+                        onClick={() => addItem(product.id, qty, isMask ? chosenColor : undefined)}
                         className="w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700"
                       >
                         Add to Cart

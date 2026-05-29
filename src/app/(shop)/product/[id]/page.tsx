@@ -19,6 +19,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>(MASK_COLORS[0]);
+  const [quantity, setQuantity] = useState(1);
   const { customer, loading: authLoading } = useAuth();
   const { addItem } = useCart();
 
@@ -40,7 +41,7 @@ export default function ProductDetailPage() {
   function handleAddToCart() {
     if (!product) return;
     // Go through CartProvider so the live cart sidebar updates immediately
-    addItem(product.id, 1, isMask ? selectedColor : undefined);
+    addItem(product.id, quantity, isMask ? selectedColor : undefined);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -130,6 +131,24 @@ export default function ProductDetailPage() {
           <div className="mt-8 space-y-3">
             {!authLoading && customer ? (
               <>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-gray-700">Quantity</span>
+                  <div className="inline-flex items-center border border-gray-300 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                      className="px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-l-lg"
+                      aria-label="Decrease quantity"
+                    >−</button>
+                    <span className="px-4 text-base font-semibold tabular-nums text-gray-900 min-w-[2.5rem] text-center">{quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(q => q + 1)}
+                      className="px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-r-lg"
+                      aria-label="Increase quantity"
+                    >+</button>
+                  </div>
+                </div>
                 <Button size="lg" className="w-full" onClick={handleAddToCart}>
                   {addedToCart ? 'Added!' : 'Add to Cart'}
                 </Button>
