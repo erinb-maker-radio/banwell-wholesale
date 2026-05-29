@@ -203,7 +203,7 @@ export async function notifyOrderPlaced(order: {
   // Email to customer
   await sendEmail({
     to: order.customerEmail,
-    subject: `Order Confirmation - ${order.orderNumber}`,
+    subject: `Your Banwell Designs wholesale order is confirmed — ${order.orderNumber}`,
     text: `Hi ${order.contactName},\n\nThank you for your order! Your order ${order.orderNumber} has been received.\n\nItems: ${order.itemCount}\nTotal: $${totalFormatted}\n\nWe'll send you updates as your order is processed.\n\nThank you,\nBanwell Designs`,
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -246,7 +246,7 @@ export async function notifyPaymentReceived(params: {
 
   await sendEmail({
     to: params.customerEmail,
-    subject: `Payment Received - Order ${params.orderNumber}`,
+    subject: `Payment received — Banwell Designs order ${params.orderNumber}`,
     text: `Hi ${params.contactName},\n\nWe've received your payment of $${totalFormatted} for order ${params.orderNumber}.\n\nWe're now preparing your order for shipment. You'll receive tracking information once it ships.\n\nThank you,\nBanwell Designs`,
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -278,7 +278,7 @@ export async function notifyOrderShipped(params: {
 
   await sendEmail({
     to: params.customerEmail,
-    subject: `Your Order Has Shipped - ${params.orderNumber}`,
+    subject: `Your Banwell Designs order has shipped — ${params.orderNumber}`,
     text: `Hi ${params.contactName},\n\nYour order ${params.orderNumber} has shipped!\n\n${trackingInfo}\n\nThank you,\nBanwell Designs`,
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
