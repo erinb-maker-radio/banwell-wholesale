@@ -37,6 +37,7 @@ const MONTHLY_CODES: MonthlyCode[] = [
 // Special codes with custom discount percentages
 const SPECIAL_CODES: Record<string, number> = {
   'ERIN90': 90,
+  'ERIN99': 99,
 };
 
 // Legacy code that was sent before the rotation system
