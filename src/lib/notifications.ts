@@ -104,8 +104,12 @@ async function sendEmail(params: {
 
   try {
     const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'wholesale@banwelldesigns.com';
+    // Support comma-separated recipient lists (e.g. ORDER_NOTIFICATION_EMAIL with multiple admins)
+    const toField = params.to.includes(',')
+      ? params.to.split(',').map(s => s.trim()).filter(Boolean)
+      : params.to;
     await sgMail.send({
-      to: params.to,
+      to: toField,
       from: { email: fromEmail, name: 'Banwell Designs' },
       subject: params.subject,
       text: params.text,
