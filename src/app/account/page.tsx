@@ -7,10 +7,13 @@ import type { Product } from '@/lib/types';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
 import { useAuth } from '@/components/AuthProvider';
+import { MASK_COLORS, isMaskSlug } from '@/lib/colors';
 
 export default function MyCatalogPage() {
   const [curatedProducts, setCuratedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cardColors, setCardColors] = useState<Map<string, string>>(new Map());
+  const [cardQtys, setCardQtys] = useState<Map<string, number>>(new Map());
   const { addItem } = useCart();
   const { customer, loading: authLoading } = useAuth();
 
@@ -52,7 +55,12 @@ export default function MyCatalogPage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {curatedProducts.map(product => (
+        {curatedProducts.map(product => {
+          const isMask = isMaskSlug(product.expand?.category?.slug);
+          const chosenColor = cardColors.get(product.id) || '';
+          const qty = cardQtys.get(product.id) || 1;
+          const setQty = (n: number) => setCardQtys(prev => new Map(prev).set(product.id, Math.max(1, n)));
+          return (
           <div key={product.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <Link href={`/product/${product.id}`}>
               <div className="aspect-square bg-gray-100 overflow-hidden">
@@ -65,15 +73,36 @@ export default function MyCatalogPage() {
               <p className="text-sm font-medium text-gray-900 line-clamp-2">{product.short_title || product.title}</p>
               <p className="text-xs text-gray-400">{product.sku}</p>
               <p className="text-sm font-semibold text-blue-600 mt-1">{formatCurrency(product.retail_price)}</p>
+
+              {isMask && (
+                <select
+                  value={chosenColor}
+                  onChange={(e) => setCardColors(prev => new Map(prev).set(product.id, e.target.value))}
+                  className={`mt-2 w-full text-xs border rounded py-1 px-1.5 bg-white ${chosenColor ? 'border-gray-300 text-gray-900' : 'border-amber-400 text-gray-500'}`}
+                  aria-label="Color"
+                >
+                  <option value="" disabled>Choose color…</option>
+                  {MASK_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              )}
+
+              <div className="flex items-center justify-center gap-1 mt-2">
+                <button onClick={() => setQty(qty - 1)} className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50" aria-label="Decrease quantity">−</button>
+                <span className="text-xs font-semibold tabular-nums text-gray-900 min-w-[1.5rem] text-center">{qty}</span>
+                <button onClick={() => setQty(qty + 1)} className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50" aria-label="Increase quantity">+</button>
+              </div>
+
               <button
-                onClick={() => addItem(product.id)}
-                className="mt-2 w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700"
+                onClick={() => addItem(product.id, qty, isMask ? chosenColor : undefined)}
+                disabled={isMask && !chosenColor}
+                className="mt-2 w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
-                Add to Cart
+                {isMask && !chosenColor ? 'Choose a color' : 'Add to Cart'}
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

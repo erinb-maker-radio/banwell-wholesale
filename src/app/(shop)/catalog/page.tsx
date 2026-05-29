@@ -173,7 +173,7 @@ export default function CatalogPage() {
             {products.map(product => {
               const isFavorited = favorites.has(product.id);
               const isMask = isMaskSlug(product.expand?.category?.slug);
-              const chosenColor = cardColors.get(product.id) || MASK_COLORS[0];
+              const chosenColor = cardColors.get(product.id) || '';
               const qty = cardQtys.get(product.id) || 1;
               const setQty = (n: number) => setCardQtys(prev => new Map(prev).set(product.id, Math.max(1, n)));
               return (
@@ -225,9 +225,10 @@ export default function CatalogPage() {
                         <select
                           value={chosenColor}
                           onChange={(e) => setCardColors(prev => new Map(prev).set(product.id, e.target.value))}
-                          className="w-full text-xs border border-gray-300 rounded py-1 px-1.5 bg-white text-gray-900"
+                          className={`w-full text-xs border rounded py-1 px-1.5 bg-white ${chosenColor ? 'border-gray-300 text-gray-900' : 'border-amber-400 text-gray-500'}`}
                           aria-label="Color"
                         >
+                          <option value="" disabled>Choose color…</option>
                           {MASK_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       )}
@@ -246,9 +247,10 @@ export default function CatalogPage() {
                       </div>
                       <button
                         onClick={() => addItem(product.id, qty, isMask ? chosenColor : undefined)}
-                        className="w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700"
+                        disabled={isMask && !chosenColor}
+                        className="w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                       >
-                        Add to Cart
+                        {isMask && !chosenColor ? 'Choose a color' : 'Add to Cart'}
                       </button>
                     </div>
                   )}

@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const records = await auth.pb.collection('curated_products').getFullList({
       filter: `customer="${auth.customerId}"`,
-      expand: 'product',
+      expand: 'product.category',
       sort: 'sort_order',
     });
 

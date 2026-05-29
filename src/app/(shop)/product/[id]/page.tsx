@@ -18,7 +18,7 @@ export default function ProductDetailPage() {
   const [category, setCategory] = useState<ProductCategory | null>(null);
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>(MASK_COLORS[0]);
+  const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const { customer, loading: authLoading } = useAuth();
   const { addItem } = useCart();
@@ -40,6 +40,7 @@ export default function ProductDetailPage() {
 
   function handleAddToCart() {
     if (!product) return;
+    if (isMask && !selectedColor) return; // masks require a color
     // Go through CartProvider so the live cart sidebar updates immediately
     addItem(product.id, quantity, isMask ? selectedColor : undefined);
     setAddedToCart(true);
@@ -109,7 +110,7 @@ export default function ProductDetailPage() {
           {isMask && (
             <div className="mt-6">
               <p className="text-sm font-medium text-gray-900 mb-2">
-                Color: <span className="font-normal text-gray-600">{selectedColor}</span>
+                Color: <span className="font-normal text-gray-600">{selectedColor || <span className="text-amber-600">Choose a color</span>}</span>
               </p>
               <div className="flex flex-wrap gap-2">
                 {MASK_COLORS.map(c => (
@@ -149,8 +150,8 @@ export default function ProductDetailPage() {
                     >+</button>
                   </div>
                 </div>
-                <Button size="lg" className="w-full" onClick={handleAddToCart}>
-                  {addedToCart ? 'Added!' : 'Add to Cart'}
+                <Button size="lg" className="w-full" onClick={handleAddToCart} disabled={isMask && !selectedColor}>
+                  {addedToCart ? 'Added!' : (isMask && !selectedColor) ? 'Choose a color first' : 'Add to Cart'}
                 </Button>
                 <p className="text-center text-sm text-gray-500">
                   <Link href="/account/cart" className="text-blue-600 hover:underline">
