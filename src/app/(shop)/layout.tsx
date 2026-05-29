@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer';
 import { AuthProvider, useAuth } from '@/components/AuthProvider';
 import { CartProvider } from '@/components/CartProvider';
 import CartSidebar from '@/components/CartSidebar';
+import MobileCart from '@/components/MobileCart';
 
 const shopCategories = [
   { label: 'Leather', href: 'https://www.etsy.com/shop/banwelldesignleather' },
@@ -288,6 +289,7 @@ function ShopLayoutInner({ children }: { children: React.ReactNode }) {
       <CartProvider>
         <main className={`${pageBg} ${mainText} ${showCart ? 'lg:pr-[336px]' : ''}`}>{children}</main>
         {showCart && <CartSidebar top={`${headerH}px`} />}
+        {showCart && <MobileCart />}
       </CartProvider>
       <Footer isDark={isDark} />
     </div>

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { CartProvider } from '@/components/CartProvider';
 import { AuthProvider, useAuth } from '@/components/AuthProvider';
 import CartSidebar from '@/components/CartSidebar';
+import MobileCart from '@/components/MobileCart';
 
 const accountNav = [
   { name: 'My Catalog', href: '/account' },
@@ -87,6 +88,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             {children}
           </div>
           <CartSidebar />
+          <MobileCart />
         </CartProvider>
       </AuthProvider>
     </div>
