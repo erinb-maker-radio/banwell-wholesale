@@ -13,7 +13,7 @@ import type { Product, DiscountTierLevel } from '@/lib/types';
 // Fixed right-side cart, lg+ only. Mirrors what /account/cart shows but
 // in a compact always-visible form so customers see additions immediately.
 
-export default function CartSidebar() {
+export default function CartSidebar({ top = '4rem' }: { top?: string }) {
   const { items, updateQuantity, removeItem, itemCount } = useCart();
   const { customer } = useAuth();
   const pathname = usePathname();
@@ -71,7 +71,8 @@ export default function CartSidebar() {
 
   return (
     <aside
-      className="hidden lg:flex flex-col fixed right-0 top-16 bottom-0 w-80 bg-white border-l border-gray-200 shadow-sm z-30"
+      className="hidden lg:flex flex-col fixed right-0 bottom-0 w-80 bg-white border-l border-gray-200 shadow-sm z-30"
+      style={{ top }}
       aria-label="Cart"
     >
       <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
@@ -149,11 +150,11 @@ export default function CartSidebar() {
               <>
                 <div className="flex justify-between text-gray-600">
                   <span>Discount ({discount.percent}%)</span>
-                  <span className="tabular-nums">−{formatCurrency(discount.discountAmount)}</span>
+                  <span className="tabular-nums">−{formatCurrency(discount.amount)}</span>
                 </div>
                 <div className="flex justify-between font-semibold text-gray-900 mt-1">
                   <span>Total</span>
-                  <span className="tabular-nums">{formatCurrency(discount.discountedTotal)}</span>
+                  <span className="tabular-nums">{formatCurrency(discount.total)}</span>
                 </div>
               </>
             )}

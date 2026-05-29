@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
 import { useAuth } from '@/components/AuthProvider';
+import { useCart } from '@/components/CartProvider';
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,6 +17,7 @@ export default function CatalogPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [favorites, setFavorites] = useState<Map<string, string>>(new Map());
   const { customer, loading: authLoading } = useAuth();
+  const { addItem } = useCart();
   const perPage = 48;
 
   useEffect(() => {
@@ -209,6 +211,16 @@ export default function CatalogPage() {
                         </svg>
                       )}
                     </button>
+                  )}
+                  {customer && (
+                    <div className="px-3 pb-3">
+                      <button
+                        onClick={() => addItem(product.id)}
+                        className="w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700"
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
                   )}
                 </div>
               );

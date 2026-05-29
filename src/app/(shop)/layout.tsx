@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from '@/components/layout/Footer';
 import { AuthProvider, useAuth } from '@/components/AuthProvider';
+import { CartProvider } from '@/components/CartProvider';
+import CartSidebar from '@/components/CartSidebar';
 
 const shopCategories = [
   { label: 'Leather', href: 'https://www.etsy.com/shop/banwelldesignleather' },
@@ -26,8 +28,13 @@ function ShopLayoutInner({ children }: { children: React.ReactNode }) {
   const [shopDropdownOpen, setShopDropdownOpen] = useState(false);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerH, setHeaderH] = useState(64);
   const pathname = usePathname();
   const { customer, loading: authLoading, logout } = useAuth();
+
+  // Show the live cart sidebar only where customers pick items
+  const showCart = pathname === '/catalog' || pathname.startsWith('/catalog/') || pathname.startsWith('/product');
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -39,6 +46,17 @@ function ShopLayoutInner({ children }: { children: React.ReactNode }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Keep the cart sidebar anchored just below the sticky header (which is taller than the account header)
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => setHeaderH(el.offsetHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [showCart]);
 
   // Only leather gets the dark theme
   const isDark = pathname.startsWith('/leather');
@@ -69,6 +87,7 @@ function ShopLayoutInner({ children }: { children: React.ReactNode }) {
     >
       {/* Header */}
       <header
+        ref={headerRef}
         className={`${headerBg} sticky top-0 z-40`}
       >
         <div className="max-w-[1140px] mx-auto px-4">
@@ -266,7 +285,10 @@ function ShopLayoutInner({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <main className={`${pageBg} ${mainText}`}>{children}</main>
+      <CartProvider>
+        <main className={`${pageBg} ${mainText} ${showCart ? 'lg:pr-[336px]' : ''}`}>{children}</main>
+        {showCart && <CartSidebar top={`${headerH}px`} />}
+      </CartProvider>
       <Footer isDark={isDark} />
     </div>
   );

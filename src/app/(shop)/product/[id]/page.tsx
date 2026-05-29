@@ -8,6 +8,7 @@ import type { Product, ProductCategory } from '@/lib/types';
 import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/components/AuthProvider';
+import { useCart } from '@/components/CartProvider';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -17,6 +18,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
   const { customer, loading: authLoading } = useAuth();
+  const { addItem } = useCart();
 
   useEffect(() => {
     pb.collection('products').getOne(params.id as string, { expand: 'category' })
@@ -32,22 +34,11 @@ export default function ProductDetailPage() {
   }, [params.id]);
 
   function handleAddToCart() {
-    // Save to localStorage directly (same key as CartProvider)
-    try {
-      const saved = localStorage.getItem('banwell_cart');
-      const items = saved ? JSON.parse(saved) : [];
-      const existing = items.find((i: { productId: string }) => i.productId === product!.id);
-      if (existing) {
-        existing.quantity += 1;
-      } else {
-        items.push({ productId: product!.id, quantity: 1 });
-      }
-      localStorage.setItem('banwell_cart', JSON.stringify(items));
-      setAddedToCart(true);
-      setTimeout(() => setAddedToCart(false), 2000);
-    } catch (err) {
-      console.error('Failed to add to cart:', err);
-    }
+    if (!product) return;
+    // Go through CartProvider so the live cart sidebar updates immediately
+    addItem(product.id);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   }
 
   if (loading) return <div className="max-w-7xl mx-auto px-4 py-12 text-center text-gray-500">Loading...</div>;
