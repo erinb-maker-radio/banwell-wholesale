@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
+import { curateCustomerByType } from '@/lib/standard-catalogs';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -43,7 +44,17 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await authenticateAdmin(pb);
 
     const body = await request.json();
+    const before = await pb.collection('customers').getOne(id);
     const customer = await pb.collection('customers').update(id, body);
+
+    // When an admin changes the customer's type, rebuild their standard catalog
+    if (body.customer_type && body.customer_type !== before.customer_type) {
+      try {
+        await curateCustomerByType(pb, id, body.customer_type);
+      } catch (e) {
+        console.error('Re-curate on type change failed:', e);
+      }
+    }
 
     return NextResponse.json({ success: true, data: customer });
   } catch (err) {

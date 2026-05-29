@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 import { notifyNewCustomer } from '@/lib/notifications';
+import { curateCustomerByType, STANDARD_CATALOGS, type CustomerType } from '@/lib/standard-catalogs';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { email, password, passwordConfirm, business_name, contact_name, phone, address, city, state, zip, website } = body;
+    // Default new signups to the mask catalog unless they pick a valid type
+    const customer_type: CustomerType = ((body.customer_type as string) in STANDARD_CATALOGS ? body.customer_type : 'mask') as CustomerType;
 
     if (!email || !password || !business_name || !contact_name) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -36,7 +39,15 @@ export async function POST(request: Request) {
       website: website || '',
       status: 'pending',
       discount_tier: 'auto',
+      customer_type,
     });
+
+    // Auto-populate their "My Catalog" with the standard catalog for their type
+    try {
+      await curateCustomerByType(pb, customer.id, customer_type);
+    } catch (e) {
+      console.error('Failed to curate catalog for new customer:', e);
+    }
 
     // Notify admin
     notifyNewCustomer({ business_name, contact_name, email }).catch(console.error);

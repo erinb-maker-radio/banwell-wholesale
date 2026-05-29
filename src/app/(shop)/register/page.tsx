@@ -61,6 +61,22 @@ export default function RegisterPage() {
           <Input label="Business Name" name="business_name" required id="business_name" />
           <Input label="Contact Name" name="contact_name" required id="contact_name" />
         </div>
+        <div>
+          <label htmlFor="customer_type" className="block text-sm font-medium text-gray-700 mb-1">What do you primarily sell?</label>
+          <select
+            id="customer_type"
+            name="customer_type"
+            defaultValue="mask"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="mask">Masks (fashion &amp; plague doctor)</option>
+            <option value="leather">Leather goods</option>
+            <option value="glass">Glass art</option>
+            <option value="paper">Paper art</option>
+            <option value="general">Other / general</option>
+          </select>
+          <p className="text-xs text-gray-500 mt-1">We&apos;ll set up your catalog with the right products.</p>
+        </div>
         <Input label="Email" name="email" type="email" required id="email" />
         <Input label="Phone" name="phone" type="tel" id="phone" />
         <div className="grid grid-cols-2 gap-4">
