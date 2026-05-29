@@ -24,8 +24,19 @@ export default function CheckoutPage() {
   const [codeApplied, setCodeApplied] = useState(false);
   const [codePercent, setCodePercent] = useState(25);
   const { customer } = useAuth();
+  const [isReturning, setIsReturning] = useState(false);
 
   const customerTier = customer?.discount_tier || 'auto';
+
+  // First-time buyers must pay by card (Square). Invoicing (Net 30) is only
+  // offered once a customer has at least one prior order.
+  useEffect(() => {
+    if (!customer?.id) return;
+    pb.collection('orders')
+      .getList(1, 1, { filter: `customer="${customer.id}"` })
+      .then(res => setIsReturning(res.totalItems > 0))
+      .catch(() => setIsReturning(false));
+  }, [customer?.id]);
 
   useEffect(() => {
     async function load() {
@@ -237,20 +248,27 @@ export default function CheckoutPage() {
               <p className="text-sm text-gray-500">Secure payment via Square</p>
             </div>
           </label>
-          <label className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50">
-            <input
-              type="radio"
-              name="payment"
-              value="invoice"
-              checked={paymentMethod === 'invoice'}
-              onChange={() => setPaymentMethod('invoice')}
-              className="text-blue-600"
-            />
-            <div>
-              <p className="font-medium text-gray-900">Request Invoice</p>
-              <p className="text-sm text-gray-500">Net 30 payment terms</p>
-            </div>
-          </label>
+          {isReturning && (
+            <label className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50">
+              <input
+                type="radio"
+                name="payment"
+                value="invoice"
+                checked={paymentMethod === 'invoice'}
+                onChange={() => setPaymentMethod('invoice')}
+                className="text-blue-600"
+              />
+              <div>
+                <p className="font-medium text-gray-900">Request Invoice</p>
+                <p className="text-sm text-gray-500">Net 30 payment terms</p>
+              </div>
+            </label>
+          )}
+          {!isReturning && (
+            <p className="text-xs text-gray-500">
+              Net 30 invoicing becomes available after your first order.
+            </p>
+          )}
         </div>
       </div>
 
