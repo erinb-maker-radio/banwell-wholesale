@@ -1,9 +1,10 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import { useCart } from '@/components/CartProvider';
 
 export default function ThankYouPage() {
   return (
@@ -16,6 +17,10 @@ export default function ThankYouPage() {
 function ThankYouContent() {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get('order');
+  const { clearCart } = useCart();
+
+  // Order is confirmed at this point — now it's safe to empty the cart.
+  useEffect(() => { clearCart(); }, [clearCart]);
 
   return (
     <div className="max-w-lg mx-auto text-center py-12">

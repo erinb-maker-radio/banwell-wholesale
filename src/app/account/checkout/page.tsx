@@ -13,7 +13,7 @@ import { useAuth } from '@/components/AuthProvider';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clearCart } = useCart();
+  const { items } = useCart();
   const [products, setProducts] = useState<Map<string, Product>>(new Map());
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -132,8 +132,8 @@ export default function CheckoutPage() {
         return;
       }
 
-      clearCart();
-
+      // Don't clear the cart here — if the customer cancels payment on Square
+      // they'd lose it. The thank-you page clears it after a confirmed order.
       if (paymentMethod === 'square' && result.checkoutUrl) {
         window.location.href = result.checkoutUrl;
       } else {

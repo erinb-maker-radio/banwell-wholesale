@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     }
 
     step = 'square checkout';
-    const baseUrl = 'https://www.banwelldesigns.com';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://wholesale.banwelldesigns.com';
 
     const checkout = await createCheckoutLink({
       orderId: order.id,
@@ -143,7 +143,9 @@ export async function POST(request: Request) {
       body: JSON.stringify({ square_checkout_id: checkout.paymentLinkId }),
     });
 
-    notifyOrderPlaced({
+    // Await on serverless — a fire-and-forget promise gets killed when the
+    // function returns, so the email never actually sends on Vercel.
+    await notifyOrderPlaced({
       orderNumber,
       businessName: customer.business_name,
       contactName: customer.contact_name,

@@ -122,7 +122,8 @@ export async function POST(request: Request) {
     });
 
     // Notify
-    notifyOrderPlaced({
+    // Await on serverless so the email isn't killed when the function returns.
+    await notifyOrderPlaced({
       orderNumber,
       businessName: customer.business_name,
       contactName: customer.contact_name,
