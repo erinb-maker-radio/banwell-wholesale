@@ -15,7 +15,10 @@ export function formatCurrency(cents: number): string {
 
 // Format date for display
 export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  if (!dateString) return '—';
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

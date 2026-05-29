@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { formatCurrency, formatDate, formatOrderStatus, getStatusColor } from '@/lib/utils';
 import type { Order, OrderItem, Product } from '@/lib/types';
-import pb from '@/lib/pocketbase';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
@@ -20,15 +19,12 @@ export default function OrderDetailPage() {
   useEffect(() => {
     async function load() {
       try {
-        const orderRecord = await pb.collection('orders').getOne(params.id as string);
-        setOrder(orderRecord as unknown as Order);
-
-        const orderItems = await pb.collection('order_items').getFullList({
-          filter: `order="${params.id}"`,
-          expand: 'product',
-        });
-        setItems(orderItems.map(oi => ({
-          ...(oi as unknown as OrderItem),
+        const res = await fetch(`/api/account/orders/${params.id}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('not found');
+        const data = await res.json();
+        setOrder(data.order as Order);
+        setItems((data.items || []).map((oi: OrderItem & { expand?: { product?: Product } }) => ({
+          ...oi,
           productData: oi.expand?.product as unknown as Product,
         })));
       } catch (err) {
