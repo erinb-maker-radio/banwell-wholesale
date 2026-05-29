@@ -140,7 +140,7 @@ export async function POST(request: Request) {
     step = 'update order with checkout id';
     await pbFetch(`/api/collections/orders/records/${order.id}`, adminToken, {
       method: 'PATCH',
-      body: JSON.stringify({ square_checkout_id: checkout.paymentLinkId }),
+      body: JSON.stringify({ square_checkout_id: checkout.paymentLinkId, square_order_id: checkout.squareOrderId }),
     });
 
     // Await on serverless — a fire-and-forget promise gets killed when the

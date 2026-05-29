@@ -61,7 +61,7 @@ export async function createCheckoutLink(params: {
   customerEmail: string;
   lineItems: Array<{ name: string; quantity: number; priceCents: number }>;
   redirectUrl: string;
-}): Promise<{ checkoutUrl: string; paymentLinkId: string }> {
+}): Promise<{ checkoutUrl: string; paymentLinkId: string; squareOrderId: string }> {
   const locationId = await getLocationId();
 
   const response = await squareClient.checkout.paymentLinks.create({
@@ -84,5 +84,6 @@ export async function createCheckoutLink(params: {
   return {
     checkoutUrl: response.paymentLink!.url!,
     paymentLinkId: response.paymentLink!.id!,
+    squareOrderId: response.paymentLink!.orderId || '',
   };
 }

@@ -9,7 +9,9 @@ export async function POST(request: Request) {
 
     console.log('Square webhook received:', eventType);
 
-    if (eventType !== 'payment.completed') {
+    // Square fires payment.created / payment.updated (there is no
+    // "payment.completed"). Act once the payment reaches COMPLETED.
+    if (eventType !== 'payment.updated' && eventType !== 'payment.created') {
       return NextResponse.json({ received: true });
     }
 
@@ -18,30 +20,44 @@ export async function POST(request: Request) {
       console.log('No payment data in webhook');
       return NextResponse.json({ received: true });
     }
+    if (payment.status !== 'COMPLETED') {
+      console.log('Payment not completed yet:', payment.status);
+      return NextResponse.json({ received: true });
+    }
 
     const paymentId = payment.id;
     const pb = createServerPB();
     await authenticateAdmin(pb);
 
-    // Find order by square_checkout_id or pending payment
+    // Correlate by the Square order_id we stored at checkout (payment objects
+    // carry order_id, not payment_link_id). Fall back to payment_link_id.
     let order;
     try {
-      // Try to find by checkout ID from payment link
-      const checkoutId = payment.payment_link_id;
-      if (checkoutId) {
+      const squareOrderId = payment.order_id;
+      const paymentLinkId = payment.payment_link_id;
+      if (squareOrderId) {
+        try {
+          order = await pb.collection('orders').getFirstListItem(
+            `square_order_id="${squareOrderId}"`, { expand: 'customer' });
+        } catch { /* fall through to payment_link_id */ }
+      }
+      if (!order && paymentLinkId) {
         order = await pb.collection('orders').getFirstListItem(
-          `square_checkout_id="${checkoutId}" && status="pending_payment"`,
-          { expand: 'customer' }
-        );
+          `square_checkout_id="${paymentLinkId}"`, { expand: 'customer' });
       }
     } catch {
-      console.log('No order found for payment link:', payment.payment_link_id);
+      console.log('No order found for payment', paymentId, 'order_id', payment.order_id);
       return NextResponse.json({ received: true });
     }
 
     if (!order) {
-      console.log('No matching order found for webhook');
+      console.log('No matching order found for webhook; payment', paymentId, 'order_id', payment.order_id);
       return NextResponse.json({ received: true });
+    }
+
+    // Idempotency: skip if already marked paid
+    if (order.status === 'payment_received' || order.square_payment_id) {
+      return NextResponse.json({ received: true, alreadyProcessed: true });
     }
 
     // Update order status
