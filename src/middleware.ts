@@ -27,8 +27,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Protect /account/* routes - require customer auth
-  if (pathname.startsWith('/account')) {
+  // Protect /account/* routes - require customer auth.
+  // Exception: the post-payment thank-you page is reached via a cross-site
+  // redirect from Square, which doesn't carry the auth cookie — don't bounce it.
+  if (pathname.startsWith('/account') && !pathname.startsWith('/account/checkout/thank-you')) {
     const authCookie = request.cookies.get('pb_auth');
     if (!authCookie?.value) {
       return NextResponse.redirect(new URL('/login', request.url));

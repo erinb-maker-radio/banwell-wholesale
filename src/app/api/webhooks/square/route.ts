@@ -79,7 +79,8 @@ export async function POST(request: Request) {
     // Notify customer
     const customer = order.expand?.customer;
     if (customer) {
-      notifyPaymentReceived({
+      // Await on serverless so the email isn't killed when the function returns.
+      await notifyPaymentReceived({
         orderNumber: order.order_number,
         customerEmail: customer.email,
         contactName: customer.contact_name,
