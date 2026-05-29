@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const records = await auth.pb.collection('invoices').getFullList({
       filter: `customer="${auth.customerId}"`,
-      sort: '-created',
+      sort: '-id',
       expand: 'order',
     });
 

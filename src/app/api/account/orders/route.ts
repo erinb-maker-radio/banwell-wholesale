@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const records = await auth.pb.collection('orders').getFullList({
       filter: `customer="${auth.customerId}"`,
-      sort: '-created',
+      sort: '-id',
     });
 
     return NextResponse.json({ orders: records });
