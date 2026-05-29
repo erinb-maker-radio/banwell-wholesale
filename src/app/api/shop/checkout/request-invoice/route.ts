@@ -35,6 +35,7 @@ export async function POST(request: Request) {
       lineItems.push({
         productId: item.productId,
         quantity: item.quantity,
+        color: item.color || '',
         unitPrice: product.retail_price,
         lineTotal,
       });
@@ -87,6 +88,7 @@ export async function POST(request: Request) {
         quantity: li.quantity,
         unit_price: li.unitPrice,
         line_total: li.lineTotal,
+        color: li.color,
       });
     }
 

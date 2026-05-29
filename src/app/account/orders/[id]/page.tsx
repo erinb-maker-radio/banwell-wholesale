@@ -43,7 +43,7 @@ export default function OrderDetailPage() {
   function handleReorder() {
     for (const item of items) {
       if (item.productData) {
-        addItem(item.product, item.quantity);
+        addItem(item.product, item.quantity, item.color);
       }
     }
     window.location.href = '/account/cart';
@@ -103,6 +103,7 @@ export default function OrderDetailPage() {
                 <td className="px-6 py-3">
                   <p className="font-medium">{item.productData?.short_title || item.productData?.title || 'Product'}</p>
                   <p className="text-xs text-gray-400">{item.productData?.sku}</p>
+                  {item.color && <p className="text-xs text-gray-600">Color: {item.color}</p>}
                 </td>
                 <td className="px-6 py-3 text-center">{item.quantity}</td>
                 <td className="px-6 py-3 text-right">{formatCurrency(item.unit_price)}</td>

@@ -135,6 +135,7 @@ export interface OrderItem {
   quantity: number;
   unit_price: number; // cents
   line_total: number; // cents
+  color?: string; // mask color variant
   created: string;
   updated: string;
   expand?: {
@@ -265,6 +266,7 @@ export interface PaginatedResponse<T> {
 export interface CartItem {
   productId: string;
   quantity: number;
+  color?: string; // mask color variant (undefined for non-mask items)
 }
 
 export interface CartItemWithProduct extends CartItem {

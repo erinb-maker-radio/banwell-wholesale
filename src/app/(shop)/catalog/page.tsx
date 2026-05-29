@@ -6,6 +6,7 @@ import { formatCurrency, etsyImageHD } from '@/lib/utils';
 import type { Product, ProductCategory } from '@/lib/types';
 import { useAuth } from '@/components/AuthProvider';
 import { useCart } from '@/components/CartProvider';
+import { MASK_COLORS, isMaskSlug } from '@/lib/colors';
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,6 +19,7 @@ export default function CatalogPage() {
   const [favorites, setFavorites] = useState<Map<string, string>>(new Map());
   const { customer, loading: authLoading } = useAuth();
   const { addItem } = useCart();
+  const [cardColors, setCardColors] = useState<Map<string, string>>(new Map());
   const perPage = 48;
 
   useEffect(() => {
@@ -169,6 +171,8 @@ export default function CatalogPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {products.map(product => {
               const isFavorited = favorites.has(product.id);
+              const isMask = isMaskSlug(product.expand?.category?.slug);
+              const chosenColor = cardColors.get(product.id) || MASK_COLORS[0];
               return (
                 <div key={product.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group relative">
                   <Link href={`/product/${product.id}`}>
@@ -213,9 +217,19 @@ export default function CatalogPage() {
                     </button>
                   )}
                   {customer && (
-                    <div className="px-3 pb-3">
+                    <div className="px-3 pb-3 space-y-1.5">
+                      {isMask && (
+                        <select
+                          value={chosenColor}
+                          onChange={(e) => setCardColors(prev => new Map(prev).set(product.id, e.target.value))}
+                          className="w-full text-xs border border-gray-300 rounded py-1 px-1.5 bg-white text-gray-900"
+                          aria-label="Color"
+                        >
+                          {MASK_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      )}
                       <button
-                        onClick={() => addItem(product.id)}
+                        onClick={() => addItem(product.id, 1, isMask ? chosenColor : undefined)}
                         className="w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700"
                       >
                         Add to Cart

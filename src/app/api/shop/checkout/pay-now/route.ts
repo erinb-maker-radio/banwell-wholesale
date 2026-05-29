@@ -61,6 +61,7 @@ export async function POST(request: Request) {
       lineItems.push({
         productId: item.productId,
         quantity: item.quantity,
+        color: item.color || '',
         unitPrice: product.retail_price,
         lineTotal,
         name: product.short_title || product.title,
@@ -119,6 +120,7 @@ export async function POST(request: Request) {
           quantity: li.quantity,
           unit_price: li.unitPrice,
           line_total: li.lineTotal,
+          color: li.color,
         }),
       });
     }
@@ -131,7 +133,7 @@ export async function POST(request: Request) {
       orderNumber,
       totalCents: discount.total,
       customerEmail: customer.email,
-      lineItems: lineItems.map(li => ({ name: li.name, quantity: li.quantity, priceCents: li.priceCents })),
+      lineItems: lineItems.map(li => ({ name: li.color ? `${li.name} (${li.color})` : li.name, quantity: li.quantity, priceCents: li.priceCents })),
       redirectUrl: `${baseUrl}/account/checkout/thank-you?order=${orderNumber}`,
     });
 

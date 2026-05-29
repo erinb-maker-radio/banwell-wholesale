@@ -9,6 +9,7 @@ import pb from '@/lib/pocketbase';
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/components/AuthProvider';
 import { useCart } from '@/components/CartProvider';
+import { MASK_COLORS, COLOR_HEX, isMaskSlug } from '@/lib/colors';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -17,8 +18,11 @@ export default function ProductDetailPage() {
   const [category, setCategory] = useState<ProductCategory | null>(null);
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>(MASK_COLORS[0]);
   const { customer, loading: authLoading } = useAuth();
   const { addItem } = useCart();
+
+  const isMask = isMaskSlug(category?.slug);
 
   useEffect(() => {
     pb.collection('products').getOne(params.id as string, { expand: 'category' })
@@ -36,7 +40,7 @@ export default function ProductDetailPage() {
   function handleAddToCart() {
     if (!product) return;
     // Go through CartProvider so the live cart sidebar updates immediately
-    addItem(product.id);
+    addItem(product.id, 1, isMask ? selectedColor : undefined);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -98,6 +102,28 @@ export default function ProductDetailPage() {
             <div className="mt-6">
               <h3 className="text-sm font-medium text-gray-900">Description</h3>
               <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+            </div>
+          )}
+
+          {isMask && (
+            <div className="mt-6">
+              <p className="text-sm font-medium text-gray-900 mb-2">
+                Color: <span className="font-normal text-gray-600">{selectedColor}</span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {MASK_COLORS.map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setSelectedColor(c)}
+                    title={c}
+                    aria-label={c}
+                    aria-pressed={selectedColor === c}
+                    className={`w-8 h-8 rounded-full border transition ${selectedColor === c ? 'ring-2 ring-offset-2 ring-blue-600 border-gray-400' : 'border-gray-300 hover:border-gray-400'}`}
+                    style={{ backgroundColor: COLOR_HEX[c] }}
+                  />
+                ))}
+              </div>
             </div>
           )}
 

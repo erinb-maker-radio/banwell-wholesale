@@ -107,6 +107,7 @@ export default function CheckoutPage() {
           items: items.map(i => ({
             productId: i.productId,
             quantity: i.quantity,
+            color: i.color,
           })),
           ...(codeApplied ? { discountCode: discountCode.trim() } : {}),
         }),
@@ -153,8 +154,8 @@ export default function CheckoutPage() {
             const product = products.get(item.productId);
             if (!product) return null;
             return (
-              <div key={item.productId} className="flex justify-between">
-                <span className="text-gray-600">{product.short_title || product.title} x{item.quantity}</span>
+              <div key={`${item.productId}::${item.color ?? ''}`} className="flex justify-between">
+                <span className="text-gray-600">{product.short_title || product.title}{item.color ? ` — ${item.color}` : ''} x{item.quantity}</span>
                 <span className="text-gray-900">{formatCurrency(product.retail_price * item.quantity)}</span>
               </div>
             );

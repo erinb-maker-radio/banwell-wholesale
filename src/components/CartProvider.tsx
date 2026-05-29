@@ -5,9 +5,9 @@ import type { CartItem } from '@/lib/types';
 
 interface CartContextValue {
   items: CartItem[];
-  addItem: (productId: string, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (productId: string, quantity?: number, color?: string) => void;
+  removeItem: (productId: string, color?: string) => void;
+  updateQuantity: (productId: string, quantity: number, color?: string) => void;
   clearCart: () => void;
   itemCount: number;
 }
@@ -15,6 +15,11 @@ interface CartContextValue {
 const CartContext = createContext<CartContextValue | null>(null);
 
 const CART_KEY = 'banwell_cart';
+
+// A cart line is identified by product + color, so two colors of the same
+// mask are distinct lines. Non-mask items carry no color.
+const sameLine = (i: CartItem, productId: string, color?: string) =>
+  i.productId === productId && (i.color ?? '') === (color ?? '');
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -36,32 +41,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
-  const addItem = useCallback((productId: string, quantity: number = 1) => {
+  const addItem = useCallback((productId: string, quantity: number = 1, color?: string) => {
     setItems(prev => {
-      const existing = prev.find(i => i.productId === productId);
+      const existing = prev.find(i => sameLine(i, productId, color));
       if (existing) {
         return prev.map(i =>
-          i.productId === productId
+          sameLine(i, productId, color)
             ? { ...i, quantity: i.quantity + quantity }
             : i
         );
       }
-      return [...prev, { productId, quantity }];
+      const item: CartItem = { productId, quantity };
+      if (color) item.color = color;
+      return [...prev, item];
     });
   }, []);
 
-  const removeItem = useCallback((productId: string) => {
-    setItems(prev => prev.filter(i => i.productId !== productId));
+  const removeItem = useCallback((productId: string, color?: string) => {
+    setItems(prev => prev.filter(i => !sameLine(i, productId, color)));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, quantity: number, color?: string) => {
     if (quantity <= 0) {
-      removeItem(productId);
+      removeItem(productId, color);
       return;
     }
     setItems(prev =>
       prev.map(i =>
-        i.productId === productId ? { ...i, quantity } : i
+        sameLine(i, productId, color) ? { ...i, quantity } : i
       )
     );
   }, [removeItem]);

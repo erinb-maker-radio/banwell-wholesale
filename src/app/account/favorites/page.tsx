@@ -7,6 +7,7 @@ import type { Product } from '@/lib/types';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
 import { useAuth } from '@/components/AuthProvider';
+import { isMaskSlug } from '@/lib/colors';
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<{ id: string; product: Product }[]>([]);
@@ -67,7 +68,11 @@ export default function FavoritesPage() {
               <p className="text-sm font-medium text-gray-900 line-clamp-2">{product.short_title || product.title}</p>
               <p className="text-sm font-semibold text-blue-600 mt-1">{formatCurrency(product.retail_price)}</p>
               <div className="flex gap-1 mt-2">
-                <button onClick={() => addItem(product.id)} className="flex-1 text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700">Add to Cart</button>
+                {isMaskSlug(product.expand?.category?.slug) ? (
+                  <Link href={`/product/${product.id}`} className="flex-1 text-xs text-center bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700">Choose color</Link>
+                ) : (
+                  <button onClick={() => addItem(product.id)} className="flex-1 text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700">Add to Cart</button>
+                )}
                 <button onClick={() => removeFavorite(id)} className="text-xs border rounded px-2 py-1.5 text-red-600 hover:bg-red-50">Remove</button>
               </div>
             </div>

@@ -335,6 +335,9 @@ export default function AdminOrderDetailPage() {
                                   {product?.short_title || product?.title || 'Product'}
                                 </p>
                                 <p className="text-xs text-gray-400">{product?.sku || ''}</p>
+                                {item.color && (
+                                  <p className="text-xs font-medium text-gray-700">Color: {item.color}</p>
+                                )}
                               </div>
                             </div>
                           </td>

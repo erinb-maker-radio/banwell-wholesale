@@ -37,13 +37,13 @@ export default function CartPage() {
 
         console.log('[Cart Preload] Decoding cart data...');
         const decoded = atob(dataToLoad);
-        const cartData = JSON.parse(decoded) as Array<{ productId: string; quantity: number }>;
+        const cartData = JSON.parse(decoded) as Array<{ productId: string; quantity: number; color?: string }>;
 
         console.log('[Cart Preload] Adding', cartData.length, 'items to cart');
         // Add each item to cart
         cartData.forEach(item => {
           console.log('[Cart Preload] Adding item:', item.productId, 'qty:', item.quantity);
-          addItem(item.productId, item.quantity);
+          addItem(item.productId, item.quantity, item.color);
         });
 
         console.log('[Cart Preload] Cart load complete!');
@@ -119,7 +119,7 @@ export default function CartPage() {
               if (!product) return null;
 
               return (
-                <div key={item.productId} className="flex items-center p-4 gap-4">
+                <div key={`${item.productId}::${item.color ?? ''}`} className="flex items-center p-4 gap-4">
                   <div className="w-16 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
                     {product.image_url && (
                       <img src={etsyImageHD(product.image_url, 'medium')} alt={product.short_title} className="w-full h-full object-cover" />
@@ -128,16 +128,17 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{product.short_title || product.title}</p>
                     <p className="text-xs text-gray-400">{product.sku}</p>
+                    {item.color && <p className="text-xs text-gray-600">Color: {item.color}</p>}
                     <p className="text-sm text-gray-600">{formatCurrency(product.retail_price)} each</p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
-                      onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                      onClick={() => updateQuantity(item.productId, item.quantity - 1, item.color)}
                       className="w-8 h-8 border rounded text-gray-600 hover:bg-gray-50"
                     >-</button>
                     <span className="min-w-[2rem] text-center text-sm text-gray-900 font-medium inline-block">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                      onClick={() => updateQuantity(item.productId, item.quantity + 1, item.color)}
                       className="w-8 h-8 border rounded text-gray-600 hover:bg-gray-50"
                     >+</button>
                   </div>
@@ -145,7 +146,7 @@ export default function CartPage() {
                     <p className="text-sm font-medium text-gray-900">{formatCurrency(product.retail_price * item.quantity)}</p>
                   </div>
                   <button
-                    onClick={() => removeItem(item.productId)}
+                    onClick={() => removeItem(item.productId, item.color)}
                     className="text-gray-400 hover:text-red-600"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

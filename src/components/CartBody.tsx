@@ -18,11 +18,12 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
   const [pulseId, setPulseId] = useState<string | null>(null);
   const prevCountRef = useRef(itemCount);
 
+  const lineKey = (i: { productId: string; color?: string }) => `${i.productId}::${i.color ?? ''}`;
+
   // Brief highlight on the most-recently-added item
   useEffect(() => {
     if (itemCount > prevCountRef.current && items.length > 0) {
-      const last = items[items.length - 1].productId;
-      setPulseId(last);
+      setPulseId(lineKey(items[items.length - 1]));
       const t = setTimeout(() => setPulseId(null), 1200);
       return () => clearTimeout(t);
     }
@@ -91,10 +92,10 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
             {items.map(item => {
               const p = products.get(item.productId);
               const lineTotal = p ? p.retail_price * item.quantity : 0;
-              const pulsing = pulseId === item.productId;
+              const pulsing = pulseId === lineKey(item);
               return (
                 <li
-                  key={item.productId}
+                  key={lineKey(item)}
                   className={`px-4 py-3 flex gap-3 transition-colors ${pulsing ? 'bg-amber-50' : 'bg-white'}`}
                 >
                   <div className="w-14 h-14 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
@@ -106,16 +107,19 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
                     <div className="text-xs font-medium text-gray-900 line-clamp-2">
                       {p?.short_title || p?.title || '…'}
                     </div>
+                    {item.color && (
+                      <div className="text-[11px] text-gray-500 mt-0.5">Color: {item.color}</div>
+                    )}
                     <div className="mt-1 flex items-center justify-between">
                       <div className="inline-flex items-center border border-gray-200 rounded">
                         <button
-                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.productId, item.quantity - 1, item.color)}
                           className="px-2 py-0.5 text-gray-500 hover:bg-gray-50"
                           aria-label="Decrease"
                         >−</button>
                         <span className="px-2 text-xs font-medium tabular-nums">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.productId, item.quantity + 1, item.color)}
                           className="px-2 py-0.5 text-gray-500 hover:bg-gray-50"
                           aria-label="Increase"
                         >+</button>
@@ -125,7 +129,7 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
                       </div>
                     </div>
                     <button
-                      onClick={() => removeItem(item.productId)}
+                      onClick={() => removeItem(item.productId, item.color)}
                       className="mt-1 text-[11px] text-red-600 hover:underline"
                     >
                       Remove
