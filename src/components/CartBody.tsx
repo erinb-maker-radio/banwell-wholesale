@@ -31,27 +31,37 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
   }, [itemCount, items]);
 
   // Resolve product details for the items in the cart
+  // Resolve product details for cart items. Depends on `items` ONLY — using
+  // functional setState so we never list `products` as a dep (which would loop:
+  // setProducts(new Map()) → new ref → effect re-runs → infinite re-render,
+  // which freezes router transitions and makes the whole UI feel "dead").
   useEffect(() => {
     let cancelled = false;
-    async function loadProducts() {
-      if (items.length === 0) {
-        setProducts(new Map());
-        return;
-      }
-      const need = items.filter(i => !products.has(i.productId));
-      if (need.length === 0) return;
-      const next = new Map(products);
-      await Promise.all(need.map(async (i) => {
+    if (items.length === 0) {
+      setProducts(prev => (prev.size === 0 ? prev : new Map()));
+      return;
+    }
+    (async () => {
+      const fetched = await Promise.all(items.map(async (i) => {
         try {
           const r = await pb.collection('products').getOne(i.productId);
-          if (!cancelled) next.set(i.productId, r as unknown as Product);
-        } catch { /* product may be gone */ }
+          return [i.productId, r as unknown as Product] as const;
+        } catch {
+          return null;
+        }
       }));
-      if (!cancelled) setProducts(next);
-    }
-    loadProducts();
+      if (cancelled) return;
+      setProducts(prev => {
+        const next = new Map(prev);
+        let added = false;
+        for (const entry of fetched) {
+          if (entry && !next.has(entry[0])) { next.set(entry[0], entry[1]); added = true; }
+        }
+        return added ? next : prev;
+      });
+    })();
     return () => { cancelled = true; };
-  }, [items, products]);
+  }, [items]);
 
   const tier = (customer?.discount_tier || 'auto') as DiscountTierLevel;
   const subtotal = items.reduce((sum, item) => {
