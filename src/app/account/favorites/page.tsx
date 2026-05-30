@@ -7,12 +7,13 @@ import type { Product } from '@/lib/types';
 import Button from '@/components/ui/Button';
 import { useCart } from '@/components/CartProvider';
 import { useAuth } from '@/components/AuthProvider';
-import { isMaskSlug } from '@/lib/colors';
+import { MASK_COLORS, isMaskSlug } from '@/lib/colors';
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<{ id: string; product: Product }[]>([]);
   const [loading, setLoading] = useState(true);
   const [qtys, setQtys] = useState<Map<string, number>>(new Map());
+  const [cardColors, setCardColors] = useState<Map<string, string>>(new Map());
   const { addItem } = useCart();
   const { customer, loading: authLoading } = useAuth();
 
@@ -62,6 +63,7 @@ export default function FavoritesPage() {
           const isMask = isMaskSlug(product.expand?.category?.slug);
           const qty = qtys.get(product.id) || 1;
           const setQty = (n: number) => setQtys(prev => new Map(prev).set(product.id, Math.max(1, n)));
+          const chosenColor = cardColors.get(product.id) || '';
           return (
           <div key={id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <Link href={`/product/${product.id}`}>
@@ -72,19 +74,30 @@ export default function FavoritesPage() {
             <div className="p-3">
               <p className="text-sm font-medium text-gray-900 line-clamp-2">{product.short_title || product.title}</p>
               <p className="text-sm font-semibold text-blue-600 mt-1">{formatCurrency(product.retail_price)}</p>
-              {!isMask && (
-                <div className="flex items-center justify-center gap-1 mt-2">
-                  <button onClick={() => setQty(qty - 1)} className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50" aria-label="Decrease quantity">−</button>
-                  <span className="text-xs font-semibold tabular-nums text-gray-900 min-w-[1.5rem] text-center">{qty}</span>
-                  <button onClick={() => setQty(qty + 1)} className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50" aria-label="Increase quantity">+</button>
-                </div>
+              {isMask && (
+                <select
+                  value={chosenColor}
+                  onChange={(e) => setCardColors(prev => new Map(prev).set(product.id, e.target.value))}
+                  className={`mt-2 w-full text-xs border rounded py-1 px-1.5 bg-white ${chosenColor ? 'border-gray-300 text-gray-900' : 'border-amber-400 text-gray-500'}`}
+                  aria-label="Color"
+                >
+                  <option value="" disabled>Choose color…</option>
+                  {MASK_COLORS.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
               )}
+              <div className="flex items-center justify-center gap-1 mt-2">
+                <button onClick={() => setQty(qty - 1)} className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50" aria-label="Decrease quantity">−</button>
+                <span className="text-xs font-semibold tabular-nums text-gray-900 min-w-[1.5rem] text-center">{qty}</span>
+                <button onClick={() => setQty(qty + 1)} className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-50" aria-label="Increase quantity">+</button>
+              </div>
               <div className="flex gap-1 mt-2">
-                {isMask ? (
-                  <Link href={`/product/${product.id}`} className="flex-1 text-xs text-center bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700">Choose color</Link>
-                ) : (
-                  <button onClick={() => addItem(product.id, qty)} className="flex-1 text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700">Add to Cart</button>
-                )}
+                <button
+                  onClick={() => addItem(product.id, qty, isMask ? chosenColor : undefined)}
+                  disabled={isMask && !chosenColor}
+                  className="flex-1 text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                  {isMask && !chosenColor ? 'Choose a color' : 'Add to Cart'}
+                </button>
                 <button onClick={() => removeFavorite(id)} className="text-xs border rounded px-2 py-1.5 text-red-600 hover:bg-red-50">Remove</button>
               </div>
             </div>
