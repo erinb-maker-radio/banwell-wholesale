@@ -16,6 +16,8 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<ProductCategory | null>(null);
+  const [sizeVariations, setSizeVariations] = useState<Product[]>([]);
+  const [selectedVariation, setSelectedVariation] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -27,16 +29,57 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     pb.collection('products').getOne(params.id as string, { expand: 'category' })
-      .then(record => {
+      .then(async record => {
         const p = record as unknown as Product;
         setProduct(p);
         if (p.expand?.category) {
           setCategory(p.expand.category);
         }
+
+        // Load size variations (products with same base design name)
+        const baseName = extractBaseName(p.short_title || p.title);
+        if (baseName) {
+          try {
+            const variations = await pb.collection('products').getFullList({
+              filter: `category="${p.category}" && is_active=true`,
+              sort: 'retail_price',
+            });
+            // Filter to products with matching base name
+            const matching = (variations as unknown as Product[]).filter(v => {
+              const vBase = extractBaseName(v.short_title || v.title);
+              return vBase === baseName;
+            });
+            if (matching.length > 1) {
+              setSizeVariations(matching);
+              setSelectedVariation(p.id);
+            }
+          } catch (err) {
+            console.error('Failed to load size variations:', err);
+          }
+        }
       })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [params.id]);
+
+  // Extract base design name (remove size info like "6\"", "10\"", "ornament", "suncatcher")
+  function extractBaseName(title: string): string {
+    return title
+      .replace(/\s*\d+[""]\s*(ornament|suncatcher)?/gi, '')
+      .replace(/\s*(ornament|suncatcher)\s*$/gi, '')
+      .trim();
+  }
+
+  // Switch to different size variation
+  function handleSizeChange(variationId: string) {
+    const variation = sizeVariations.find(v => v.id === variationId);
+    if (variation) {
+      setSelectedVariation(variationId);
+      setProduct(variation);
+      // Update URL without reloading
+      window.history.replaceState(null, '', `/product/${variationId}`);
+    }
+  }
 
   function handleAddToCart() {
     if (!product) return;
@@ -84,6 +127,36 @@ export default function ProductDetailPage() {
 
           {product.size && (
             <p className="text-sm text-gray-600 mt-2">Size: {product.size}</p>
+          )}
+
+          {sizeVariations.length > 1 && (
+            <div className="mt-6">
+              <p className="text-sm font-medium text-gray-900 mb-2">Available Sizes:</p>
+              <div className="space-y-2">
+                {sizeVariations.map(variation => (
+                  <button
+                    key={variation.id}
+                    onClick={() => handleSizeChange(variation.id)}
+                    className={`w-full text-left px-4 py-3 rounded-lg border-2 transition ${
+                      selectedVariation === variation.id
+                        ? 'border-blue-600 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium text-gray-900">{variation.size || variation.short_title}</p>
+                        <p className="text-xs text-gray-500">{variation.sku}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-gray-900">{formatCurrency(variation.retail_price)}</p>
+                        <p className="text-xs text-gray-500">retail</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
 
           <div className="mt-6">
