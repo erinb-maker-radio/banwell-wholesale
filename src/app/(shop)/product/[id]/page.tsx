@@ -49,8 +49,18 @@ export default function ProductDetailPage() {
               const vBase = extractBaseName(v.short_title || v.title);
               return vBase === baseName;
             });
-            if (matching.length > 1) {
-              setSizeVariations(matching);
+
+            // Separate ornaments (3") from suncatchers (larger sizes)
+            const isCurrentOrnament = isOrnament(p);
+            const filtered = matching.filter(v => {
+              const vIsOrnament = isOrnament(v);
+              // If current is ornament, show only ornament
+              // If current is suncatcher, show only suncatchers
+              return vIsOrnament === isCurrentOrnament;
+            });
+
+            if (filtered.length > 0) {
+              setSizeVariations(filtered);
               setSelectedVariation(p.id);
             }
           } catch (err) {
@@ -69,6 +79,67 @@ export default function ProductDetailPage() {
       .replace(/\s*(ornament|suncatcher)\s*$/gi, '')
       .trim();
   }
+
+  // Check if product is an ornament (3" size)
+  function isOrnament(p: Product): boolean {
+    const title = (p.short_title || p.title).toLowerCase();
+    const size = (p.size || '').toLowerCase();
+    return title.includes('ornament') || size.includes('3"') || size.includes('3 inch');
+  }
+
+  // Find the ornament or suncatcher counterpart
+  function findCounterpart(isCurrentOrnament: boolean): Product | null {
+    if (!product) return null;
+    const baseName = extractBaseName(product.short_title || product.title);
+
+    // Search in all loaded variations or do a new query
+    const allVariations = async () => {
+      try {
+        const variations = await pb.collection('products').getFullList({
+          filter: `category="${product.category}" && is_active=true`,
+          sort: 'retail_price',
+        });
+        const matching = (variations as unknown as Product[]).filter(v => {
+          const vBase = extractBaseName(v.short_title || v.title);
+          const vIsOrnament = isOrnament(v);
+          return vBase === baseName && vIsOrnament !== isCurrentOrnament;
+        });
+        return matching[0] || null;
+      } catch {
+        return null;
+      }
+    };
+    return null; // Will use useEffect to set this
+  }
+
+  const [ornamentLink, setOrnamentLink] = useState<Product | null>(null);
+  const [suncatcherLink, setSuncatcherLink] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (!product) return;
+    const baseName = extractBaseName(product.short_title || product.title);
+    const isCurrentOrnament = isOrnament(product);
+
+    // Find counterpart link
+    pb.collection('products').getFullList({
+      filter: `category="${product.category}" && is_active=true`,
+      sort: 'retail_price',
+    }).then(variations => {
+      const matching = (variations as unknown as Product[]).filter(v => {
+        const vBase = extractBaseName(v.short_title || v.title);
+        const vIsOrnament = isOrnament(v);
+        return vBase === baseName && vIsOrnament !== isCurrentOrnament;
+      });
+
+      if (isCurrentOrnament) {
+        setSuncatcherLink(matching[0] || null);
+        setOrnamentLink(null);
+      } else {
+        setOrnamentLink(matching[0] || null);
+        setSuncatcherLink(null);
+      }
+    }).catch(console.error);
+  }, [product]);
 
   // Switch to different size variation
   function handleSizeChange(variationId: string) {
@@ -129,9 +200,11 @@ export default function ProductDetailPage() {
             <p className="text-sm text-gray-600 mt-2">Size: {product.size}</p>
           )}
 
-          {sizeVariations.length > 1 && (
+          {sizeVariations.length > 0 && (
             <div className="mt-6">
-              <p className="text-sm font-medium text-gray-900 mb-2">Available Sizes:</p>
+              <p className="text-sm font-medium text-gray-900 mb-2">
+                {isOrnament(product) ? 'Ornament Size' : 'Available Suncatcher Sizes'}:
+              </p>
               <div className="space-y-2">
                 {sizeVariations.map(variation => (
                   <button
@@ -156,6 +229,24 @@ export default function ProductDetailPage() {
                   </button>
                 ))}
               </div>
+
+              {ornamentLink && (
+                <div className="mt-3 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                  Looking for the 3" ornament version?{' '}
+                  <Link href={`/product/${ornamentLink.id}`} className="text-blue-600 hover:underline font-medium">
+                    View ornament listing →
+                  </Link>
+                </div>
+              )}
+
+              {suncatcherLink && (
+                <div className="mt-3 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                  Looking for larger suncatcher sizes?{' '}
+                  <Link href={`/product/${suncatcherLink.id}`} className="text-blue-600 hover:underline font-medium">
+                    View suncatcher sizes →
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 
