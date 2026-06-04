@@ -14,8 +14,25 @@ export default function FavoritesPage() {
   const [loading, setLoading] = useState(true);
   const [qtys, setQtys] = useState<Map<string, number>>(new Map());
   const [cardColors, setCardColors] = useState<Map<string, string>>(new Map());
+  const [selectedSizes, setSelectedSizes] = useState<Map<string, string>>(new Map());
+  const [sizeVariations, setSizeVariations] = useState<Map<string, Product[]>>(new Map());
   const { addItem } = useCart();
   const { customer, loading: authLoading } = useAuth();
+
+  // Extract base design name (remove size info)
+  const extractBaseName = (title: string): string => {
+    return title
+      .replace(/\s*\d+[""]\s*(ornament|suncatcher)?/gi, '')
+      .replace(/\s*(ornament|suncatcher)\s*$/gi, '')
+      .trim();
+  };
+
+  // Check if product is an ornament
+  const isOrnament = (p: Product): boolean => {
+    const title = (p.short_title || p.title).toLowerCase();
+    const size = (p.size || '').toLowerCase();
+    return title.includes('ornament') || size.includes('3"') || size.includes('3 inch');
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -23,7 +40,42 @@ export default function FavoritesPage() {
 
     fetch('/api/account/favorites')
       .then(res => res.json())
-      .then(data => setFavorites(data.favorites || []))
+      .then(async data => {
+        const favs = data.favorites || [];
+        setFavorites(favs);
+
+        // Load size variations for each favorite
+        const variationsMap = new Map<string, Product[]>();
+        const defaultSizes = new Map<string, string>();
+
+        // Fetch all products to find variations
+        const catalogRes = await fetch('/api/public/catalog?perPage=500');
+        const catalogData = await catalogRes.json();
+        const allProducts = catalogData.items || [];
+
+        favs.forEach((fav: { id: string; product: Product }) => {
+          const product = fav.product;
+          const baseName = extractBaseName(product.short_title || product.title);
+          const isCurrentOrnament = isOrnament(product);
+
+          // Find all products with same base name and category
+          const variations = allProducts.filter((p: Product) => {
+            const pBaseName = extractBaseName(p.short_title || p.title);
+            const pIsOrnament = isOrnament(p);
+            return pBaseName === baseName &&
+                   p.category === product.category &&
+                   pIsOrnament === isCurrentOrnament;
+          }).sort((a: Product, b: Product) => a.retail_price - b.retail_price);
+
+          if (variations.length > 1) {
+            variationsMap.set(product.id, variations);
+          }
+          defaultSizes.set(product.id, product.id);
+        });
+
+        setSizeVariations(variationsMap);
+        setSelectedSizes(defaultSizes);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [customer, authLoading]);
@@ -60,20 +112,39 @@ export default function FavoritesPage() {
       <h2 className="text-xl font-bold text-gray-900 mb-6">Favorites</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {favorites.map(({ id, product }) => {
-          const isMask = isMaskSlug(product.expand?.category?.slug);
+          const variations = sizeVariations.get(product.id) || [];
+          const selectedSizeId = selectedSizes.get(product.id) || product.id;
+          const selectedProduct = variations.find(v => v.id === selectedSizeId) || product;
+          const isMask = isMaskSlug(selectedProduct.expand?.category?.slug);
           const qty = qtys.get(product.id) || 1;
           const setQty = (n: number) => setQtys(prev => new Map(prev).set(product.id, Math.max(1, n)));
           const chosenColor = cardColors.get(product.id) || '';
           return (
           <div key={id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <Link href={`/product/${product.id}`}>
+            <Link href={`/product/${selectedProduct.id}`}>
               <div className="aspect-square bg-gray-100 overflow-hidden">
-                {product.image_url && <img src={etsyImageHD(product.image_url)} alt={product.short_title} className="w-full h-full object-cover" loading="lazy" />}
+                {selectedProduct.image_url && <img src={etsyImageHD(selectedProduct.image_url)} alt={selectedProduct.short_title} className="w-full h-full object-cover" loading="lazy" />}
               </div>
             </Link>
             <div className="p-3">
-              <p className="text-sm font-medium text-gray-900 line-clamp-2">{product.short_title || product.title}</p>
-              <p className="text-sm font-semibold text-blue-600 mt-1">{formatCurrency(product.retail_price)}</p>
+              <p className="text-sm font-medium text-gray-900 line-clamp-2">{selectedProduct.short_title || selectedProduct.title}</p>
+              <p className="text-sm font-semibold text-blue-600 mt-1">{formatCurrency(selectedProduct.retail_price)}</p>
+              {variations.length > 1 && (
+                <select
+                  value={selectedSizeId}
+                  onChange={(e) => {
+                    setSelectedSizes(prev => new Map(prev).set(product.id, e.target.value));
+                  }}
+                  className="mt-2 w-full text-xs border border-gray-300 rounded py-1 px-1.5 bg-white text-gray-900"
+                  aria-label="Size"
+                >
+                  {variations.map(v => (
+                    <option key={v.id} value={v.id}>
+                      {v.size || v.short_title} - {formatCurrency(v.retail_price)}
+                    </option>
+                  ))}
+                </select>
+              )}
               {isMask && (
                 <select
                   value={chosenColor}
@@ -92,7 +163,7 @@ export default function FavoritesPage() {
               </div>
               <div className="flex gap-1 mt-2">
                 <button
-                  onClick={() => addItem(product.id, qty, isMask ? chosenColor : undefined)}
+                  onClick={() => addItem(selectedProduct.id, qty, isMask ? chosenColor : undefined)}
                   disabled={isMask && !chosenColor}
                   className="flex-1 text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >

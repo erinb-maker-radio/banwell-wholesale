@@ -21,6 +21,8 @@ export default function CatalogPage() {
   const { addItem } = useCart();
   const [cardColors, setCardColors] = useState<Map<string, string>>(new Map());
   const [cardQtys, setCardQtys] = useState<Map<string, number>>(new Map());
+  const [selectedSizes, setSelectedSizes] = useState<Map<string, string>>(new Map());
+  const [sizeVariations, setSizeVariations] = useState<Map<string, Product[]>>(new Map());
   const perPage = 48;
 
   useEffect(() => {
@@ -45,6 +47,21 @@ export default function CatalogPage() {
       .catch(console.error);
   }, [customer, authLoading]);
 
+  // Extract base design name (remove size info)
+  const extractBaseName = (title: string): string => {
+    return title
+      .replace(/\s*\d+[""]\s*(ornament|suncatcher)?/gi, '')
+      .replace(/\s*(ornament|suncatcher)\s*$/gi, '')
+      .trim();
+  };
+
+  // Check if product is an ornament
+  const isOrnament = (p: Product): boolean => {
+    const title = (p.short_title || p.title).toLowerCase();
+    const size = (p.size || '').toLowerCase();
+    return title.includes('ornament') || size.includes('3"') || size.includes('3 inch');
+  };
+
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams({ page: String(page), perPage: String(perPage) });
@@ -58,17 +75,50 @@ export default function CatalogPage() {
 
         // Group by design (short_title) and keep only one per design (prefer ornament/smallest)
         const uniqueDesigns = new Map<string, Product>();
+        const variationsMap = new Map<string, Product[]>();
+
         allProducts.forEach((product: Product) => {
           const designName = product.short_title || product.title;
-          const existing = uniqueDesigns.get(designName);
+          const baseName = extractBaseName(designName);
+          const existing = uniqueDesigns.get(baseName);
 
           // Keep the product with the lowest price (likely the ornament)
           if (!existing || product.retail_price < existing.retail_price) {
-            uniqueDesigns.set(designName, product);
+            uniqueDesigns.set(baseName, product);
           }
         });
 
-        setProducts(Array.from(uniqueDesigns.values()));
+        // For each unique design, find all size variations
+        const uniqueProducts = Array.from(uniqueDesigns.values());
+        uniqueProducts.forEach(product => {
+          const baseName = extractBaseName(product.short_title || product.title);
+          const isCurrentOrnament = isOrnament(product);
+
+          // Find all products with same base name and category
+          const variations = allProducts.filter((p: Product) => {
+            const pBaseName = extractBaseName(p.short_title || p.title);
+            const pIsOrnament = isOrnament(p);
+            // Keep products with same base name, category, and same type (ornament vs suncatcher)
+            return pBaseName === baseName &&
+                   p.category === product.category &&
+                   pIsOrnament === isCurrentOrnament;
+          }).sort((a: Product, b: Product) => a.retail_price - b.retail_price);
+
+          if (variations.length > 1) {
+            variationsMap.set(product.id, variations);
+          }
+        });
+
+        setProducts(uniqueProducts);
+        setSizeVariations(variationsMap);
+
+        // Initialize selected sizes to the default (displayed) product
+        const defaultSizes = new Map<string, string>();
+        uniqueProducts.forEach(product => {
+          defaultSizes.set(product.id, product.id);
+        });
+        setSelectedSizes(defaultSizes);
+
         setTotalPages(data.totalPages || 1);
       })
       .catch(console.error)
@@ -185,19 +235,23 @@ export default function CatalogPage() {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {products.map(product => {
-              const isFavorited = favorites.has(product.id);
-              const isMask = isMaskSlug(product.expand?.category?.slug);
+              const variations = sizeVariations.get(product.id) || [];
+              const selectedSizeId = selectedSizes.get(product.id) || product.id;
+              const selectedProduct = variations.find(v => v.id === selectedSizeId) || product;
+              const isFavorited = favorites.has(selectedProduct.id);
+              const isMask = isMaskSlug(selectedProduct.expand?.category?.slug);
               const chosenColor = cardColors.get(product.id) || '';
               const qty = cardQtys.get(product.id) || 1;
               const setQty = (n: number) => setCardQtys(prev => new Map(prev).set(product.id, Math.max(1, n)));
+
               return (
                 <div key={product.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group relative">
-                  <Link href={`/product/${product.id}`}>
+                  <Link href={`/product/${selectedProduct.id}`}>
                     <div className="aspect-square bg-gray-100 relative overflow-hidden">
-                      {(product.image_url || product.image) && (
+                      {(selectedProduct.image_url || selectedProduct.image) && (
                         <img
-                          src={etsyImageHD(product.image_url)}
-                          alt={product.short_title || product.title}
+                          src={etsyImageHD(selectedProduct.image_url)}
+                          alt={selectedProduct.short_title || selectedProduct.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                           loading="lazy"
                         />
@@ -205,20 +259,20 @@ export default function CatalogPage() {
                     </div>
                     <div className="p-3">
                       <p className="text-sm font-medium text-gray-900 line-clamp-2">
-                        {product.short_title || product.title}
+                        {selectedProduct.short_title || selectedProduct.title}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">{product.sku}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{selectedProduct.sku}</p>
                       <p className="text-sm font-semibold text-blue-600 mt-1">
-                        {formatCurrency(product.retail_price)}
+                        {formatCurrency(selectedProduct.retail_price)}
                       </p>
-                      {product.size && (
-                        <p className="text-xs text-gray-500">{product.size}</p>
+                      {selectedProduct.size && (
+                        <p className="text-xs text-gray-500">{selectedProduct.size}</p>
                       )}
                     </div>
                   </Link>
                   {customer && (
                     <button
-                      onClick={(e) => toggleFavorite(e, product.id)}
+                      onClick={(e) => toggleFavorite(e, selectedProduct.id)}
                       className="absolute top-2 right-2 p-1.5 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
                       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
                     >
@@ -235,6 +289,22 @@ export default function CatalogPage() {
                   )}
                   {customer && (
                     <div className="px-3 pb-3 space-y-1.5">
+                      {variations.length > 1 && (
+                        <select
+                          value={selectedSizeId}
+                          onChange={(e) => {
+                            setSelectedSizes(prev => new Map(prev).set(product.id, e.target.value));
+                          }}
+                          className="w-full text-xs border border-gray-300 rounded py-1 px-1.5 bg-white text-gray-900"
+                          aria-label="Size"
+                        >
+                          {variations.map(v => (
+                            <option key={v.id} value={v.id}>
+                              {v.size || v.short_title} - {formatCurrency(v.retail_price)}
+                            </option>
+                          ))}
+                        </select>
+                      )}
                       {isMask && (
                         <select
                           value={chosenColor}
@@ -260,7 +330,7 @@ export default function CatalogPage() {
                         >+</button>
                       </div>
                       <button
-                        onClick={() => addItem(product.id, qty, isMask ? chosenColor : undefined)}
+                        onClick={() => addItem(selectedProduct.id, qty, isMask ? chosenColor : undefined)}
                         disabled={isMask && !chosenColor}
                         className="w-full text-xs bg-blue-600 text-white rounded py-1.5 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                       >
