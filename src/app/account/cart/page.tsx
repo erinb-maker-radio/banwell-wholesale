@@ -128,6 +128,7 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{product.short_title || product.title}</p>
                     <p className="text-xs text-gray-400">{product.sku}</p>
+                    {product.size && <p className="text-xs text-gray-600">Size: {product.size}</p>}
                     {item.color && <p className="text-xs text-gray-600">Color: {item.color}</p>}
                     <p className="text-sm text-gray-600">{formatCurrency(product.retail_price)} each</p>
                   </div>

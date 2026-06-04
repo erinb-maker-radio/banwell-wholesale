@@ -117,6 +117,9 @@ export default function CartBody({ onClose }: { onClose?: () => void }) {
                     <div className="text-xs font-medium text-gray-900 line-clamp-2">
                       {p?.short_title || p?.title || '…'}
                     </div>
+                    {p?.size && (
+                      <div className="text-[11px] text-gray-500 mt-0.5">Size: {p.size}</div>
+                    )}
                     {item.color && (
                       <div className="text-[11px] text-gray-500 mt-0.5">Color: {item.color}</div>
                     )}
