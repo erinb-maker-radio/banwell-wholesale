@@ -54,7 +54,21 @@ export default function CatalogPage() {
     fetch(`/api/public/catalog?${params}`)
       .then(res => res.json())
       .then(data => {
-        setProducts(data.items || []);
+        const allProducts = data.items || [];
+
+        // Group by design (short_title) and keep only one per design (prefer ornament/smallest)
+        const uniqueDesigns = new Map<string, Product>();
+        allProducts.forEach((product: Product) => {
+          const designName = product.short_title || product.title;
+          const existing = uniqueDesigns.get(designName);
+
+          // Keep the product with the lowest price (likely the ornament)
+          if (!existing || product.retail_price < existing.retail_price) {
+            uniqueDesigns.set(designName, product);
+          }
+        });
+
+        setProducts(Array.from(uniqueDesigns.values()));
         setTotalPages(data.totalPages || 1);
       })
       .catch(console.error)
