@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
     const result = await pb.collection('customers').getList(page, perPage, {
       filter,
-      sort: '-created',
+      sort: '-id',
     });
 
     return NextResponse.json({ success: true, ...result });

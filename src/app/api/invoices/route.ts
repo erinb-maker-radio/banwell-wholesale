@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 
     const result = await pb.collection('invoices').getList(page, perPage, {
       filter,
-      sort: '-created',
+      sort: '-id',
       expand: 'order,customer',
     });
 

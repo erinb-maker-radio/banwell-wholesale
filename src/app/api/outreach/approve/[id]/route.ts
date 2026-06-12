@@ -1,54 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 
-const BDA_PROXY_URL = process.env.BDA_PROXY_URL || 'https://pb.banwelldesigns.com/bda/run';
-const BDA_PROXY_USER = process.env.BDA_PROXY_USER || 'erin';
-const BDA_PROXY_PASSWORD = process.env.BDA_PROXY_PASSWORD || '';
-
-function approvalsUrl(path: string): string {
-  const origin = BDA_PROXY_URL.replace(/\/bda\/run\/?$/, '');
-  return `${origin}${path}`;
-}
-
+// Approve / reject / edit a follow-up draft. The [id] is the wholesale_leads id.
+//   {}                              -> approve  (status = outreach_approved)
+//   { editedContent }               -> edit + approve
+//   { action: 'reject', reason }    -> send back for re-draft (status = qualified)
+// send-approved.js then picks up outreach_approved leads and sends them.
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!BDA_PROXY_PASSWORD) {
-    return NextResponse.json(
-      { success: false, error: 'BDA_PROXY_PASSWORD not configured' },
-      { status: 500 }
-    );
-  }
-
   const { id } = await params;
   if (!id) return NextResponse.json({ success: false, error: 'Missing id' }, { status: 400 });
 
   try {
-    const body = await req.text();
-    const basicAuth = Buffer.from(`${BDA_PROXY_USER}:${BDA_PROXY_PASSWORD}`).toString('base64');
-    const res = await fetch(approvalsUrl(`/approve/${encodeURIComponent(id)}`), {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/json',
-      },
-      body: body || '{}',
-      signal: AbortSignal.timeout(15000),
-    });
+    const pb = createServerPB();
+    await authenticateAdmin(pb);
 
-    const text = await res.text();
-    if (!res.ok) {
-      return NextResponse.json(
-        { success: false, error: `Upstream ${res.status}: ${text.slice(0, 200)}` },
-        { status: res.status === 404 ? 404 : 502 }
-      );
+    let body: { action?: string; reason?: string; editedContent?: string } = {};
+    try {
+      const raw = await req.text();
+      body = raw ? JSON.parse(raw) : {};
+    } catch {
+      body = {};
     }
 
-    let data: unknown;
-    try { data = JSON.parse(text); } catch { data = { raw: text }; }
-    return NextResponse.json({ success: true, result: data });
+    let update: Record<string, unknown>;
+    if (body.action === 'reject') {
+      const lead = await pb.collection('wholesale_leads').getOne(id, { fields: 'notes' });
+      const note = `[${new Date().toISOString().slice(0, 10)}] Follow-up rejected${body.reason ? `: ${body.reason}` : ''}`;
+      update = {
+        status: 'qualified',
+        outreach_draft: '',
+        notes: lead.notes ? `${lead.notes}\n${note}` : note,
+      };
+    } else if (typeof body.editedContent === 'string') {
+      update = { outreach_draft: body.editedContent, status: 'outreach_approved' };
+    } else {
+      update = { status: 'outreach_approved' };
+    }
+
+    const record = await pb.collection('wholesale_leads').update(id, update);
+    return NextResponse.json({ success: true, data: record });
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    console.error('Approve error:', err);
+    return NextResponse.json({ success: false, error: 'Failed to approve' }, { status: 500 });
   }
 }
