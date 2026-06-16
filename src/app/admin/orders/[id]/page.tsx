@@ -202,7 +202,96 @@ export default function AdminOrderDetailPage() {
 
   return (
     <div>
-      <div className="mb-4">
+      {/* Print-only packing slip */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          .print-slip, .print-slip * { visibility: visible; }
+          .print-slip { position: absolute; top: 0; left: 0; width: 100%; padding: 0.5in; }
+          .no-print { display: none !important; }
+        }
+      `}</style>
+
+      <div className="print-slip hidden print:block">
+        <div style={{ borderBottom: '2px solid #2c5530', paddingBottom: '16px', marginBottom: '24px' }}>
+          <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>BANWELL DESIGNS</h1>
+          <p style={{ margin: '4px 0 0', color: '#666', fontSize: '10pt', fontFamily: 'Georgia, serif' }}>Packing Slip • {new Date().toLocaleDateString()}</p>
+        </div>
+
+        {/* Ship To */}
+        <div style={{ marginBottom: '24px' }}>
+          <p style={{ fontWeight: 'bold', fontSize: '10pt', color: '#666', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ship To</p>
+          <p style={{ fontSize: '13pt', fontWeight: 'bold', margin: '0 0 2px' }}>{customer?.business_name}</p>
+          {customer?.contact_name && <p style={{ fontSize: '11pt', margin: '0 0 2px' }}>{customer.contact_name}</p>}
+          {order.shipping_address
+            ? <p style={{ fontSize: '11pt', margin: 0, whiteSpace: 'pre-line' }}>{order.shipping_address}</p>
+            : customer?.address && <p style={{ fontSize: '11pt', margin: 0, whiteSpace: 'pre-line' }}>{customer.address}</p>
+          }
+        </div>
+
+        {/* Order info */}
+        <div style={{ marginBottom: '20px', fontSize: '10pt', color: '#444' }}>
+          <span style={{ marginRight: '24px' }}><strong>Order:</strong> {order.order_number}</span>
+          <span style={{ marginRight: '24px' }}><strong>Date:</strong> {formatDate(order.created)}</span>
+          {order.tracking_number && <span><strong>Tracking:</strong> {order.tracking_number}</span>}
+        </div>
+
+        {/* Items table */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10pt', marginBottom: '16px' }}>
+          <thead>
+            <tr style={{ background: '#f5f5f0', borderBottom: '2px solid #ccc' }}>
+              <th style={{ textAlign: 'left', padding: '6px 8px' }}>Product</th>
+              <th style={{ textAlign: 'left', padding: '6px 8px' }}>SKU</th>
+              {items.some(i => i.color) && <th style={{ textAlign: 'left', padding: '6px 8px' }}>Color</th>}
+              <th style={{ textAlign: 'center', padding: '6px 8px' }}>Qty</th>
+              <th style={{ textAlign: 'right', padding: '6px 8px' }}>Unit Price</th>
+              <th style={{ textAlign: 'right', padding: '6px 8px' }}>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item, idx) => {
+              const product = item.expand?.product;
+              return (
+                <tr key={item.id} style={{ borderBottom: '1px solid #eee', background: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
+                  <td style={{ padding: '6px 8px' }}>{product?.short_title || product?.title || 'Product'}</td>
+                  <td style={{ padding: '6px 8px', color: '#666', fontFamily: 'monospace' }}>{product?.sku || ''}</td>
+                  {items.some(i => i.color) && <td style={{ padding: '6px 8px' }}>{item.color || ''}</td>}
+                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>{item.quantity}</td>
+                  <td style={{ padding: '6px 8px', textAlign: 'right' }}>{formatCurrency(item.unit_price)}</td>
+                  <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 'bold' }}>{formatCurrency(item.line_total)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        {/* Totals */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}>
+          <div style={{ width: '240px', fontSize: '10pt' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
+              <span style={{ color: '#666' }}>Subtotal</span>
+              <span>{formatCurrency(order.subtotal)}</span>
+            </div>
+            {order.discount_percent > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', color: '#2c7a2c' }}>
+                <span>Discount ({order.discount_percent}%)</span>
+                <span>-{formatCurrency(order.discount_amount)}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderTop: '2px solid #333', fontWeight: 'bold', fontSize: '12pt' }}>
+              <span>Total</span>
+              <span>{formatCurrency(order.total)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ borderTop: '1px solid #ddd', paddingTop: '12px', fontSize: '9pt', color: '#888', textAlign: 'center' }}>
+          Thank you for your order! Questions? erin@banwelldesigns.com • (805) 570-6145 • banwelldesigns.com
+        </div>
+      </div>
+
+      {/* Screen UI */}
+      <div className="no-print mb-4">
         <Link href="/admin/orders" className="text-sm text-blue-600 hover:underline">
           &larr; Back to Orders
         </Link>
@@ -212,9 +301,20 @@ export default function AdminOrderDetailPage() {
         title={`Order ${order.order_number}`}
         description={customer?.business_name || 'Order Details'}
         actions={
-          <Badge variant="status" status={order.status}>
-            {formatOrderStatus(order.status)}
-          </Badge>
+          <div className="no-print flex items-center gap-3">
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              Print Packing Slip
+            </button>
+            <Badge variant="status" status={order.status}>
+              {formatOrderStatus(order.status)}
+            </Badge>
+          </div>
         }
       />
 
