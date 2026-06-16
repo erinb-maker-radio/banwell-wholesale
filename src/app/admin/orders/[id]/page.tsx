@@ -299,7 +299,8 @@ export default function AdminOrderDetailPage() {
       </div>
 
       {/* Screen UI */}
-      <div className="no-print mb-4">
+      <div className="no-print">
+      <div className="mb-4">
         <Link href="/admin/orders" className="text-sm text-blue-600 hover:underline">
           &larr; Back to Orders
         </Link>
@@ -309,7 +310,7 @@ export default function AdminOrderDetailPage() {
         title={`Order ${order.order_number}`}
         description={customer?.business_name || 'Order Details'}
         actions={
-          <div className="no-print flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => window.print()}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700"
@@ -683,6 +684,7 @@ export default function AdminOrderDetailPage() {
           </Card>
         </div>
       </div>
+      </div>{/* end no-print */}
     </div>
   );
 }
