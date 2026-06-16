@@ -217,55 +217,88 @@ export default function AdminOrderDetailPage() {
         }
       `}</style>
 
-      <div className="print-slip" style={{ border: '1.5px solid #aaa', padding: '32px', boxSizing: 'border-box' }}>
-        <div style={{ borderBottom: '2px solid #2c5530', paddingBottom: '16px', marginBottom: '24px' }}>
-          <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>BANWELL DESIGNS</h1>
-          <p style={{ margin: '4px 0 0', color: '#666', fontSize: '10pt', fontFamily: 'Georgia, serif' }}>Packing Slip • {new Date().toLocaleDateString()}</p>
+      <div className="print-slip" style={{ border: '1.5px solid #aaa', padding: '32px', boxSizing: 'border-box', fontFamily: 'Georgia, serif' }}>
+
+        {/* ── Header: logo left, ship-from right ── */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #2c5530', paddingBottom: '14px', marginBottom: '20px' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 'bold' }}>BANWELL DESIGNS</h1>
+            <p style={{ margin: '3px 0 0', color: '#666', fontSize: '10pt' }}>Packing Slip &nbsp;•&nbsp; {new Date().toLocaleDateString()}</p>
+          </div>
+          <div style={{ textAlign: 'right', fontSize: '9pt', color: '#555', lineHeight: '1.6' }}>
+            <strong style={{ fontSize: '10pt', color: '#222' }}>Ship From</strong><br/>
+            Banwell Designs<br/>
+            California, USA<br/>
+            erin@banwelldesigns.com
+          </div>
         </div>
 
-        {/* Ship To */}
-        <div style={{ marginBottom: '24px' }}>
-          <p style={{ fontWeight: 'bold', fontSize: '10pt', color: '#666', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ship To</p>
-          <p style={{ fontSize: '13pt', fontWeight: 'bold', margin: '0 0 2px' }}>{customer?.business_name}</p>
-          {customer?.contact_name && <p style={{ fontSize: '11pt', margin: '0 0 2px' }}>{customer.contact_name}</p>}
-          {order.shipping_address ? (
-            <p style={{ fontSize: '11pt', margin: 0, whiteSpace: 'pre-line' }}>{order.shipping_address}</p>
-          ) : (customer?.address || customer?.city) ? (
-            <p style={{ fontSize: '11pt', margin: 0, lineHeight: '1.5' }}>
-              {customer.address && <>{customer.address}<br/></>}
-              {[customer.city, customer.state, customer.zip].filter(Boolean).join(', ')}
-            </p>
-          ) : null}
+        {/* ── Two-column: Ship To (left) + Order Details (right) ── */}
+        <div style={{ display: 'flex', gap: '32px', marginBottom: '24px' }}>
+          {/* Ship To */}
+          <div style={{ flex: '0 0 55%' }}>
+            <p style={{ fontWeight: 'bold', fontSize: '8.5pt', color: '#888', margin: '0 0 5px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Ship To</p>
+            <p style={{ fontSize: '13pt', fontWeight: 'bold', margin: '0 0 2px' }}>{customer?.business_name}</p>
+            {customer?.contact_name && <p style={{ fontSize: '10pt', margin: '0 0 2px' }}>{customer.contact_name}</p>}
+            {order.shipping_address ? (
+              <p style={{ fontSize: '10pt', margin: 0, whiteSpace: 'pre-line', lineHeight: '1.5' }}>{order.shipping_address}</p>
+            ) : (customer?.address || customer?.city) ? (
+              <p style={{ fontSize: '10pt', margin: 0, lineHeight: '1.6' }}>
+                {customer.address && <>{customer.address}<br/></>}
+                {[customer.city, customer.state, customer.zip].filter(Boolean).join(', ')}
+              </p>
+            ) : null}
+          </div>
+
+          {/* Order Details */}
+          <div style={{ flex: '1', fontSize: '9.5pt', lineHeight: '2', color: '#333' }}>
+            <p style={{ fontWeight: 'bold', fontSize: '8.5pt', color: '#888', margin: '0 0 5px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Order Details</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '2px' }}>
+              <span style={{ color: '#666' }}>Order #</span>
+              <span style={{ fontWeight: 'bold' }}>{order.order_number}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '2px' }}>
+              <span style={{ color: '#666' }}>Date</span>
+              <span>{formatDate(order.created)}</span>
+            </div>
+            {order.tracking_number && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '2px' }}>
+                <span style={{ color: '#666' }}>Tracking</span>
+                <span style={{ fontFamily: 'monospace', fontSize: '9pt' }}>{order.tracking_number}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '2px' }}>
+              <span style={{ color: '#666' }}>PO #</span>
+              <span style={{ minWidth: '100px', borderBottom: '1px dotted #aaa', display: 'inline-block' }}>&nbsp;</span>
+            </div>
+          </div>
         </div>
 
-        {/* Order info */}
-        <div style={{ marginBottom: '20px', fontSize: '10pt', color: '#444' }}>
-          <span style={{ marginRight: '24px' }}><strong>Order:</strong> {order.order_number}</span>
-          <span style={{ marginRight: '24px' }}><strong>Date:</strong> {formatDate(order.created)}</span>
-          {order.tracking_number && <span><strong>Tracking:</strong> {order.tracking_number}</span>}
-        </div>
-
-        {/* Items table */}
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10pt', marginBottom: '16px' }}>
+        {/* ── Items table with checkbox column ── */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9.5pt', marginBottom: '16px' }}>
           <thead>
-            <tr style={{ background: '#f5f5f0', borderBottom: '2px solid #ccc' }}>
-              <th style={{ textAlign: 'left', padding: '6px 8px' }}>Product</th>
-              <th style={{ textAlign: 'left', padding: '6px 8px' }}>SKU</th>
-              {items.some(i => i.color) && <th style={{ textAlign: 'left', padding: '6px 8px' }}>Color</th>}
-              <th style={{ textAlign: 'center', padding: '6px 8px' }}>Qty</th>
-              <th style={{ textAlign: 'right', padding: '6px 8px' }}>Unit Price</th>
-              <th style={{ textAlign: 'right', padding: '6px 8px' }}>Total</th>
+            <tr style={{ background: '#f5f5f0', borderBottom: '2px solid #bbb' }}>
+              <th style={{ width: '24px', padding: '5px 6px', textAlign: 'center', color: '#888', fontSize: '8pt' }}>✓</th>
+              <th style={{ textAlign: 'left', padding: '5px 8px' }}>Product</th>
+              <th style={{ textAlign: 'left', padding: '5px 8px' }}>SKU</th>
+              {items.some(i => i.color) && <th style={{ textAlign: 'left', padding: '5px 8px' }}>Color</th>}
+              <th style={{ textAlign: 'center', padding: '5px 8px' }}>Qty</th>
+              <th style={{ textAlign: 'right', padding: '5px 8px' }}>Retail</th>
+              <th style={{ textAlign: 'right', padding: '5px 8px' }}>Line Total</th>
             </tr>
           </thead>
           <tbody>
             {items.map((item, idx) => {
               const product = item.expand?.product;
               return (
-                <tr key={item.id} style={{ borderBottom: '1px solid #eee', background: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
+                <tr key={item.id} style={{ borderBottom: '1px solid #eee', background: idx % 2 === 0 ? '#fff' : '#fafaf8' }}>
+                  <td style={{ padding: '6px', textAlign: 'center' }}>
+                    <span style={{ display: 'inline-block', width: '13px', height: '13px', border: '1.5px solid #aaa', verticalAlign: 'middle' }} />
+                  </td>
                   <td style={{ padding: '6px 8px' }}>{product?.short_title || product?.title || 'Product'}</td>
-                  <td style={{ padding: '6px 8px', color: '#666', fontFamily: 'monospace' }}>{product?.sku || ''}</td>
+                  <td style={{ padding: '6px 8px', color: '#666', fontFamily: 'monospace', fontSize: '8.5pt' }}>{product?.sku || ''}</td>
                   {items.some(i => i.color) && <td style={{ padding: '6px 8px' }}>{item.color || ''}</td>}
-                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>{item.quantity}</td>
+                  <td style={{ padding: '6px 8px', textAlign: 'center', fontWeight: 'bold' }}>{item.quantity}</td>
                   <td style={{ padding: '6px 8px', textAlign: 'right' }}>{formatCurrency(item.unit_price)}</td>
                   <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 'bold' }}>{formatCurrency(item.line_total)}</td>
                 </tr>
@@ -274,28 +307,35 @@ export default function AdminOrderDetailPage() {
           </tbody>
         </table>
 
-        {/* Totals */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}>
-          <div style={{ width: '240px', fontSize: '10pt' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
-              <span style={{ color: '#666' }}>Subtotal</span>
+        {/* ── Totals ── */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '28px' }}>
+          <div style={{ width: '220px', fontSize: '9.5pt' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
+              <span style={{ color: '#666' }}>Subtotal (retail)</span>
               <span>{formatCurrency(order.subtotal)}</span>
             </div>
             {order.discount_percent > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', color: '#2c7a2c' }}>
-                <span>Discount ({order.discount_percent}%)</span>
-                <span>-{formatCurrency(order.discount_amount)}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', color: '#2c7a2c' }}>
+                <span>Wholesale discount ({order.discount_percent}%)</span>
+                <span>−{formatCurrency(order.discount_amount)}</span>
               </div>
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderTop: '2px solid #333', fontWeight: 'bold', fontSize: '12pt' }}>
-              <span>Total</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderTop: '2px solid #333', fontWeight: 'bold', fontSize: '11pt', marginTop: '2px' }}>
+              <span>Order Total</span>
               <span>{formatCurrency(order.total)}</span>
             </div>
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid #ddd', paddingTop: '12px', fontSize: '9pt', color: '#888', textAlign: 'center' }}>
-          Thank you for your order! Questions? erin@banwelldesigns.com • banwelldesigns.com
+        {/* ── Received by ── */}
+        <div style={{ borderTop: '1px solid #ddd', paddingTop: '16px', marginBottom: '16px', fontSize: '9.5pt', color: '#444' }}>
+          <span style={{ marginRight: '32px' }}>Received by: <span style={{ display: 'inline-block', width: '180px', borderBottom: '1px solid #999' }}>&nbsp;</span></span>
+          <span>Date: <span style={{ display: 'inline-block', width: '100px', borderBottom: '1px solid #999' }}>&nbsp;</span></span>
+        </div>
+
+        {/* ── Footer ── */}
+        <div style={{ borderTop: '1px solid #eee', paddingTop: '10px', fontSize: '8.5pt', color: '#aaa', textAlign: 'center' }}>
+          Thank you for your order! &nbsp;•&nbsp; erin@banwelldesigns.com &nbsp;•&nbsp; banwelldesigns.com
         </div>
       </div>
 
