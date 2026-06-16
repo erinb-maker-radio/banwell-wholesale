@@ -26,7 +26,21 @@ export default function CheckoutPage() {
   const { customer } = useAuth();
   const [isReturning, setIsReturning] = useState(false);
 
+  // Shipping address
+  const [shipAddress, setShipAddress] = useState('');
+  const [shipCity, setShipCity] = useState('');
+  const [shipState, setShipState] = useState('');
+  const [shipZip, setShipZip] = useState('');
+
   const customerTier = customer?.discount_tier || 'auto';
+
+  // Pre-fill shipping from customer profile
+  useEffect(() => {
+    if (customer?.address) setShipAddress(customer.address);
+    if (customer?.city) setShipCity(customer.city);
+    if (customer?.state) setShipState(customer.state);
+    if (customer?.zip) setShipZip(customer.zip);
+  }, [customer]);
 
   // First-time buyers must pay by card (Square). Invoicing (Net 30) is only
   // offered once a customer has at least one prior order.
@@ -103,12 +117,19 @@ export default function CheckoutPage() {
   };
 
   async function handleCheckout() {
+    if (!shipAddress.trim() || !shipCity.trim() || !shipState.trim() || !shipZip.trim()) {
+      setError('Please complete your shipping address before placing your order.');
+      return;
+    }
+
     setSubmitting(true);
     setError('');
 
     const endpoint = paymentMethod === 'square'
       ? '/api/shop/checkout/pay-now'
       : '/api/shop/checkout/request-invoice';
+
+    const shippingAddress = `${shipAddress.trim()}\n${shipCity.trim()}, ${shipState.trim()} ${shipZip.trim()}`;
 
     try {
       const res = await fetch(endpoint, {
@@ -120,6 +141,7 @@ export default function CheckoutPage() {
             quantity: i.quantity,
             color: i.color,
           })),
+          shippingAddress,
           ...(codeApplied ? { discountCode: discountCode.trim() } : {}),
         }),
       });
@@ -191,6 +213,49 @@ export default function CheckoutPage() {
             <div className="flex justify-between font-semibold text-lg mt-2 text-gray-900">
               <span>Total</span>
               <span>{formatCurrency(discount.total)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Shipping address */}
+      <div className="bg-white rounded-lg border p-6 mb-6">
+        <h3 className="font-semibold text-gray-900 mb-1">Shipping Address</h3>
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-4">
+          Shipping costs are not included in your order total. We will invoice you separately for shipping at the time your order ships.
+        </p>
+        <div className="space-y-3">
+          <Input
+            label="Street Address"
+            placeholder="123 Main St, Suite 4"
+            value={shipAddress}
+            onChange={(e) => setShipAddress(e.target.value)}
+            required
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label="City"
+              placeholder="Seattle"
+              value={shipCity}
+              onChange={(e) => setShipCity(e.target.value)}
+              required
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                label="State"
+                placeholder="WA"
+                value={shipState}
+                onChange={(e) => setShipState(e.target.value.toUpperCase())}
+                maxLength={2}
+                required
+              />
+              <Input
+                label="ZIP"
+                placeholder="98052"
+                value={shipZip}
+                onChange={(e) => setShipZip(e.target.value)}
+                required
+              />
             </div>
           </div>
         </div>

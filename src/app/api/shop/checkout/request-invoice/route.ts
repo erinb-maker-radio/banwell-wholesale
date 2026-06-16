@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const customerId = auth.customerId;
     const customer = await auth.pb.collection('customers').getOne(customerId);
 
-    const { items, discountCode } = await request.json();
+    const { items, discountCode, shippingAddress } = await request.json();
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
     }
@@ -78,6 +78,7 @@ export async function POST(request: Request) {
       total: discount.total,
       invoice_terms: 'net30',
       follow_up_sent: false,
+      ...(shippingAddress ? { shipping_address: shippingAddress } : {}),
     });
 
     // Create order items
