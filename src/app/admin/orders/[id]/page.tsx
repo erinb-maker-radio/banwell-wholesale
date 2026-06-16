@@ -323,12 +323,6 @@ export default function AdminOrderDetailPage() {
           </div>
         </div>
 
-        {/* ── Received by ── */}
-        <div style={{ borderTop: '1px solid #ddd', paddingTop: '16px', marginBottom: '16px', fontSize: '9.5pt', color: '#444' }}>
-          <span style={{ marginRight: '32px' }}>Received by: <span style={{ display: 'inline-block', width: '180px', borderBottom: '1px solid #999' }}>&nbsp;</span></span>
-          <span>Date: <span style={{ display: 'inline-block', width: '100px', borderBottom: '1px solid #999' }}>&nbsp;</span></span>
-        </div>
-
         {/* ── Footer ── */}
         <div style={{ borderTop: '1px solid #eee', paddingTop: '10px', fontSize: '8.5pt', color: '#aaa', textAlign: 'center' }}>
           Thank you for your order! &nbsp;•&nbsp; erin@banwelldesigns.com &nbsp;•&nbsp; banwelldesigns.com
