@@ -204,6 +204,7 @@ export default function AdminOrderDetailPage() {
     <div>
       {/* Print-only packing slip */}
       <style>{`
+        @page { margin: 0.6in; }
         @media print {
           .no-print { display: none !important; }
           .print-slip { display: block !important; }
@@ -216,7 +217,7 @@ export default function AdminOrderDetailPage() {
         }
       `}</style>
 
-      <div className="print-slip">
+      <div className="print-slip" style={{ border: '1.5px solid #aaa', padding: '32px', boxSizing: 'border-box' }}>
         <div style={{ borderBottom: '2px solid #2c5530', paddingBottom: '16px', marginBottom: '24px' }}>
           <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>BANWELL DESIGNS</h1>
           <p style={{ margin: '4px 0 0', color: '#666', fontSize: '10pt', fontFamily: 'Georgia, serif' }}>Packing Slip • {new Date().toLocaleDateString()}</p>
@@ -294,7 +295,7 @@ export default function AdminOrderDetailPage() {
         </div>
 
         <div style={{ borderTop: '1px solid #ddd', paddingTop: '12px', fontSize: '9pt', color: '#888', textAlign: 'center' }}>
-          Thank you for your order! Questions? erin@banwelldesigns.com • (805) 570-6145 • banwelldesigns.com
+          Thank you for your order! Questions? erin@banwelldesigns.com • banwelldesigns.com
         </div>
       </div>
 
