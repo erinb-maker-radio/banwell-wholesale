@@ -205,14 +205,18 @@ export default function AdminOrderDetailPage() {
       {/* Print-only packing slip */}
       <style>{`
         @media print {
-          body * { visibility: hidden; }
-          .print-slip, .print-slip * { visibility: visible; }
-          .print-slip { position: absolute; top: 0; left: 0; width: 100%; padding: 0.5in; }
           .no-print { display: none !important; }
+          .print-slip { display: block !important; }
+          header, nav, aside, .sidebar { display: none !important; }
+          body { margin: 0; padding: 0; }
+          main { margin: 0 !important; padding: 0 !important; }
+        }
+        @media screen {
+          .print-slip { display: none; }
         }
       `}</style>
 
-      <div className="print-slip hidden print:block">
+      <div className="print-slip">
         <div style={{ borderBottom: '2px solid #2c5530', paddingBottom: '16px', marginBottom: '24px' }}>
           <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 'bold', fontFamily: 'Georgia, serif' }}>BANWELL DESIGNS</h1>
           <p style={{ margin: '4px 0 0', color: '#666', fontSize: '10pt', fontFamily: 'Georgia, serif' }}>Packing Slip • {new Date().toLocaleDateString()}</p>
@@ -223,10 +227,14 @@ export default function AdminOrderDetailPage() {
           <p style={{ fontWeight: 'bold', fontSize: '10pt', color: '#666', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ship To</p>
           <p style={{ fontSize: '13pt', fontWeight: 'bold', margin: '0 0 2px' }}>{customer?.business_name}</p>
           {customer?.contact_name && <p style={{ fontSize: '11pt', margin: '0 0 2px' }}>{customer.contact_name}</p>}
-          {order.shipping_address
-            ? <p style={{ fontSize: '11pt', margin: 0, whiteSpace: 'pre-line' }}>{order.shipping_address}</p>
-            : customer?.address && <p style={{ fontSize: '11pt', margin: 0, whiteSpace: 'pre-line' }}>{customer.address}</p>
-          }
+          {order.shipping_address ? (
+            <p style={{ fontSize: '11pt', margin: 0, whiteSpace: 'pre-line' }}>{order.shipping_address}</p>
+          ) : (customer?.address || customer?.city) ? (
+            <p style={{ fontSize: '11pt', margin: 0, lineHeight: '1.5' }}>
+              {customer.address && <>{customer.address}<br/></>}
+              {[customer.city, customer.state, customer.zip].filter(Boolean).join(', ')}
+            </p>
+          ) : null}
         </div>
 
         {/* Order info */}
