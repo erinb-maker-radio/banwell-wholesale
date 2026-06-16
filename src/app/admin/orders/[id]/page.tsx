@@ -228,8 +228,8 @@ export default function AdminOrderDetailPage() {
           <div style={{ textAlign: 'right', fontSize: '9pt', color: '#555', lineHeight: '1.6' }}>
             <strong style={{ fontSize: '10pt', color: '#222' }}>Ship From</strong><br/>
             Banwell Designs<br/>
-            California, USA<br/>
-            erin@banwelldesigns.com
+            601 Orange St<br/>
+            Chico, CA 95928
           </div>
         </div>
 
@@ -267,10 +267,6 @@ export default function AdminOrderDetailPage() {
                 <span style={{ fontFamily: 'monospace', fontSize: '9pt' }}>{order.tracking_number}</span>
               </div>
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '2px' }}>
-              <span style={{ color: '#666' }}>PO #</span>
-              <span style={{ minWidth: '100px', borderBottom: '1px dotted #aaa', display: 'inline-block' }}>&nbsp;</span>
-            </div>
           </div>
         </div>
 
