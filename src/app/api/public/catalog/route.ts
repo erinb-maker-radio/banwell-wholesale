@@ -11,6 +11,7 @@ export async function GET(request: Request) {
     const perPage = parseInt(searchParams.get('perPage') || '48');
     const category = searchParams.get('category') || '';
     const search = searchParams.get('search') || '';
+    const all = searchParams.get('all') === '1';
 
     let filter = 'is_active=true';
     if (category) {
@@ -29,6 +30,18 @@ export async function GET(request: Request) {
       }
     }
     if (search) filter += ` && (title~"${search}" || sku~"${search}")`;
+
+    // all=1: return every matching product so the client can group a design's
+    // size variants together regardless of how they paginate.
+    if (all) {
+      const items = await pb.collection('products').getFullList({
+        filter,
+        sort: 'sort_order',
+        expand: 'category',
+        batch: 500,
+      });
+      return NextResponse.json({ success: true, items, totalItems: items.length, totalPages: 1 });
+    }
 
     const result = await pb.collection('products').getList(page, perPage, {
       filter,

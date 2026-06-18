@@ -55,55 +55,42 @@ export default function CatalogPage() {
       .trim();
   };
 
-  // Check if product is an ornament
-  const isOrnament = (p: Product): boolean => {
-    const title = (p.short_title || p.title).toLowerCase();
-    const size = (p.size || '').toLowerCase();
-    return title.includes('ornament') || size.includes('3"') || size.includes('3 inch');
-  };
-
   useEffect(() => {
     setLoading(true);
-    const params = new URLSearchParams({ page: String(page), perPage: String(perPage) });
+    // Fetch the FULL matching set so a design's size variants are never split
+    // across server pages (grouping + pagination happen client-side, by design).
+    const params = new URLSearchParams({ all: '1' });
     if (selectedCategory) params.set('category', selectedCategory);
     if (search) params.set('search', search);
 
     fetch(`/api/public/catalog?${params}`)
       .then(res => res.json())
       .then(data => {
-        const allProducts = data.items || [];
+        const allProducts: Product[] = data.items || [];
 
-        // Group by design (short_title) and keep only one per design (prefer ornament/smallest)
+        // One card per design+category: a design's ornament and its suncatcher
+        // are separate cards, and all sizes of one type group together. Keyed by
+        // category (reliable) rather than a title/size heuristic.
+        const designKey = (p: Product) => `${extractBaseName(p.short_title || p.title)}|${p.category}`;
         const uniqueDesigns = new Map<string, Product>();
         const variationsMap = new Map<string, Product[]>();
 
         allProducts.forEach((product: Product) => {
-          const designName = product.short_title || product.title;
-          const baseName = extractBaseName(designName);
-          const existing = uniqueDesigns.get(baseName);
-
-          // Keep the product with the lowest price (likely the ornament)
+          const key = designKey(product);
+          const existing = uniqueDesigns.get(key);
+          // Representative = lowest-priced (smallest) size of this design+type.
           if (!existing || product.retail_price < existing.retail_price) {
-            uniqueDesigns.set(baseName, product);
+            uniqueDesigns.set(key, product);
           }
         });
 
-        // For each unique design, find all size variations
+        // Attach all size variations (same design+category) to each representative.
         const uniqueProducts = Array.from(uniqueDesigns.values());
         uniqueProducts.forEach(product => {
-          const baseName = extractBaseName(product.short_title || product.title);
-          const isCurrentOrnament = isOrnament(product);
-
-          // Find all products with same base name and category
-          const variations = allProducts.filter((p: Product) => {
-            const pBaseName = extractBaseName(p.short_title || p.title);
-            const pIsOrnament = isOrnament(p);
-            // Keep products with same base name, category, and same type (ornament vs suncatcher)
-            return pBaseName === baseName &&
-                   p.category === product.category &&
-                   pIsOrnament === isCurrentOrnament;
-          }).sort((a: Product, b: Product) => a.retail_price - b.retail_price);
-
+          const key = designKey(product);
+          const variations = allProducts
+            .filter((p: Product) => designKey(p) === key)
+            .sort((a: Product, b: Product) => a.retail_price - b.retail_price);
           if (variations.length > 1) {
             variationsMap.set(product.id, variations);
           }
@@ -112,18 +99,16 @@ export default function CatalogPage() {
         setProducts(uniqueProducts);
         setSizeVariations(variationsMap);
 
-        // Initialize selected sizes to the default (displayed) product
         const defaultSizes = new Map<string, string>();
-        uniqueProducts.forEach(product => {
-          defaultSizes.set(product.id, product.id);
-        });
+        uniqueProducts.forEach(product => defaultSizes.set(product.id, product.id));
         setSelectedSizes(defaultSizes);
 
-        setTotalPages(data.totalPages || 1);
+        setPage(1);
+        setTotalPages(Math.max(1, Math.ceil(uniqueProducts.length / perPage)));
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [page, selectedCategory, search]);
+  }, [selectedCategory, search]);
 
   async function toggleFavorite(e: React.MouseEvent, productId: string) {
     e.preventDefault();
@@ -234,7 +219,7 @@ export default function CatalogPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {products.map(product => {
+            {products.slice((page - 1) * perPage, page * perPage).map(product => {
               const variations = sizeVariations.get(product.id) || [];
               const selectedSizeId = selectedSizes.get(product.id) || product.id;
               const selectedProduct = variations.find(v => v.id === selectedSizeId) || product;
