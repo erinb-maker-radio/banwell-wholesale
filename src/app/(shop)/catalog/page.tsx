@@ -262,11 +262,24 @@ export default function CatalogPage() {
                         {selectedProduct.short_title || selectedProduct.title}
                       </p>
                       <p className="text-xs text-gray-400 mt-0.5">{selectedProduct.sku}</p>
-                      <p className="text-sm font-semibold text-blue-600 mt-1">
-                        {formatCurrency(selectedProduct.retail_price)}
-                      </p>
-                      {selectedProduct.size && (
-                        <p className="text-xs text-gray-500">{selectedProduct.size}</p>
+                      {variations.length > 1 ? (
+                        <div className="mt-1 space-y-0.5">
+                          {variations.map(v => (
+                            <div key={v.id} className="flex items-baseline justify-between gap-2 text-xs">
+                              <span className="text-gray-500">{v.size || v.short_title}</span>
+                              <span className="font-semibold text-blue-600">{formatCurrency(v.retail_price)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-sm font-semibold text-blue-600 mt-1">
+                            {formatCurrency(selectedProduct.retail_price)}
+                          </p>
+                          {selectedProduct.size && (
+                            <p className="text-xs text-gray-500">{selectedProduct.size}</p>
+                          )}
+                        </>
                       )}
                     </div>
                   </Link>
