@@ -57,16 +57,10 @@ export default function MyCatalogPage() {
           approvedKeys.add(key);
         });
 
-        // 2. Fetch ALL active products (paginated until done)
-        const allProducts: Product[] = [];
-        let pg = 1;
-        while (true) {
-          const res = await fetch(`/api/public/catalog?perPage=500&page=${pg}`);
-          const data = await res.json();
-          allProducts.push(...(data.items || []));
-          if (pg >= (data.totalPages || 1)) break;
-          pg++;
-        }
+        // 2. Fetch ALL active products in one shot (all=1 → getFullList on server)
+        const allRes = await fetch('/api/public/catalog?all=1');
+        const allData = await allRes.json();
+        const allProducts: Product[] = allData.items || [];
 
         // 3. Filter to only products whose design is in the approved set
         const filtered = allProducts.filter(p => {
