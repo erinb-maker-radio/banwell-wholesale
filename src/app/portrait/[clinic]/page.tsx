@@ -243,6 +243,7 @@ export default function PortraitPage() {
             quote: 'We had a custom made sun catcher of our beloved dog who recently passed. It came out so beautiful and looked just like the picture I sent in. This is something we will cherish!',
             author: 'Alicia',
             meta: '12&Prime; portrait &middot; verified Etsy purchase',
+            photo: '/images/vet/bulldog-window.jpg',
           },
           {
             quote: 'The owner worked with me to create a custom design to replicate the picture I sent, was responsive, and shipped on time. The item itself looks and feels high quality.',
@@ -254,6 +255,7 @@ export default function PortraitPage() {
             quote: 'Was blown away by the details and incredible work. Such great quality and such a pleasure to work with. Definitely recommend!',
             author: 'Etsy buyer',
             meta: 'Custom order &middot; verified Etsy purchase',
+            photo: '/images/vet/tree-213.jpg',
           },
         ] as Array<{ quote: string; author: string; meta: string; photo?: string }>).map(review => (
           <div key={review.author} className="bg-gray-50 rounded-xl p-5">
