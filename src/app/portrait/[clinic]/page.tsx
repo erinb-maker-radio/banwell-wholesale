@@ -241,22 +241,26 @@ export default function PortraitPage() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-12">
         {[
           {
-            quote: 'Absolutely stunning. It looked exactly like our dog. We cried happy tears when we opened it.',
-            author: 'Sara M.',
+            quote: 'We had a custom made sun catcher of our beloved dog who recently passed. It came out so beautiful and looked just like the picture I sent in. This is something we will cherish!',
+            author: 'Alicia',
+            meta: '12&Prime; portrait &middot; verified Etsy purchase',
           },
           {
-            quote: 'The quality blew me away. Our cat passed last month and this is the most beautiful thing to remember her by.',
-            author: 'Kevin T.',
+            quote: 'The owner worked with me to create a custom design to replicate the picture I sent, was responsive, and shipped on time. The item itself looks and feels high quality.',
+            author: 'Rommelyn',
+            meta: 'Custom order &middot; verified Etsy purchase',
           },
           {
-            quote: 'Ordered the 10 inch. Every time sunlight hits it the whole room lights up. Worth every penny.',
-            author: 'Diane R.',
+            quote: 'Was blown away by the details and incredible work. Such great quality and such a pleasure to work with. Definitely recommend!',
+            author: 'Etsy buyer',
+            meta: 'Custom order &middot; verified Etsy purchase',
           },
         ].map(review => (
           <div key={review.author} className="bg-gray-50 rounded-xl p-5">
             <div className="text-yellow-400 text-sm mb-2">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <p className="text-gray-700 text-sm leading-relaxed italic mb-3">&ldquo;{review.quote}&rdquo;</p>
-            <p className="text-xs text-gray-400 font-medium">{review.author}</p>
+            <p className="text-xs text-gray-500 font-medium">{review.author}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5" dangerouslySetInnerHTML={{ __html: review.meta }} />
           </div>
         ))}
       </section>
