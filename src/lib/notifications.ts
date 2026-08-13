@@ -133,7 +133,7 @@ export async function notifyNewCustomer(customer: {
   contact_name: string;
   email: string;
 }): Promise<void> {
-  const adminEmail = process.env.ORDER_NOTIFICATION_EMAIL || 'maxey.tg@gmail.com';
+  const adminEmail = process.env.ORDER_NOTIFICATION_EMAIL || 'banwelldetsy@gmail.com';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
   // Email to admin
@@ -177,7 +177,7 @@ export async function notifyOrderPlaced(order: {
   itemCount: number;
   paymentMethod: string;
 }): Promise<void> {
-  const adminEmail = process.env.ORDER_NOTIFICATION_EMAIL || 'maxey.tg@gmail.com';
+  const adminEmail = process.env.ORDER_NOTIFICATION_EMAIL || 'banwelldetsy@gmail.com';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   const totalFormatted = (order.total / 100).toFixed(2);
 
