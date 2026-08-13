@@ -1,0 +1,266 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useParams } from 'next/navigation';
+
+const SIZES = [
+  { key: '3"',  label: '3"',  price: 135, description: 'Ornament size — hangs in a window or on a tree' },
+  { key: '6"',  label: '6"',  price: 172, description: 'Small suncatcher — perfect for a desk or bedside window' },
+  { key: '10"', label: '10"', price: 198, description: 'Our most popular size — fills a window beautifully' },
+  { key: '12"', label: '12"', price: 229, description: 'Large statement piece' },
+  { key: '15"', label: '15"', price: 253, description: 'Gallery size — maximum impact' },
+] as const;
+
+type SizeKey = (typeof SIZES)[number]['key'];
+
+const HOW_IT_WORKS = [
+  {
+    step: '1',
+    title: 'Order your portrait',
+    body: 'Choose the size you want and complete your purchase. We\'ll follow up by email to collect your photo.',
+  },
+  {
+    step: '2',
+    title: 'Send us your favorite photo',
+    body: 'Any clear photo of your pet works — we handle all the design work from there.',
+  },
+  {
+    step: '3',
+    title: 'Approve your artwork',
+    body: 'We send you a digital proof before anything is made. You approve it, we print it.',
+  },
+  {
+    step: '4',
+    title: 'We make it and ship it',
+    body: 'Printed on real glass and sealed. Ships within 1–2 weeks of artwork approval.',
+  },
+];
+
+export default function PortraitPage() {
+  const params = useParams();
+  const slug = (params?.clinic as string) || '';
+
+  const [selectedSize, setSelectedSize] = useState<SizeKey>('10"');
+  const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Fire-and-forget scan tracking on mount
+  useEffect(() => {
+    if (!slug) return;
+    fetch('/api/vet/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    }).catch(() => {
+      // Silent — tracking failure must never break the page
+    });
+  }, [slug]);
+
+  async function handleOrder() {
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/vet/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, size: selectedSize, customerName, customerEmail }),
+      });
+      const data = await res.json();
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        setError(data.error || 'Something went wrong. Please try again or email erin@banwelldesigns.com.');
+      }
+    } catch {
+      setError('Something went wrong. Please try again or email erin@banwelldesigns.com.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const selectedSizeInfo = SIZES.find(s => s.key === selectedSize)!;
+
+  return (
+    <div className="max-w-4xl mx-auto px-4">
+
+      {/* ── HERO ── */}
+      <section className="pt-10 pb-8 text-center">
+        <h1 className="text-3xl md:text-5xl font-semibold text-gray-900 leading-tight mb-4">
+          A Stained Glass Style Portrait
+          <br className="hidden md:block" /> of Your Pet
+        </h1>
+        <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
+          We turn your favorite photo into a handmade suncatcher — designed and made by my wife
+          and I in Chico, California.
+        </p>
+      </section>
+
+      {/* ── HERO IMAGE ── */}
+      {/* TODO: Replace with actual custom pet portrait composite image once
+          the Etsy SUN-100 listing image (il_6812074737) is re-fetched.
+          The suncatcher hero below is the interim image. */}
+      <section className="mb-10">
+        <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg">
+          <Image
+            src="/images/brand/glass/sun-catchers/hero.jpg"
+            alt="Stained glass style pet portrait suncatcher glowing in a window"
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 768px) 100vw, 900px"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          <div className="absolute bottom-6 left-6 right-6">
+            <p className="text-white text-sm md:text-base font-light">
+              Printed on real glass &middot; Ships in 1&ndash;2 weeks after artwork approval
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TWO-COLUMN: ORDER FORM + HOW IT WORKS ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+
+        {/* Order form */}
+        <section>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Order your portrait</h2>
+
+          {/* Size picker */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Choose a size</label>
+            <div className="space-y-2">
+              {SIZES.map(size => (
+                <label
+                  key={size.key}
+                  className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                    selectedSize === size.key
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="size"
+                    value={size.key}
+                    checked={selectedSize === size.key}
+                    onChange={() => setSelectedSize(size.key)}
+                    className="mt-0.5 accent-blue-600"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-baseline">
+                      <span className="font-medium text-gray-900">{size.key}</span>
+                      <span className="font-semibold text-gray-900">${size.price}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5">{size.description}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Optional contact fields */}
+          <div className="space-y-3 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                Your name <span className="text-gray-400 font-normal">(optional)</span>
+              </label>
+              <input
+                id="name"
+                type="text"
+                value={customerName}
+                onChange={e => setCustomerName(e.target.value)}
+                placeholder="Jane Smith"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+                Email <span className="text-gray-400 font-normal">(optional — we use this to send your artwork proof)</span>
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={customerEmail}
+                onChange={e => setCustomerEmail(e.target.value)}
+                placeholder="jane@example.com"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          {/* CTA */}
+          {error && (
+            <p className="text-sm text-red-600 mb-3">{error}</p>
+          )}
+          <button
+            onClick={handleOrder}
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors text-base"
+          >
+            {loading
+              ? 'Preparing your order...'
+              : `Order ${selectedSize} — $${selectedSizeInfo.price}`}
+          </button>
+          <p className="text-xs text-gray-400 mt-2 text-center">
+            Secure checkout via Square &middot; We collect your photo after payment
+          </p>
+        </section>
+
+        {/* How it works */}
+        <section>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">How it works</h2>
+          <ol className="space-y-6">
+            {HOW_IT_WORKS.map(step => (
+              <li key={step.step} className="flex gap-4">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold flex items-center justify-center">
+                  {step.step}
+                </span>
+                <div>
+                  <p className="font-semibold text-gray-900">{step.title}</p>
+                  <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+
+      {/* ── SOCIAL PROOF ── */}
+      <section className="border-t border-gray-100 pt-10 pb-4 text-center mb-4">
+        <p className="text-2xl font-semibold text-gray-900 mb-2">4.9 stars &middot; 2,600+ five-star reviews</p>
+        <p className="text-gray-500 text-sm max-w-lg mx-auto">
+          Designed and made in Chico, California. Each piece is printed on real glass and hand-finished.
+          Not mass produced.
+        </p>
+      </section>
+
+      {/* ── SAMPLE REVIEWS (static, from Etsy) ── */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-12">
+        {[
+          {
+            quote: 'Absolutely stunning. It looked exactly like our dog. We cried happy tears when we opened it.',
+            author: 'Sara M.',
+          },
+          {
+            quote: 'The quality blew me away. Our cat passed last month and this is the most beautiful thing to remember her by.',
+            author: 'Kevin T.',
+          },
+          {
+            quote: 'Ordered the 10 inch. Every time sunlight hits it the whole room lights up. Worth every penny.',
+            author: 'Diane R.',
+          },
+        ].map(review => (
+          <div key={review.author} className="bg-gray-50 rounded-xl p-5">
+            <div className="text-yellow-400 text-sm mb-2">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p className="text-gray-700 text-sm leading-relaxed italic mb-3">&ldquo;{review.quote}&rdquo;</p>
+            <p className="text-xs text-gray-400 font-medium">{review.author}</p>
+          </div>
+        ))}
+      </section>
+
+    </div>
+  );
+}
