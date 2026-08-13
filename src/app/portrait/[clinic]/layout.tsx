@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'A Stained Glass Style Portrait of Your Pet — Banwell Designs',
@@ -15,15 +14,13 @@ export default function PortraitLayout({ children }: { children: React.ReactNode
       {/* Slim brand header */}
       <header className="border-b border-gray-100 bg-white">
         <div className="max-w-4xl mx-auto px-4 py-3 flex justify-center">
-          <Link href="/" aria-label="Banwell Designs home">
-            <Image
-              src="/images/brand/logos/diamond-logo.png"
-              alt="Banwell Designs"
-              width={160}
-              height={58}
-              className="h-auto brightness-0"
-              priority
-            />
+          <Link href="/" aria-label="Banwell Designs home" className="text-center">
+            <span className="block font-serif text-xl md:text-2xl tracking-wide text-gray-900">
+              Banwell Designs
+            </span>
+            <span className="block text-[11px] uppercase tracking-[0.25em] text-gray-400 mt-0.5">
+              Chico, California
+            </span>
           </Link>
         </div>
       </header>
