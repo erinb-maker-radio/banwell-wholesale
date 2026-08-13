@@ -99,20 +99,19 @@ export default function PortraitPage() {
       </section>
 
       {/* ── HERO IMAGE ── */}
-      {/* TODO: Replace with actual custom pet portrait composite image once
-          the Etsy SUN-100 listing image (il_6812074737) is re-fetched.
-          The suncatcher hero below is the interim image. */}
+      {/* Real customer photo: a stained-glass-style pet portrait hanging in the
+          buyer's window. Sourced from an Etsy purchase photo. */}
       <section className="mb-10">
-        <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg">
+        <div className="relative w-full aspect-[4/3] md:aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
           <Image
-            src="/images/brand/glass/sun-catchers/hero.jpg"
-            alt="Stained glass style pet portrait suncatcher glowing in a window"
+            src="/images/vet/bulldog-window.jpg"
+            alt="Stained glass style dog portrait suncatcher glowing in a customer's window"
             fill
             className="object-cover"
             priority
             sizes="(max-width: 768px) 100vw, 900px"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
           <div className="absolute bottom-6 left-6 right-6">
             <p className="text-white text-sm md:text-base font-light">
               Printed on real glass &middot; Ships in 1&ndash;2 weeks after artwork approval
@@ -239,7 +238,7 @@ export default function PortraitPage() {
 
       {/* ── SAMPLE REVIEWS (static, from Etsy) ── */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-12">
-        {[
+        {([
           {
             quote: 'We had a custom made sun catcher of our beloved dog who recently passed. It came out so beautiful and looked just like the picture I sent in. This is something we will cherish!',
             author: 'Alicia',
@@ -249,15 +248,27 @@ export default function PortraitPage() {
             quote: 'The owner worked with me to create a custom design to replicate the picture I sent, was responsive, and shipped on time. The item itself looks and feels high quality.',
             author: 'Rommelyn',
             meta: 'Custom order &middot; verified Etsy purchase',
+            photo: '/images/vet/balloon-window.jpg',
           },
           {
             quote: 'Was blown away by the details and incredible work. Such great quality and such a pleasure to work with. Definitely recommend!',
             author: 'Etsy buyer',
             meta: 'Custom order &middot; verified Etsy purchase',
           },
-        ].map(review => (
+        ] as Array<{ quote: string; author: string; meta: string; photo?: string }>).map(review => (
           <div key={review.author} className="bg-gray-50 rounded-xl p-5">
             <div className="text-yellow-400 text-sm mb-2">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            {review.photo && (
+              <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3">
+                <Image
+                  src={review.photo}
+                  alt={`Customer photo from ${review.author}'s order`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 300px"
+                />
+              </div>
+            )}
             <p className="text-gray-700 text-sm leading-relaxed italic mb-3">&ldquo;{review.quote}&rdquo;</p>
             <p className="text-xs text-gray-500 font-medium">{review.author}</p>
             <p className="text-[11px] text-gray-400 mt-0.5" dangerouslySetInnerHTML={{ __html: review.meta }} />
