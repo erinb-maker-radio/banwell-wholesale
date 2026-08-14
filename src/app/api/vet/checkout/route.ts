@@ -37,6 +37,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
 
+    // Email is required — it's the only way we reach the buyer to send the
+    // artwork proof. Enforce server-side so a malformed client can't skip it.
+    const email = typeof customerEmail === 'string' ? customerEmail.trim() : '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json(
+        { error: 'A valid email is required so we can send your artwork proof.' },
+        { status: 400 },
+      );
+    }
+
     const isDirect = slug === 'direct';
     const commissionCents = isDirect ? 0 : COMMISSION_CENTS;
 
@@ -91,9 +101,7 @@ export async function POST(request: Request) {
         askForShippingAddress: true,
       },
       // Pre-populate buyer email when provided
-      ...(customerEmail
-        ? { prePopulatedData: { buyerEmail: customerEmail } }
-        : {}),
+      prePopulatedData: { buyerEmail: email },
       order: {
         locationId,
         referenceId: isDirect ? 'direct' : `vet-${slug}`,
@@ -123,7 +131,7 @@ export async function POST(request: Request) {
       square_order_id: squareOrderId,
       square_payment_link: checkoutUrl || '',
       customer_name: customerName || '',
-      customer_email: customerEmail || '',
+      customer_email: email,
       size,
       amount_cents: sizeInfo.cents,
       commission_cents: commissionCents,

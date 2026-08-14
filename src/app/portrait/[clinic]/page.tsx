@@ -61,12 +61,20 @@ export default function PortraitPage() {
 
   async function handleOrder() {
     setError('');
+    const email = customerEmail.trim();
+    // Email is required — it's how we send the artwork proof to approve before
+    // anything is made. Validate here so the buyer gets a friendly message
+    // instead of a raw Square "invalid email" rejection.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email — we use it to send your artwork proof to approve before we make anything.');
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch('/api/vet/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, size: selectedSize, customerName, customerEmail }),
+        body: JSON.stringify({ slug, size: selectedSize, customerName, customerEmail: email }),
       });
       const data = await res.json();
       if (data.checkoutUrl) {
@@ -177,11 +185,12 @@ export default function PortraitPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
-                Email <span className="text-gray-400 font-normal">(optional — we use this to send your artwork proof)</span>
+                Email <span className="text-gray-400 font-normal">(we send your artwork proof here to approve before we make it)</span>
               </label>
               <input
                 id="email"
                 type="email"
+                required
                 value={customerEmail}
                 onChange={e => setCustomerEmail(e.target.value)}
                 placeholder="jane@example.com"
