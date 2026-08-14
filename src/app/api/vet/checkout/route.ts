@@ -13,17 +13,32 @@ const SIZES: Record<string, { label: string; cents: number }> = {
 
 const COMMISSION_CENTS = 2000; // $20 flat per order
 
+// Hosts we allow buyers to be redirected back to after Square checkout. The
+// general SEO page lives on stainedglassportraits.com, so a direct order there
+// should return the buyer to that same host rather than the wholesale domain.
+const ALLOWED_ORIGINS = new Set([
+  'https://stainedglassportraits.com',
+  'https://www.stainedglassportraits.com',
+  'https://banwelldesigns.com',
+  'https://www.banwelldesigns.com',
+  'https://wholesale.banwelldesigns.com',
+]);
+
 // POST /api/vet/checkout
-// Body: { slug, size, customerName, customerEmail }
+// Body: { slug, size, customerName, customerEmail, origin? }
+// slug="direct" tags a non-referral (direct-to-consumer) sale: zero commission.
 // Creates a Square payment link and a vet_orders PB record.
 // Returns { checkoutUrl }
 export async function POST(request: Request) {
   try {
-    const { slug, size, customerName, customerEmail } = await request.json();
+    const { slug, size, customerName, customerEmail, origin } = await request.json();
 
     if (!slug || !size || !SIZES[size]) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
+
+    const isDirect = slug === 'direct';
+    const commissionCents = isDirect ? 0 : COMMISSION_CENTS;
 
     const sizeInfo = SIZES[size];
 
@@ -55,7 +70,12 @@ export async function POST(request: Request) {
     }
 
     const locationId = await getLocationId();
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://wholesale.banwelldesigns.com';
+    // Keep the buyer on the host they started from when it's a trusted origin
+    // (e.g. stainedglassportraits.com), otherwise fall back to the base URL.
+    const baseUrl =
+      origin && ALLOWED_ORIGINS.has(origin)
+        ? origin
+        : process.env.NEXT_PUBLIC_BASE_URL || 'https://wholesale.banwelldesigns.com';
     const redirectUrl = `${baseUrl}/portrait/${slug}/thank-you`;
 
     // Create Square payment link using `order` (not `quickPay`) so we can
@@ -63,7 +83,9 @@ export async function POST(request: Request) {
     // quickPay and order are mutually exclusive in the Square SDK.
     const squareResponse = await squareClient.checkout.paymentLinks.create({
       idempotencyKey: `vet-${slug}-${size}-${Date.now()}`,
-      description: `Custom pet portrait suncatcher (${size}) — referred by ${slug}`,
+      description: isDirect
+        ? `Custom pet portrait suncatcher (${size}) — direct order`
+        : `Custom pet portrait suncatcher (${size}) — referred by ${slug}`,
       checkoutOptions: {
         redirectUrl,
         askForShippingAddress: true,
@@ -74,7 +96,7 @@ export async function POST(request: Request) {
         : {}),
       order: {
         locationId,
-        referenceId: `vet-${slug}`,
+        referenceId: isDirect ? 'direct' : `vet-${slug}`,
         lineItems: [
           {
             name: sizeInfo.label,
@@ -83,7 +105,9 @@ export async function POST(request: Request) {
               amount: BigInt(sizeInfo.cents),
               currency: 'USD',
             },
-            note: `Referred by clinic: ${slug}. Photo collected via email after payment.`,
+            note: isDirect
+              ? 'Direct order. Photo collected via email after payment.'
+              : `Referred by clinic: ${slug}. Photo collected via email after payment.`,
           },
         ],
       },
@@ -102,7 +126,7 @@ export async function POST(request: Request) {
       customer_email: customerEmail || '',
       size,
       amount_cents: sizeInfo.cents,
-      commission_cents: COMMISSION_CENTS,
+      commission_cents: commissionCents,
       status: 'pending_payment',
       photo_received: false,
     });

@@ -50,6 +50,20 @@ function safeEqual(a: string, b: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Host-based rewrite: stainedglassportraits.com is an exact-match SEO domain
+  // that serves the general (direct-to-consumer) pet portrait page. Same codebase
+  // is also deployed to banwelldesigns.com, so we can't repurpose "/" globally —
+  // instead we rewrite the root of the portraits domain to /portraits. The URL in
+  // the browser stays "/"; Next renders the /portraits route.
+  const host = request.headers.get('host')?.toLowerCase() ?? '';
+  const isPortraitsHost =
+    host === 'stainedglassportraits.com' || host === 'www.stainedglassportraits.com';
+  if (isPortraitsHost && pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/portraits';
+    return NextResponse.rewrite(url);
+  }
+
   // Redirect old leather URLs to new /leather/* paths (308 Permanent)
   if (leatherRedirects[pathname]) {
     const url = request.nextUrl.clone();
@@ -106,6 +120,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
     '/account/:path*',
     '/admin',
     '/admin/:path*',
