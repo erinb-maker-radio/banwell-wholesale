@@ -19,25 +19,25 @@ const NAV = [
 
 export default function PortraitsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-white text-stone-900">
       <Beacon />
-      <header className="border-b border-gray-100 bg-white">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex justify-center">
+      <header className="border-b border-stone-100 bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex justify-center">
           <Link href="/" aria-label="Banwell Designs home" className="text-center">
-            <span className="block font-serif text-xl md:text-2xl tracking-wide text-gray-900">
+            <span className="block font-serif text-xl md:text-2xl tracking-wide text-stone-900">
               Banwell Designs
             </span>
-            <span className="block text-[11px] uppercase tracking-[0.25em] text-gray-400 mt-0.5">
-              Chico, California
+            <span className="block text-[11px] uppercase tracking-[0.25em] text-amber-700/70 mt-0.5">
+              Stained Glass Portraits &middot; Chico, California
             </span>
           </Link>
         </div>
-        <nav className="max-w-4xl mx-auto px-4 pb-3 flex justify-center gap-6 text-sm">
+        <nav className="max-w-5xl mx-auto px-4 pb-3 flex justify-center gap-6 text-sm">
           {NAV.map(item => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-stone-500 hover:text-stone-900 transition-colors"
             >
               {item.label}
             </Link>
@@ -47,10 +47,12 @@ export default function PortraitsLayout({ children }: { children: React.ReactNod
 
       <main>{children}</main>
 
-      <footer className="border-t border-gray-100 mt-16 py-8 text-center text-sm text-gray-400">
-        <p>Banwell Designs &mdash; Chico, California</p>
-        <p className="mt-1">
-          <a href="mailto:erin@banwelldesigns.com" className="hover:text-gray-600 transition-colors">
+      <footer className="border-t border-stone-100 bg-stone-50 py-10 text-center text-sm text-stone-400">
+        <p className="font-serif text-base text-stone-600">
+          Banwell Designs &mdash; Chico, California
+        </p>
+        <p className="mt-2">
+          <a href="mailto:erin@banwelldesigns.com" className="hover:text-stone-600 transition-colors">
             erin@banwelldesigns.com
           </a>
           &nbsp;&middot;&nbsp;
@@ -58,17 +60,17 @@ export default function PortraitsLayout({ children }: { children: React.ReactNod
             href="https://www.etsy.com/shop/BanwellDesigns"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-gray-600 transition-colors"
+            className="hover:text-stone-600 transition-colors"
           >
             4.9 stars &middot; 2,600+ five-star reviews &middot; 20,000+ sales on Etsy
           </a>
         </p>
         <p className="mt-1">
-          <Link href="/about" className="hover:text-gray-600 transition-colors">
+          <Link href="/about" className="hover:text-stone-600 transition-colors">
             About us
           </Link>
           &nbsp;&middot;&nbsp;
-          <Link href="/shipping" className="hover:text-gray-600 transition-colors">
+          <Link href="/shipping" className="hover:text-stone-600 transition-colors">
             Shipping &amp; returns
           </Link>
         </p>
