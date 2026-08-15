@@ -17,6 +17,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Display serif for stainedglassportraits.com ("Kept in the Light"
+     identity). The --font-fraunces variable is set by next/font in
+     src/app/portraits/layout.tsx; Georgia is the fallback elsewhere. */
+  --font-display: var(--font-fraunces, Georgia), Georgia, 'Times New Roman', serif;
 }
 
 html, body {

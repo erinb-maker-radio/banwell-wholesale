@@ -28,10 +28,10 @@ export default function StickyCTA({ fromPrice }: { fromPrice: number }) {
   if (hidden) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur border-t border-stone-200 px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+    <div className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-[#232946]/97 backdrop-blur border-t border-[#d4a33d] px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
       <a
         href="#order"
-        className="block w-full text-center bg-amber-500 hover:bg-amber-600 text-stone-900 font-semibold py-3 rounded-xl transition-colors"
+        className="block w-full text-center bg-[#d4a33d] hover:bg-[#c2922f] text-[#232946] font-semibold py-3 rounded-xl transition-colors"
       >
         Order your portrait &mdash; from ${fromPrice}
       </a>
