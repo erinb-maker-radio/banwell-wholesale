@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Beacon from './Beacon';
 
 // Page-level metadata (title, description, canonical, OG) lives in each
 // page.tsx — the hub and every category page own their own SEO surface.
@@ -13,11 +14,13 @@ const NAV = [
   { href: '/pets', label: 'Pets' },
   { href: '/pet-memorial', label: 'Pet Memorials' },
   { href: '/weddings', label: 'Weddings' },
+  { href: '/about', label: 'About' },
 ];
 
 export default function PortraitsLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-gray-900">
+      <Beacon />
       <header className="border-b border-gray-100 bg-white">
         <div className="max-w-4xl mx-auto px-4 py-3 flex justify-center">
           <Link href="/" aria-label="Banwell Designs home" className="text-center">
@@ -57,8 +60,17 @@ export default function PortraitsLayout({ children }: { children: React.ReactNod
             rel="noopener noreferrer"
             className="hover:text-gray-600 transition-colors"
           >
-            4.9 stars &middot; 2,600+ five-star reviews on Etsy
+            4.9 stars &middot; 2,600+ five-star reviews &middot; 20,000+ sales on Etsy
           </a>
+        </p>
+        <p className="mt-1">
+          <Link href="/about" className="hover:text-gray-600 transition-colors">
+            About us
+          </Link>
+          &nbsp;&middot;&nbsp;
+          <Link href="/shipping" className="hover:text-gray-600 transition-colors">
+            Shipping &amp; returns
+          </Link>
         </p>
       </footer>
     </div>

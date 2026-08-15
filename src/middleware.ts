@@ -61,7 +61,12 @@ export function middleware(request: NextRequest) {
   const host = request.headers.get('host')?.toLowerCase() ?? '';
   const isPortraitsHost =
     host === 'stainedglassportraits.com' || host === 'www.stainedglassportraits.com';
-  const portraitCategoryPaths = ['/pets', '/pet-memorial', '/weddings'];
+  // Paths that map to /portraits/* on the portraits host. Note: /about and
+  // /shipping exist ONLY on the portraits host — banwelldesigns.com has its own
+  // (shop)/about page, so those two are rewritten here but never cross-host
+  // redirected (see portraitOnlyRedirectPaths below).
+  const portraitCategoryPaths = ['/pets', '/pet-memorial', '/weddings', '/about', '/shipping'];
+  const portraitOnlyRedirectPaths = ['/pets', '/pet-memorial', '/weddings'];
   if (isPortraitsHost) {
     if (pathname === '/') {
       const url = request.nextUrl.clone();
@@ -79,7 +84,7 @@ export function middleware(request: NextRequest) {
       url.pathname = pathname.slice('/portraits'.length) || '/';
       return NextResponse.redirect(url, 308);
     }
-  } else if (portraitCategoryPaths.includes(pathname)) {
+  } else if (portraitOnlyRedirectPaths.includes(pathname)) {
     // Category links rendered on the banwelldesigns.com copy of these pages
     // should land on the canonical domain rather than 404 here.
     return NextResponse.redirect(
@@ -148,6 +153,8 @@ export const config = {
     '/pets',
     '/pet-memorial',
     '/weddings',
+    '/about',
+    '/shipping',
     '/portraits',
     '/portraits/:path*',
     '/account/:path*',

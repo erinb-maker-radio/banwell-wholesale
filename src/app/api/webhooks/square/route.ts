@@ -29,6 +29,28 @@ export async function POST(request: Request) {
     const pb = createServerPB();
     await authenticateAdmin(pb);
 
+    // Vet/DTC portrait orders live in vet_orders (separate from wholesale
+    // `orders`). Mark them paid here so kill-gate metrics and the
+    // abandoned-checkout recovery can trust the status field.
+    if (payment.order_id) {
+      try {
+        const vetOrder = await pb
+          .collection('vet_orders')
+          .getFirstListItem(`square_order_id="${payment.order_id}"`);
+        if (vetOrder.status === 'pending_payment' || !vetOrder.square_payment_id) {
+          await pb.collection('vet_orders').update(vetOrder.id, {
+            status: 'paid',
+            square_payment_id: paymentId,
+          });
+          console.log('vet_orders marked paid:', vetOrder.id);
+        }
+        // Vet orders have no wholesale `orders` counterpart — done.
+        return NextResponse.json({ received: true, vetOrderId: vetOrder.id });
+      } catch {
+        /* not a vet order — fall through to wholesale handling */
+      }
+    }
+
     // Correlate by the Square order_id we stored at checkout (payment objects
     // carry order_id, not payment_link_id). Fall back to payment_link_id.
     let order;

@@ -184,7 +184,7 @@ export default function PortraitPage(props: {
       {/* ── SOCIAL PROOF ── */}
       <section className="border-t border-gray-100 pt-10 pb-4 text-center mb-4">
         <p className="text-2xl font-semibold text-gray-900 mb-2">
-          4.9 stars &middot; 2,600+ five-star reviews
+          4.9 stars &middot; 2,600+ five-star reviews &middot; 20,000+ sales
         </p>
         <p className="text-gray-500 text-sm max-w-lg mx-auto">
           Designed and made in Chico, California. Each piece is printed on real glass and

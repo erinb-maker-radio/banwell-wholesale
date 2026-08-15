@@ -86,7 +86,25 @@ export async function POST(request: Request) {
       origin && ALLOWED_ORIGINS.has(origin)
         ? origin
         : process.env.NEXT_PUBLIC_BASE_URL || 'https://wholesale.banwelldesigns.com';
-    const redirectUrl = `${baseUrl}/portrait/${slug}/thank-you`;
+
+    // Create the PB order BEFORE the payment link so the thank-you redirect can
+    // carry the order id (?o=) — that's what lets the buyer upload their photo
+    // immediately instead of waiting for a manual email round-trip (which is
+    // exactly the step where orders have stalled before).
+    const pbOrder = await pb.collection('vet_orders').create({
+      clinic: clinicId,
+      square_order_id: '',
+      square_payment_link: '',
+      customer_name: customerName || '',
+      customer_email: email,
+      size,
+      amount_cents: sizeInfo.cents,
+      commission_cents: commissionCents,
+      status: 'pending_payment',
+      photo_received: false,
+    });
+
+    const redirectUrl = `${baseUrl}/portrait/${slug}/thank-you?o=${pbOrder.id}`;
 
     // Create Square payment link using `order` (not `quickPay`) so we can
     // embed the clinic slug as referenceId for tracking in the Square dashboard.
@@ -123,20 +141,11 @@ export async function POST(request: Request) {
 
     const checkoutUrl = squareResponse.paymentLink?.url;
     const squareOrderId = squareResponse.paymentLink?.orderId || '';
-    const paymentLinkId = squareResponse.paymentLink?.id || '';
 
-    // Create pending vet_orders record
-    await pb.collection('vet_orders').create({
-      clinic: clinicId,
+    // Attach the Square identifiers to the pending record created above.
+    await pb.collection('vet_orders').update(pbOrder.id, {
       square_order_id: squareOrderId,
       square_payment_link: checkoutUrl || '',
-      customer_name: customerName || '',
-      customer_email: email,
-      size,
-      amount_cents: sizeInfo.cents,
-      commission_cents: commissionCents,
-      status: 'pending_payment',
-      photo_received: false,
     });
 
     return NextResponse.json({ checkoutUrl });

@@ -40,6 +40,17 @@ export default function OrderForm() {
       });
       const data = await res.json();
       if (data.checkoutUrl) {
+        // keepalive lets the beacon survive the redirect to Square.
+        fetch('/api/vet/event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'checkout_created',
+            path: window.location.pathname,
+            meta: selectedSize,
+          }),
+          keepalive: true,
+        }).catch(() => {});
         window.location.href = data.checkoutUrl;
       } else {
         setError(data.error || 'Something went wrong. Please try again or email erin@banwelldesigns.com.');
