@@ -50,18 +50,42 @@ function safeEqual(a: string, b: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Host-based rewrite: stainedglassportraits.com is an exact-match SEO domain
-  // that serves the general (direct-to-consumer) pet portrait page. Same codebase
-  // is also deployed to banwelldesigns.com, so we can't repurpose "/" globally —
-  // instead we rewrite the root of the portraits domain to /portraits. The URL in
-  // the browser stays "/"; Next renders the /portraits route.
+  // Host-based routing: stainedglassportraits.com is an exact-match SEO domain
+  // that serves the direct-to-consumer portrait pages (hub + categories) from
+  // the /portraits route tree. Same codebase is also deployed to
+  // banwelldesigns.com, so we can't repurpose these paths globally — instead:
+  //   portraits host  /            -> rewrite /portraits        (hub)
+  //   portraits host  /pets etc.   -> rewrite /portraits/pets   (clean URLs)
+  //   portraits host  /portraits/* -> 308 to the clean URL      (no dupes)
+  //   other hosts     /pets etc.   -> 308 to the portraits domain
   const host = request.headers.get('host')?.toLowerCase() ?? '';
   const isPortraitsHost =
     host === 'stainedglassportraits.com' || host === 'www.stainedglassportraits.com';
-  if (isPortraitsHost && pathname === '/') {
-    const url = request.nextUrl.clone();
-    url.pathname = '/portraits';
-    return NextResponse.rewrite(url);
+  const portraitCategoryPaths = ['/pets', '/pet-memorial', '/weddings'];
+  if (isPortraitsHost) {
+    if (pathname === '/') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/portraits';
+      return NextResponse.rewrite(url);
+    }
+    if (portraitCategoryPaths.includes(pathname)) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/portraits' + pathname;
+      return NextResponse.rewrite(url);
+    }
+    // Collapse duplicate URLs so only the clean paths exist on this host.
+    if (pathname === '/portraits' || pathname.startsWith('/portraits/')) {
+      const url = request.nextUrl.clone();
+      url.pathname = pathname.slice('/portraits'.length) || '/';
+      return NextResponse.redirect(url, 308);
+    }
+  } else if (portraitCategoryPaths.includes(pathname)) {
+    // Category links rendered on the banwelldesigns.com copy of these pages
+    // should land on the canonical domain rather than 404 here.
+    return NextResponse.redirect(
+      new URL(pathname, 'https://stainedglassportraits.com'),
+      308,
+    );
   }
 
   // Redirect old leather URLs to new /leather/* paths (308 Permanent)
@@ -121,6 +145,11 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/',
+    '/pets',
+    '/pet-memorial',
+    '/weddings',
+    '/portraits',
+    '/portraits/:path*',
     '/account/:path*',
     '/admin',
     '/admin/:path*',
