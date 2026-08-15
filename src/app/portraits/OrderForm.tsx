@@ -10,6 +10,9 @@ export default function OrderForm() {
   const [selectedSize, setSelectedSize] = useState<SizeKey>('10"');
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
+  const [promo, setPromo] = useState('');
+  const [isGift, setIsGift] = useState(false);
+  const [giftNote, setGiftNote] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -35,6 +38,9 @@ export default function OrderForm() {
           size: selectedSize,
           customerName,
           customerEmail: email,
+          promo: promo.trim() || undefined,
+          isGift,
+          giftNote: isGift ? giftNote.trim() : '',
           origin: typeof window !== 'undefined' ? window.location.origin : undefined,
         }),
       });
@@ -126,6 +132,50 @@ export default function OrderForm() {
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="promo">
+            Promo code <span className="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <input
+            id="promo"
+            type="text"
+            value={promo}
+            onChange={e => setPromo(e.target.value)}
+            placeholder="GLASS15"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <label className="flex items-start gap-2 cursor-pointer pt-1">
+          <input
+            type="checkbox"
+            checked={isGift}
+            onChange={e => setIsGift(e.target.checked)}
+            className="mt-0.5 accent-blue-600"
+          />
+          <span className="text-sm text-gray-700">
+            This is a gift
+            <span className="block text-xs text-gray-400 font-normal mt-0.5">
+              After checkout you&apos;ll get a link you can share with the recipient so they can
+              send us the photo themselves &mdash; or upload it yourself.
+            </span>
+          </span>
+        </label>
+        {isGift && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="giftnote">
+              Gift note <span className="text-gray-400 font-normal">(optional, included with the piece)</span>
+            </label>
+            <textarea
+              id="giftnote"
+              value={giftNote}
+              onChange={e => setGiftNote(e.target.value)}
+              maxLength={500}
+              rows={2}
+              placeholder="With love, from all of us."
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        )}
       </div>
 
       {error && <p className="text-sm text-red-600 mb-3">{error}</p>}

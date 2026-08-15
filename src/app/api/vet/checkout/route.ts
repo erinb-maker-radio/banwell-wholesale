@@ -13,6 +13,14 @@ const SIZES: Record<string, { label: string; cents: number }> = {
 
 const COMMISSION_CENTS = 2000; // $20 flat per order
 
+// Promo codes, validated server-side. Percentages are Erin-approved before any
+// code is printed/sent. WELCOME25 honors the 25%-off promised to the 8 Etsy
+// UGC-outreach customers (2026-08-13); GLASS15 is the package-insert code.
+const PROMOS: Record<string, number> = {
+  GLASS15: 0.15,
+  WELCOME25: 0.25,
+};
+
 // Hosts we allow buyers to be redirected back to after Square checkout. The
 // general SEO page lives on stainedglassportraits.com, so a direct order there
 // should return the buyer to that same host rather than the wholesale domain.
@@ -31,7 +39,8 @@ const ALLOWED_ORIGINS = new Set([
 // Returns { checkoutUrl }
 export async function POST(request: Request) {
   try {
-    const { slug, size, customerName, customerEmail, origin } = await request.json();
+    const { slug, size, customerName, customerEmail, origin, promo, isGift, giftNote } =
+      await request.json();
 
     if (!slug || !size || !SIZES[size]) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
@@ -51,6 +60,18 @@ export async function POST(request: Request) {
     const commissionCents = isDirect ? 0 : COMMISSION_CENTS;
 
     const sizeInfo = SIZES[size];
+
+    // Promo: unknown codes get a friendly error rather than silently charging
+    // full price — the buyer typed it expecting a discount.
+    const promoCode = typeof promo === 'string' ? promo.trim().toUpperCase() : '';
+    if (promoCode && !(promoCode in PROMOS)) {
+      return NextResponse.json(
+        { error: 'That promo code isn\u2019t valid. Check the spelling, or order without it.' },
+        { status: 400 },
+      );
+    }
+    const discount = promoCode ? PROMOS[promoCode] : 0;
+    const chargeCents = Math.round(sizeInfo.cents * (1 - discount));
 
     const pb = createServerPB();
     await authenticateAdmin(pb);
@@ -98,10 +119,13 @@ export async function POST(request: Request) {
       customer_name: customerName || '',
       customer_email: email,
       size,
-      amount_cents: sizeInfo.cents,
+      amount_cents: chargeCents,
       commission_cents: commissionCents,
       status: 'pending_payment',
       photo_received: false,
+      is_gift: !!isGift,
+      gift_note: typeof giftNote === 'string' ? giftNote.slice(0, 500) : '',
+      promo_code: promoCode,
     });
 
     const redirectUrl = `${baseUrl}/portrait/${slug}/thank-you?o=${pbOrder.id}`;
@@ -125,10 +149,10 @@ export async function POST(request: Request) {
         referenceId: isDirect ? 'direct' : `vet-${slug}`,
         lineItems: [
           {
-            name: sizeInfo.label,
+            name: promoCode ? `${sizeInfo.label} (promo ${promoCode})` : sizeInfo.label,
             quantity: '1',
             basePriceMoney: {
-              amount: BigInt(sizeInfo.cents),
+              amount: BigInt(chargeCents),
               currency: 'USD',
             },
             note: isDirect

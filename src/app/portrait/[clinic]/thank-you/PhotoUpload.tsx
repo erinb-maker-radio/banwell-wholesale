@@ -8,9 +8,11 @@ import { useSearchParams } from 'next/navigation';
 // can attach their design photo right now instead of waiting for our email.
 // If the param is missing (old links, stripped params), we render nothing and
 // the page's email-fallback copy stands on its own.
-export default function PhotoUpload() {
+// Also reused by the gift-recipient page (/photo/[order]), which passes the
+// order id as a prop instead of a query param.
+export default function PhotoUpload({ order }: { order?: string }) {
   const searchParams = useSearchParams();
-  const orderId = searchParams.get('o') || '';
+  const orderId = order || searchParams.get('o') || '';
   const [files, setFiles] = useState<FileList | null>(null);
   const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle');
   const [error, setError] = useState('');

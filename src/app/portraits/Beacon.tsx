@@ -15,7 +15,9 @@ export default function Beacon() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           event: 'page_view',
-          path: pathname,
+          // Include the query string so campaign tags survive (e.g. the
+          // package-insert QR lands on /?via=insert).
+          path: pathname + (window.location.search || ''),
           ref: document.referrer || '',
         }),
         keepalive: true,

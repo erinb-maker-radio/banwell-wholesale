@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import PhotoUpload from './PhotoUpload';
+import GiftShareLink from './GiftShareLink';
 import ThankYouBeacon from './ThankYouBeacon';
 
 export default function ThankYouPage() {
@@ -18,6 +19,7 @@ export default function ThankYouPage() {
 
       <Suspense fallback={null}>
         <PhotoUpload />
+        <GiftShareLink />
       </Suspense>
 
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 text-left mb-8">
