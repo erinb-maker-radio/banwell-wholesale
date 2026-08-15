@@ -213,7 +213,12 @@ export default function PortraitPage() {
               : `Order ${selectedSize} — $${selectedSizeInfo.price}`}
           </button>
           <p className="text-xs text-gray-400 mt-2 text-center">
-            Secure checkout via Square &middot; We collect your photo after payment
+            Secure checkout via Square &middot; Afterpay available at checkout &middot; We
+            collect your photo after payment
+          </p>
+          <p className="text-xs text-gray-500 mt-1 text-center">
+            Or 4 interest-free payments of ${Math.round(selectedSizeInfo.price / 4)} with
+            Afterpay
           </p>
         </section>
 
