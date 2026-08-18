@@ -57,6 +57,12 @@ export default function RegisterPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Honeypot: hidden from humans, invisible to screen readers. Bots that
+            fill every field will fill this too, and the server silently drops them. */}
+        <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: 0, height: 0, width: 0, overflow: 'hidden' }}>
+          <label htmlFor="company_fax">Do not fill this field</label>
+          <input type="text" id="company_fax" name="company_fax" tabIndex={-1} autoComplete="off" />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <Input label="Business Name" name="business_name" required id="business_name" />
           <Input label="Contact Name" name="contact_name" required id="contact_name" />

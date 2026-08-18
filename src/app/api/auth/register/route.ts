@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 import { notifyNewCustomer } from '@/lib/notifications';
 import { curateCustomerByType, STANDARD_CATALOGS, type CustomerType } from '@/lib/standard-catalogs';
+import { screenRegistration } from '@/lib/spam-check';
 
 export async function POST(request: Request) {
   try {
@@ -9,6 +10,18 @@ export async function POST(request: Request) {
     const { email, password, passwordConfirm, business_name, contact_name, phone, address, city, state, zip, website } = body;
     // Default new signups to the mask catalog unless they pick a valid type
     const customer_type: CustomerType = ((body.customer_type as string) in STANDARD_CATALOGS ? body.customer_type : 'mask') as CustomerType;
+
+    // Spam gate (honeypot + gibberish-name heuristic). Runs before any DB work.
+    const screen = screenRegistration(body);
+    if (screen.action === 'silent-drop') {
+      // Honeypot filled — pretend success so the bot doesn't adapt. No account created.
+      console.warn('[register] honeypot tripped, dropped signup for', email);
+      return NextResponse.json({ success: true, data: { id: 'ok' } });
+    }
+    if (screen.action === 'reject') {
+      console.warn('[register] spam heuristic rejected signup', { email, business_name, contact_name });
+      return NextResponse.json({ error: screen.message || 'Registration failed' }, { status: 400 });
+    }
 
     if (!email || !password || !business_name || !contact_name) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
