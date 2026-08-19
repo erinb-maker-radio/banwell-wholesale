@@ -26,26 +26,60 @@ export default function PhotoUpload({ order }: { order?: string }) {
     }
     setError('');
     setState('sending');
-    try {
-      const form = new FormData();
-      form.append('order', orderId);
-      for (const f of Array.from(files).slice(0, 3)) form.append('photo', f);
-      const res = await fetch('/api/vet/upload', { method: 'POST', body: form });
-      const data = await res.json();
-      if (data.ok) {
-        setState('done');
-        fetch('/api/vet/event', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ event: 'photo_uploaded', meta: orderId }),
-        }).catch(() => {});
-      } else {
+
+    const chosen = Array.from(files).slice(0, 3);
+    const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+    // Retry transient failures (server restart/redeploy, flaky mobile network,
+    // brief PB hiccup) automatically so the buyer never sees a scary error for
+    // something that fixes itself on a second try. We do NOT retry 4xx — those
+    // are the buyer's input (wrong file type, over 15MB) and won't change.
+    const MAX_ATTEMPTS = 4;
+    const BACKOFF_MS = [800, 2000, 3500]; // covers a ~2s redeploy window and then some
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        // FormData must be rebuilt each attempt — the stream is consumed on send.
+        const form = new FormData();
+        form.append('order', orderId);
+        for (const f of chosen) form.append('photo', f);
+        const res = await fetch('/api/vet/upload', { method: 'POST', body: form });
+
+        // Transient server-side failure: back off and retry.
+        if (res.status >= 500) {
+          if (attempt < MAX_ATTEMPTS) {
+            await sleep(BACKOFF_MS[attempt - 1]);
+            continue;
+          }
+          setState('idle');
+          setError('Upload failed — please try again or email erin@banwelldesigns.com.');
+          return;
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (data.ok) {
+          setState('done');
+          fetch('/api/vet/event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event: 'photo_uploaded', meta: orderId }),
+          }).catch(() => {});
+          return;
+        }
+
+        // 4xx / validation error — the buyer needs to fix something; don't retry.
         setState('idle');
         setError(data.error || 'Upload failed — please try again.');
+        return;
+      } catch {
+        // Network error (dropped connection, server mid-restart). Retry.
+        if (attempt < MAX_ATTEMPTS) {
+          await sleep(BACKOFF_MS[attempt - 1]);
+          continue;
+        }
+        setState('idle');
+        setError('Upload failed — please try again or email erin@banwelldesigns.com.');
+        return;
       }
-    } catch {
-      setState('idle');
-      setError('Upload failed — please try again or email erin@banwelldesigns.com.');
     }
   }
 
