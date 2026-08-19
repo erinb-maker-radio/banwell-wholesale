@@ -19,6 +19,9 @@ const COMMISSION_CENTS = 2000; // $20 flat per order
 const PROMOS: Record<string, number> = {
   GLASS15: 0.15,
   WELCOME25: 0.25,
+  // 99%-off comp code — for test orders / full end-to-end checkout runs
+  // without paying retail. Erin-approved 2026-08-19.
+  TESTRUN99: 0.99,
 };
 
 // Hosts we allow buyers to be redirected back to after Square checkout. The
