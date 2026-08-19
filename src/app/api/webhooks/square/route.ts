@@ -1,10 +1,38 @@
 import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
 import { notifyPaymentReceived } from '@/lib/notifications';
 
+// The exact notification URL registered with the Square webhook subscription.
+// Square signs (this URL + raw body); the URL must match byte-for-byte.
+const SQUARE_WEBHOOK_URL = 'https://stainedglassportraits.com/api/webhooks/square';
+
+function verifySquareSignature(rawBody: string, header: string | null): boolean {
+  const key = process.env.SQUARE_WEBHOOK_SIGNATURE_KEY;
+  // No key configured -> skip verification (fail open) so a missing secret
+  // never silently drops real payments. The reconcile cron is the backstop.
+  if (!key) return true;
+  if (!header) return false;
+  const expected = crypto
+    .createHmac('sha256', key)
+    .update(SQUARE_WEBHOOK_URL + rawBody)
+    .digest('base64');
+  try {
+    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(header));
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const rawBody = await request.text();
+    const signature = request.headers.get('x-square-hmacsha256-signature');
+    if (!verifySquareSignature(rawBody, signature)) {
+      console.warn('Square webhook rejected: bad signature');
+      return NextResponse.json({ error: 'invalid signature' }, { status: 401 });
+    }
+    const body = JSON.parse(rawBody);
     const eventType = body.type;
 
     console.log('Square webhook received:', eventType);
