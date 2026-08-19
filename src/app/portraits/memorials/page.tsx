@@ -57,7 +57,7 @@ const EMILY_CASE_STUDY = {
     </>
   ),
   intro:
-    'Emily came to us on the tenth anniversary of losing her mother. She sent one favorite photo \u2014 her mom out on a walk, holding Buster, the family dog. We reimagined it as a stained glass style portrait and printed it on real glass. It now hangs in her father\u2019s kitchen window, where he sees her every morning.',
+    'Emily wanted to give her dad something special \u2014 her mom had passed away ten years before, and she missed her every day. She sent us one favorite photo of her mother holding Buster, the family dog, and we reimagined it as a stained glass style portrait printed on real glass. It now hangs in her dad\u2019s kitchen window, where he sees her smiling face every morning.',
   beforeImage: '/images/vet/memorial-mom-original.jpg',
   beforeAlt: 'The original family photo Emily sent \u2014 her mother holding Buster the dog on a walk',
   afterImage: '/images/vet/memorial-mom-window.jpg',
