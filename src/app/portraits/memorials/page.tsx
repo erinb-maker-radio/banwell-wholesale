@@ -48,6 +48,29 @@ const jsonLd = buildJsonLd({
   faq: PEOPLE_MEMORIAL_FAQ,
 });
 
+const EMILY_CASE_STUDY = {
+  eyebrow: 'A true story \u00b7 shared with the family\u2019s blessing',
+  title: (
+    <>
+      Her mom&rsquo;s smiling face,
+      <br className="hidden md:block" /> at the kitchen window every morning
+    </>
+  ),
+  intro:
+    'Emily came to us on the tenth anniversary of losing her mother. She sent one favorite photo \u2014 her mom out on a walk, holding Buster, the family dog. We reimagined it as a stained glass style portrait and printed it on real glass. It now hangs in her father\u2019s kitchen window, where he sees her every morning.',
+  beforeImage: '/images/vet/memorial-mom-original.jpg',
+  beforeAlt: 'The original family photo Emily sent \u2014 her mother holding Buster the dog on a walk',
+  afterImage: '/images/vet/memorial-mom-window.jpg',
+  afterAlt:
+    'The finished stained glass style memorial portrait of Emily\u2019s mother holding Buster, glowing in a window',
+  makerImage: '/images/vet/memorial-mom-dad.jpg',
+  makerAlt:
+    'Emily\u2019s father holding the finished stained glass style memorial portrait of her mother',
+  quote:
+    'I love being able to get up each morning and see Mom\u2019s smiling face at the kitchen window, holding Buster\u2026 do you think she might be doing that now? It is his stunning creation \u2014 it is perfect.',
+  attribution: 'Emily\u2019s father \u00b7 memorial portrait of her mother',
+};
+
 export default function MemorialsPage() {
   return (
     <PortraitPage
@@ -60,6 +83,7 @@ export default function MemorialsPage() {
       subhead="We turn your favorite photo into a handmade suncatcher you can keep in the light — designed and made by my wife and I in Chico, California."
       heroImage="/images/vet/memorial-mom-window.jpg"
       heroAlt="Stained glass style memorial portrait of a woman holding her dog, glowing in a window"
+      caseStudy={EMILY_CASE_STUDY}
       steps={howItWorks(
         'Any clear photo works — an old favorite is perfectly fine. We handle all the design work, and you approve the artwork before anything is made.',
       )}

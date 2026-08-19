@@ -85,6 +85,20 @@ export type CategoryTile = {
   alt: string;
 };
 
+export type CaseStudy = {
+  eyebrow: string;
+  title: React.ReactNode;
+  intro: string;
+  beforeImage: string;
+  beforeAlt: string;
+  afterImage: string;
+  afterAlt: string;
+  makerImage: string;
+  makerAlt: string;
+  quote: string;
+  attribution: string;
+};
+
 function Stars({ className = 'text-[#d4a33d]' }: { className?: string }) {
   return (
     <span aria-hidden="true" className={`${className} tracking-tight`}>
@@ -115,6 +129,8 @@ export default function PortraitPage(props: {
   jsonLd: object;
   /** Optional category tile grid (hub page) rendered under the hero. */
   tiles?: CategoryTile[];
+  /** Optional real-customer case study, rendered under the trust band. */
+  caseStudy?: CaseStudy;
   /** Optional link back to the hub, shown above the FAQ. */
   hubLink?: boolean;
 }) {
@@ -217,6 +233,74 @@ export default function PortraitPage(props: {
       </section>
 
       <div className="max-w-5xl mx-auto px-4">
+        {/* ── CASE STUDY (real customer story) ── */}
+        {props.caseStudy && (
+          <section className="pt-16 pb-2">
+            <Diamonds />
+            <p className="text-[11px] uppercase tracking-[0.3em] text-[#a8823a] text-center mb-3">
+              {props.caseStudy.eyebrow}
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl text-[#232946] text-center mb-4">
+              {props.caseStudy.title}
+            </h2>
+            <p className="text-[#232946]/65 text-center max-w-2xl mx-auto mb-10 leading-relaxed">
+              {props.caseStudy.intro}
+            </p>
+
+            {/* Before / after — the photo she sent, and the piece in the window */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 max-w-3xl mx-auto mb-10 items-start">
+              <figure className="text-center">
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-1 ring-[#232946]/15 bg-white">
+                  <Image
+                    src={props.caseStudy.beforeImage}
+                    alt={props.caseStudy.beforeAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 360px"
+                  />
+                </div>
+                <figcaption className="text-[11px] uppercase tracking-[0.2em] text-[#232946]/50 mt-3">
+                  The photo she sent
+                </figcaption>
+              </figure>
+              <figure className="text-center">
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-2 ring-[#d4a33d]/70 shadow-[0_0_40px_rgba(212,163,61,0.25)]">
+                  <Image
+                    src={props.caseStudy.afterImage}
+                    alt={props.caseStudy.afterAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 360px"
+                  />
+                </div>
+                <figcaption className="text-[11px] uppercase tracking-[0.2em] text-[#a8823a] mt-3">
+                  Kept in the light
+                </figcaption>
+              </figure>
+            </div>
+
+            {/* His message, beside a photo of him holding the finished piece */}
+            <div className="grid grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto rounded-2xl overflow-hidden bg-[#232946] items-stretch">
+              <div className="relative min-h-[320px] md:min-h-full aspect-[3/4] md:aspect-auto">
+                <Image
+                  src={props.caseStudy.makerImage}
+                  alt={props.caseStudy.makerAlt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 360px"
+                />
+              </div>
+              <div className="p-7 md:p-9 flex flex-col justify-center">
+                <Stars className="text-[#d4a33d] text-sm" />
+                <blockquote className="font-display text-xl md:text-2xl text-[#f5f1e6] leading-snug italic mt-3 mb-4">
+                  &ldquo;{props.caseStudy.quote}&rdquo;
+                </blockquote>
+                <p className="text-xs text-[#f5f1e6]/60">{props.caseStudy.attribution}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ── CATEGORY TILES (hub only) ── */}
         {props.tiles && (
           <section className="pt-14 pb-2">
