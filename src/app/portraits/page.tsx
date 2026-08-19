@@ -62,6 +62,13 @@ const TILES = [
     alt: 'Stained glass style memorial dog portrait glowing in a window',
   },
   {
+    href: '/memorials',
+    title: 'Memorials',
+    blurb: 'A stained glass style portrait of someone you love, to keep in the light.',
+    photo: '/images/vet/memorial-mom-window.jpg',
+    alt: 'Stained glass style memorial portrait of a woman holding her dog, glowing in a window',
+  },
+  {
     href: '/weddings',
     title: 'Weddings & Anniversaries',
     blurb: 'Your wedding, engagement, or anniversary photo as a handmade keepsake.',

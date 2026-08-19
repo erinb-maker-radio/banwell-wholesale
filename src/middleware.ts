@@ -65,8 +65,8 @@ export function middleware(request: NextRequest) {
   // /shipping exist ONLY on the portraits host — banwelldesigns.com has its own
   // (shop)/about page, so those two are rewritten here but never cross-host
   // redirected (see portraitOnlyRedirectPaths below).
-  const portraitCategoryPaths = ['/pets', '/pet-memorial', '/weddings', '/about', '/shipping'];
-  const portraitOnlyRedirectPaths = ['/pets', '/pet-memorial', '/weddings'];
+  const portraitCategoryPaths = ['/pets', '/pet-memorial', '/memorials', '/weddings', '/about', '/shipping'];
+  const portraitOnlyRedirectPaths = ['/pets', '/pet-memorial', '/memorials', '/weddings'];
   if (isPortraitsHost) {
     if (pathname === '/') {
       const url = request.nextUrl.clone();
@@ -152,6 +152,7 @@ export const config = {
     '/',
     '/pets',
     '/pet-memorial',
+    '/memorials',
     '/weddings',
     '/about',
     '/shipping',

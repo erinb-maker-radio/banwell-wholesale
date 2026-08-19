@@ -74,6 +74,16 @@ export const REVIEW_TREE = {
   photo: '/images/vet/tree-213.jpg',
 };
 
+// Emily's family — memorial portrait of her late mother, made from a photo of
+// her mom holding the family dog, Buster. Shared with Emily's explicit consent
+// (website, social, Etsy). The quote is her father's, relayed by Emily.
+export const REVIEW_EMILY = {
+  quote: 'I love being able to get up each morning and see Mom\u2019s smiling face at the kitchen window, holding Buster. It is his stunning creation \u2014 it is perfect.',
+  author: 'Emily\u2019s father',
+  meta: 'Memorial portrait of her mother \u00b7 verified Etsy purchase',
+  photo: '/images/vet/memorial-mom-window.jpg',
+};
+
 export const REVIEWS = [REVIEW_ALICIA, REVIEW_ROMMELYN, REVIEW_TREE];
 
 // ── Shared FAQ answers reused across pages
@@ -184,6 +194,30 @@ export const WEDDING_FAQ = [
     q: 'Can you ship it as a gift?',
     a: 'Yes. We can email the artwork proof to you and ship the finished piece directly to the couple.',
   },
+  FAQ_SIZES,
+  FAQ_TIMING,
+  FAQ_MADE,
+];
+
+// ── Memorials (people) — a stained glass style portrait of someone you loved
+export const PEOPLE_MEMORIAL_FAQ = [
+  {
+    q: 'How does a memorial portrait work?',
+    a: 'You choose a size and order. After checkout we email you to collect your favorite photo of the person you love. We design a stained glass style portrait from that photo, send you a digital proof to approve before anything is made, and then print it on real glass and ship it to you.',
+  },
+  {
+    q: 'I only have an older or low-quality photo. Can you still make one?',
+    a: 'Usually, yes. We work from the photos you have. Send us your best one and we will tell you honestly whether it will make a good portrait before you commit to anything — you approve the artwork before we make it.',
+  },
+  {
+    q: 'Is this a good sympathy gift for someone grieving?',
+    a: 'Yes. A memorial suncatcher is a gift they can keep in the light for years. We can email the artwork proof to you and ship the finished piece directly to them.',
+  },
+  {
+    q: 'Can the portrait include more than one person, or a pet?',
+    a: 'Yes. Many of our memorial pieces show someone with a beloved pet or another family member. If it is clear in the photo, we can design it into the portrait.',
+  },
+  FAQ_REAL_GLASS,
   FAQ_SIZES,
   FAQ_TIMING,
   FAQ_MADE,

@@ -10,6 +10,7 @@ const PORTRAIT_PAGES = [
   { path: '/', priority: '1.0' },
   { path: '/pets', priority: '0.9' },
   { path: '/pet-memorial', priority: '0.9' },
+  { path: '/memorials', priority: '0.9' },
   { path: '/weddings', priority: '0.9' },
   { path: '/about', priority: '0.5' },
   { path: '/shipping', priority: '0.4' },
