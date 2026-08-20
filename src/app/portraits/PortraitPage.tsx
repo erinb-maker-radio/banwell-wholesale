@@ -123,6 +123,11 @@ export default function PortraitPage(props: {
   subhead: string;
   heroImage: string;
   heroAlt: string;
+  /** Optional second finished-piece image shown beneath the hero. */
+  secondaryImage?: string;
+  secondaryAlt?: string;
+  /** Caption under the secondary image (falls back to a generic line). */
+  secondaryCaption?: string;
   steps: Step[];
   reviews: Review[];
   faq: FaqItem[];
@@ -210,6 +215,23 @@ export default function PortraitPage(props: {
             <p className="text-center text-xs text-[#f5f1e6]/50 mt-4 italic font-display">
               A real customer&apos;s portrait, hanging in her window
             </p>
+
+            {props.secondaryImage && (
+              <div className="mt-6 max-w-sm mx-auto">
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-2 ring-[#d4a33d]/50 shadow-[0_0_40px_rgba(212,163,61,0.22)]">
+                  <Image
+                    src={props.secondaryImage}
+                    alt={props.secondaryAlt || props.heroAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 420px"
+                  />
+                </div>
+                <p className="text-center text-xs text-[#f5f1e6]/50 mt-3 italic font-display">
+                  {props.secondaryCaption || 'Another portrait, kept in the light'}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>

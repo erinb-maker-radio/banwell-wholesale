@@ -27,10 +27,10 @@ export const metadata: Metadata = {
     siteName: 'Banwell Designs',
     images: [
       {
-        url: '/images/vet/balloon-window.jpg',
-        width: 1600,
-        height: 1365,
-        alt: 'Stained glass style engagement gift suncatcher glowing in a window',
+        url: '/images/vet/wedding-proposal.jpg',
+        width: 1502,
+        height: 2000,
+        alt: 'Engagement proposal reimagined as a round stained glass style suncatcher hanging in a window',
       },
     ],
   },
@@ -40,7 +40,7 @@ const jsonLd = buildJsonLd({
   productName: 'Custom Wedding & Anniversary Suncatcher — Stained Glass Style Portrait',
   productDescription:
     'A handmade stained glass style portrait made from your wedding, engagement, or anniversary photo and printed on real glass. Designed and made in Chico, California.',
-  image: '/images/vet/balloon-window.jpg',
+  image: '/images/vet/wedding-proposal.jpg',
   url: 'https://stainedglassportraits.com/weddings',
   reviews: [REVIEW_ROMMELYN, REVIEW_TREE],
   faq: WEDDING_FAQ,
@@ -56,8 +56,11 @@ export default function WeddingsPage() {
         </>
       }
       subhead="Your wedding, engagement, or anniversary photo, reimagined as a handmade suncatcher — designed and made by my wife and I in Chico, California."
-      heroImage="/images/vet/balloon-window.jpg"
-      heroAlt="Stained glass style engagement gift suncatcher glowing in a customer's window"
+      heroImage="/images/vet/wedding-proposal.jpg"
+      heroAlt="Engagement proposal reimagined as a round stained glass style suncatcher hanging in a window"
+      secondaryImage="/images/vet/wedding-couple.jpg"
+      secondaryAlt="Wedding couple photo reimagined as a round stained glass style suncatcher"
+      secondaryCaption="A wedding portrait, kept in the light"
       steps={howItWorks(
         'Any clear photo from your story works — the proposal, the first dance, the venue. We handle all the design work from there.',
       )}
