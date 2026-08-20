@@ -100,7 +100,7 @@ export default function PhotoUpload({ order }: { order?: string }) {
       <h2 className="font-semibold text-gray-900 mb-2">Send us your photo now</h2>
       <p className="text-sm text-gray-600 leading-relaxed mb-4">
         Skip the wait — upload your favorite photo right here and we&apos;ll start designing.
-        Any clear, well-lit photo works. Up to 3 photos, 15MB each.
+        Any clear, well-lit photo works. Up to 3 photos, 50MB each.
       </p>
       <input
         type="file"

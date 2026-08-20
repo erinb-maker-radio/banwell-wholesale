@@ -13,7 +13,7 @@ const ALLOWED_TYPES = new Set([
   'image/heic',
   'image/heif',
 ]);
-const MAX_BYTES = 15 * 1024 * 1024;
+const MAX_BYTES = 50 * 1024 * 1024;
 
 export async function POST(request: Request) {
   try {
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       }
       if (f.size > MAX_BYTES) {
         return NextResponse.json(
-          { error: 'That photo is over 15MB — please send a smaller version.' },
+          { error: 'That photo is over 50MB — please send a smaller version.' },
           { status: 400 },
         );
       }
