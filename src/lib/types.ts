@@ -42,6 +42,7 @@ export interface Customer {
   notes?: string;
   status: CustomerStatus;
   discount_tier: DiscountTierLevel;
+  terms_approved?: boolean;
   square_customer_id?: string;
   created: string;
   updated: string;

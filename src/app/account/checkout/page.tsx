@@ -42,8 +42,10 @@ export default function CheckoutPage() {
     if (customer?.zip) setShipZip(customer.zip);
   }, [customer]);
 
-  // First-time buyers must pay by card (Square). Invoicing (Net 30) is only
-  // offered once a customer has at least one prior order.
+  // First-time buyers must pay by card (Square). Invoicing (Net 30) is
+  // offered once a customer has at least one prior order, OR when they've
+  // been explicitly approved for terms (customer.terms_approved) — used to
+  // extend Net 30 to trusted institutional accounts on their first order.
   useEffect(() => {
     if (!customer?.id) return;
     pb.collection('orders')
@@ -51,6 +53,8 @@ export default function CheckoutPage() {
       .then(res => setIsReturning(res.totalItems > 0))
       .catch(() => setIsReturning(false));
   }, [customer?.id]);
+
+  const canInvoice = isReturning || !!customer?.terms_approved;
 
   useEffect(() => {
     async function load() {
@@ -313,7 +317,7 @@ export default function CheckoutPage() {
               <p className="text-sm text-gray-500">Secure payment via Square</p>
             </div>
           </label>
-          {isReturning && (
+          {canInvoice && (
             <label className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50">
               <input
                 type="radio"
@@ -329,7 +333,7 @@ export default function CheckoutPage() {
               </div>
             </label>
           )}
-          {!isReturning && (
+          {!canInvoice && (
             <p className="text-xs text-gray-500">
               Net 30 invoicing becomes available after your first order.
             </p>
