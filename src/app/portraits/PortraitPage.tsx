@@ -97,6 +97,9 @@ export type CaseStudy = {
   makerAlt: string;
   quote: string;
   attribution: string;
+  /** Optional testimonial video shown as a click-to-play block below the quote. */
+  videoSrc?: string;
+  videoPoster?: string;
 };
 
 function Stars({ className = 'text-[#d4a33d]' }: { className?: string }) {
@@ -320,6 +323,26 @@ export default function PortraitPage(props: {
                 <p className="text-xs text-[#f5f1e6]/60">{props.caseStudy.attribution}</p>
               </div>
             </div>
+
+            {/* Testimonial video — click-to-play so the voiceover fires on tap */}
+            {props.caseStudy.videoSrc && (
+              <div className="max-w-3xl mx-auto mt-6">
+                <div className="relative w-full rounded-2xl overflow-hidden ring-2 ring-[#d4a33d]/50 shadow-[0_0_40px_rgba(212,163,61,0.18)] bg-black">
+                  <video
+                    controls
+                    preload="none"
+                    playsInline
+                    poster={props.caseStudy.videoPoster}
+                    className="w-full h-auto block mx-auto max-h-[80vh]"
+                  >
+                    <source src={props.caseStudy.videoSrc} type="video/mp4" />
+                  </video>
+                </div>
+                <p className="text-center text-[11px] uppercase tracking-[0.2em] text-[#232946]/50 mt-3">
+                  Watch Emily&rsquo;s story
+                </p>
+              </div>
+            )}
           </section>
         )}
 

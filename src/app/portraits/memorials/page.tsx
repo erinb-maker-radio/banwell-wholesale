@@ -69,6 +69,8 @@ const EMILY_CASE_STUDY = {
   quote:
     'I love being able to get up each morning and see Mom\u2019s smiling face at the kitchen window, holding Buster\u2026 do you think she might be doing that now? It is his stunning creation \u2014 it is perfect.',
   attribution: 'Emily\u2019s father \u00b7 memorial portrait of her mother',
+  videoSrc: '/videos/emily-story.mp4',
+  videoPoster: '/videos/emily-story-poster.jpg',
 };
 
 export default function MemorialsPage() {
