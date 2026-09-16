@@ -226,7 +226,7 @@ export default function CheckoutPage() {
       <div className="bg-white rounded-lg border p-6 mb-6">
         <h3 className="font-semibold text-gray-900 mb-1">Shipping Address</h3>
         <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-4">
-          Shipping costs are not included in your order total. We will invoice you separately for shipping at the time your order ships.
+          Shipping is not included in your order total. It is calculated and invoiced separately, at cost, at the time your order ships.
         </p>
         <div className="space-y-3">
           <Input
