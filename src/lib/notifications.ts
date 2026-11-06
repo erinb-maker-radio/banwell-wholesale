@@ -418,6 +418,67 @@ export async function notifyNewSubscriber(params: {
 }
 
 // ============================================
+// VET / DTC PORTRAIT ORDER — ADMIN NOTIFICATION ONLY
+// No email to the customer; Tamara handles outreach manually.
+// ============================================
+
+export async function notifyVetOrderReceived(order: {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  size: string;
+  amountCents: number;
+  isGift: boolean;
+  giftNote: string;
+  photoReceived: boolean;
+  clinicSlug: string;
+  squarePaymentId: string;
+}): Promise<void> {
+  const adminEmail = process.env.ORDER_NOTIFICATION_EMAIL || 'banwelldetsy@gmail.com';
+  const pbAdminUrl = 'http://pb.banwelldesigns.com/_/#/collections/pbc_1509110699';
+  const total = (order.amountCents / 100).toFixed(2);
+  const source = order.clinicSlug === 'direct' ? 'Direct (stainedglassportraits.com)' : `Vet clinic: ${order.clinicSlug}`;
+  const giftLine = order.isGift ? `\nGift note: "${order.giftNote}"` : '';
+  const photoLine = order.photoReceived ? 'Photo uploaded — check PocketBase to download.' : '⚠️ Photo NOT yet received.';
+
+  const subject = `New Portrait Order — ${order.customerName}, ${order.size}`;
+  const text = [
+    `New portrait order paid. Ready to make.`,
+    ``,
+    `Customer: ${order.customerName} (${order.customerEmail})`,
+    `Size: ${order.size}`,
+    `Amount: $${total}`,
+    `Source: ${source}`,
+    `Gift: ${order.isGift ? 'Yes' : 'No'}${giftLine}`,
+    ``,
+    photoLine,
+    ``,
+    `PocketBase record: ${pbAdminUrl}`,
+    `Order ID: ${order.id}`,
+    `Square payment: ${order.squarePaymentId}`,
+  ].join('\n');
+
+  const html = `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #232946;">New Portrait Order — Ready to Make</h2>
+  <table style="width:100%; border-collapse:collapse; background:#faf7f1; border-radius:8px;">
+    <tr><td style="padding:8px 12px; font-weight:bold;">Customer</td><td style="padding:8px 12px;">${order.customerName} &lt;${order.customerEmail}&gt;</td></tr>
+    <tr style="background:#f5f1e6;"><td style="padding:8px 12px; font-weight:bold;">Size</td><td style="padding:8px 12px;">${order.size}</td></tr>
+    <tr><td style="padding:8px 12px; font-weight:bold;">Amount paid</td><td style="padding:8px 12px;">$${total}</td></tr>
+    <tr style="background:#f5f1e6;"><td style="padding:8px 12px; font-weight:bold;">Source</td><td style="padding:8px 12px;">${source}</td></tr>
+    <tr><td style="padding:8px 12px; font-weight:bold;">Gift?</td><td style="padding:8px 12px;">${order.isGift ? `Yes — <em>${order.giftNote}</em>` : 'No'}</td></tr>
+    <tr style="background:#f5f1e6;"><td style="padding:8px 12px; font-weight:bold;">Photo</td><td style="padding:8px 12px;">${order.photoReceived ? '✅ Uploaded — download from PocketBase' : '⚠️ Not yet received'}</td></tr>
+  </table>
+  <p style="margin-top:20px;">
+    <a href="${pbAdminUrl}" style="background:#232946; color:#fff; padding:10px 20px; text-decoration:none; border-radius:6px; display:inline-block;">View in PocketBase</a>
+  </p>
+  <p style="color:#9ca3af; font-size:11px;">Order ID: ${order.id} &nbsp;·&nbsp; Square: ${order.squarePaymentId}</p>
+</div>`;
+
+  await sendEmail({ to: adminEmail, subject, text, html });
+}
+
+// ============================================
 // INVOICE SENT
 // ============================================
 

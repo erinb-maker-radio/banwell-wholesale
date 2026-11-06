@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'node:crypto';
 import { createServerPB, authenticateAdmin } from '@/lib/pocketbase';
-import { notifyPaymentReceived } from '@/lib/notifications';
+import { notifyPaymentReceived, notifyVetOrderReceived } from '@/lib/notifications';
 
 // The exact notification URL registered with the Square webhook subscription.
 // Square signs (this URL + raw body); the URL must match byte-for-byte.
@@ -64,13 +64,28 @@ export async function POST(request: Request) {
       try {
         const vetOrder = await pb
           .collection('vet_orders')
-          .getFirstListItem(`square_order_id="${payment.order_id}"`);
-        if (vetOrder.status === 'pending_payment' || !vetOrder.square_payment_id) {
+          .getFirstListItem(`square_order_id="${payment.order_id}"`, { expand: 'clinic' });
+        const wasAlreadyPaid = vetOrder.status === 'paid' && vetOrder.square_payment_id;
+        if (!wasAlreadyPaid) {
           await pb.collection('vet_orders').update(vetOrder.id, {
             status: 'paid',
             square_payment_id: paymentId,
           });
           console.log('vet_orders marked paid:', vetOrder.id);
+
+          // Notify Tamara/admin — no email to the customer.
+          await notifyVetOrderReceived({
+            id: vetOrder.id,
+            customerName: vetOrder.customer_name,
+            customerEmail: vetOrder.customer_email,
+            size: vetOrder.size,
+            amountCents: vetOrder.amount_cents,
+            isGift: vetOrder.is_gift,
+            giftNote: vetOrder.gift_note || '',
+            photoReceived: vetOrder.photo_received,
+            clinicSlug: vetOrder.expand?.clinic?.slug ?? vetOrder.clinic,
+            squarePaymentId: paymentId,
+          }).catch((err: unknown) => console.error('Admin notification failed:', err));
         }
         // Vet orders have no wholesale `orders` counterpart — done.
         return NextResponse.json({ received: true, vetOrderId: vetOrder.id });
