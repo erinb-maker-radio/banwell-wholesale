@@ -11,9 +11,9 @@ import CartSidebar from '@/components/CartSidebar';
 import MobileCart from '@/components/MobileCart';
 
 const shopCategories = [
-  { label: 'Leather', href: 'https://www.etsy.com/shop/banwelldesignleather' },
+  { label: 'Leather', href: 'https://banwelldesignleather.etsy.com' },
   { label: 'Art Glass', href: 'https://www.etsy.com/shop/BanwellDesigns' },
-  { label: 'Paper Art', href: 'https://www.etsy.com/shop/banwelldesignpaper' },
+  { label: 'Paper Art', href: 'https://banwelldesignspaper.etsy.com' },
 ];
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {

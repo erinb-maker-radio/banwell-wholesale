@@ -66,7 +66,7 @@ function SubscribeForm() {
               Glass Shop
             </a>
             <a
-              href="https://www.etsy.com/shop/banwelldesignleather"
+              href="https://banwelldesignleather.etsy.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-[#A22020] hover:bg-[#8a1b1b] text-white font-semibold px-5 py-3 rounded-lg transition-colors text-sm"
@@ -74,7 +74,7 @@ function SubscribeForm() {
               Leather Shop
             </a>
             <a
-              href="https://www.etsy.com/shop/banwelldesignpaper"
+              href="https://banwelldesignspaper.etsy.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-[#A22020] hover:bg-[#8a1b1b] text-white font-semibold px-5 py-3 rounded-lg transition-colors text-sm"

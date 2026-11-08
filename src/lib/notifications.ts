@@ -356,7 +356,7 @@ export async function sendWelcomeEmail(params: {
   await sendEmail({
     to: params.email,
     subject: 'Your 25% Off Discount Code - Banwell Designs',
-    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${code}\n\nUse it at checkout in any of our Etsy shops:\n- Art Glass: https://www.etsy.com/shop/banwelldesigns\n- Paper Art: https://www.etsy.com/shop/banwelldesignpaper\n- Leather: https://www.etsy.com/shop/banwelldesignleather\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
+    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${code}\n\nUse it at checkout in any of our Etsy shops:\n- Art Glass: https://www.etsy.com/shop/banwelldesigns\n- Paper Art: https://banwelldesignspaper.etsy.com\n- Leather: https://banwelldesignleather.etsy.com\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <h1 style="color: #A22020; text-align: center;">Welcome to Banwell Designs!</h1>
@@ -377,13 +377,13 @@ export async function sendWelcomeEmail(params: {
         </a>
       </td>
       <td width="33%" align="center" valign="top" style="padding: 4px;">
-        <a href="https://www.etsy.com/shop/banwelldesignpaper" style="text-decoration: none;">
+        <a href="https://banwelldesignspaper.etsy.com" style="text-decoration: none;">
           <img src="${baseUrl}/images/brand/paper/paper-art-hero.jpg" alt="Paper Art" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
           <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Paper Art</p>
         </a>
       </td>
       <td width="33%" align="center" valign="top" style="padding: 4px;">
-        <a href="https://www.etsy.com/shop/banwelldesignleather" style="text-decoration: none;">
+        <a href="https://banwelldesignleather.etsy.com" style="text-decoration: none;">
           <img src="${baseUrl}/images/brand/leather/plague-doctor-hero.jpg" alt="Leather" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
           <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Leather</p>
         </a>

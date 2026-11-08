@@ -48,9 +48,9 @@ export default function EmailSignup({ isDark = false }: { isDark?: boolean }) {
           Use at checkout:{' '}
           <a href="https://www.etsy.com/shop/BanwellDesigns" target="_blank" rel="noopener noreferrer" className="underline">Glass</a>
           {' · '}
-          <a href="https://www.etsy.com/shop/banwelldesignleather" target="_blank" rel="noopener noreferrer" className="underline">Leather</a>
+          <a href="https://banwelldesignleather.etsy.com" target="_blank" rel="noopener noreferrer" className="underline">Leather</a>
           {' · '}
-          <a href="https://www.etsy.com/shop/banwelldesignpaper" target="_blank" rel="noopener noreferrer" className="underline">Paper</a>
+          <a href="https://banwelldesignspaper.etsy.com" target="_blank" rel="noopener noreferrer" className="underline">Paper</a>
         </p>
       </div>
     );
