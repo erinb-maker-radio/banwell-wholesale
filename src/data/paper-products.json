@@ -1,57 +1,178 @@
 {
   "title": "Paper Art",
-  "subtitle": "Intricate hand-made paper art pieces. Delicate, detailed, and designed to delight.",
+  "subtitle": "Hand-cut, layered paper art — ornaments and framed shadowboxes, designed and made by us. Shop them on Etsy.",
   "items": [
     {
-      "name": "Butterfly",
-      "slug": "butterfly",
-      "image": "/images/brand/paper/butterfly/hero-new.jpg",
-      "etsyUrl": "https://www.etsy.com/listing/4302621699/butterflies-paper-cut-art-wall-hanging",
-      "description": "Hand-cut paper butterflies with incredible detail and dimension. Each wing is individually crafted and layered for a stunning 3D effect.",
-      "images": [
-        { "src": "/images/brand/paper/butterfly/butterfly-1.jpg", "alt": "Butterflies paper cut art wall hanging" },
-        { "src": "/images/brand/paper/butterfly/butterfly-2.jpg", "alt": "Monarch butterflies paper cut ornament" },
-        { "src": "/images/brand/paper/butterfly/hero-new.jpg", "alt": "Butterfly paper cut ornament" }
-      ]
+      "name": "Irish Hills Ornament",
+      "slug": "irish-hills-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/1df56f/8764789150/il_1080xN.8764789150_bub4.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4605852953",
+      "description": "Rolling layered hills in cut paper — personalize with a name and year."
     },
     {
-      "name": "Fox Ornament",
-      "slug": "lighthouse",
-      "image": "https://i.etsystatic.com/27632250/r/il/79d147/7478350961/il_1140xN.7478350961_byhb.jpg",
-      "etsyUrl": "https://www.etsy.com/shop/banwelldesignpaper",
-      "description": "Detailed paper lighthouses capturing the beauty and romance of coastal beacons. Multi-layered construction creates depth and shadow.",
-      "images": [
-        { "src": "/images/brand/paper/lighthouse/lighthouse-1.jpg", "alt": "Lighthouse by the sea paper cut ornament" },
-        { "src": "/images/brand/paper/lighthouse/lighthouse-2.jpg", "alt": "Raven paper cut art wall hanging" },
-        { "src": "/images/brand/paper/lighthouse/lighthouse-3.jpg", "alt": "Bald eagle paper cut ornament" }
-      ]
+      "name": "Brown Horse Ornament",
+      "slug": "brown-horse-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/3f0727/8805905612/il_1080xN.8805905612_3v3n.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4610913591",
+      "description": "A spirited horse in hand-cut layers — add a name and year to make it a keepsake."
     },
     {
-      "name": "Cat",
-      "slug": "cat",
-      "image": "/images/brand/paper/cat/hero.jpg",
-      "etsyUrl": "https://www.etsy.com/shop/banwelldesignpaper",
-      "description": "Charming paper art cats with personality and poise. Each piece captures feline grace through precision cutting and layering.",
-      "images": [
-        { "src": "/images/brand/paper/cat/cat-1.jpg", "alt": "Sleepy white cat paper cut art wall hanging" },
-        { "src": "/images/brand/paper/cat/cat-2.jpg", "alt": "Corgi paper cut art wall hanging" },
-        { "src": "/images/brand/paper/cat/cat-3.jpg", "alt": "Golden mushroom paper cut art wall hanging" }
-      ]
+      "name": "Honey Bee & Blossom Ornament",
+      "slug": "honey-bee-blossom-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/699e62/8853634887/il_1080xN.8853634887_hqkw.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4610897975",
+      "description": "Bee and blooms in delicate paper layers — personalize for the gardener on your list."
+    },
+    {
+      "name": "Eiffel Tower Ornament",
+      "slug": "eiffel-tower-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/aa41be/8792528082/il_1080xN.8792528082_qra7.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4609255516",
+      "description": "Paris in paper — a layered Eiffel Tower you can personalize with a name and year."
+    },
+    {
+      "name": "Mountain Range Ornament",
+      "slug": "mountain-range-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/9e9307/8791839012/il_1080xN.8791839012_7jo5.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4609175924",
+      "description": "Layered peaks that catch the light — personalize with a name and year."
+    },
+    {
+      "name": "Butterfly Ornament",
+      "slug": "butterfly-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/baaebe/8759740124/il_1080xN.8759740124_edof.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4604586576",
+      "description": "A butterfly in fine cut-paper layers — a personalized keepsake for the tree."
+    },
+    {
+      "name": "Starry Campfire Ornament",
+      "slug": "starry-campfire-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/eb1b51/8840133801/il_1080xN.8840133801_4ifh.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4609205381",
+      "description": "A campfire under a starry sky in layered paper — personalize with a name and year."
+    },
+    {
+      "name": "Wildflower Shadowbox",
+      "slug": "wildflower-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/fc9981/8076573956/il_1080xN.8076573956_g3ow.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4513427944",
+      "description": "Layered wildflowers framed in a shadowbox — botanical wall art with real depth."
+    },
+    {
+      "name": "Lighthouse Shadowbox",
+      "slug": "lighthouse-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/674f20/8124530735/il_1080xN.8124530735_8gc0.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4478997225",
+      "description": "A coastal lighthouse in layered paper — nautical wall art for the beach house."
+    },
+    {
+      "name": "Fox Shadowbox",
+      "slug": "fox-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/a6ca3b/8076609600/il_1080xN.8076609600_qrz5.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4479006098",
+      "description": "A woodland fox in cut-paper layers — rustic nature wall art, framed and ready to hang."
+    },
+    {
+      "name": "Butterfly Shadowbox",
+      "slug": "butterfly-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/a59037/8076596846/il_1080xN.8076596846_bcu3.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4478999396",
+      "description": "A butterfly among blooms in layered paper — botanical wall art with dimension."
+    },
+    {
+      "name": "Elephant Shadowbox",
+      "slug": "elephant-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/631069/8076634668/il_1080xN.8076634668_gnqz.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4479001595",
+      "description": "A safari elephant in hand-cut layers — framed 3D wall art for any room."
+    },
+    {
+      "name": "T-Rex Shadowbox",
+      "slug": "t-rex-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/551021/8124653269/il_1080xN.8124653269_slw3.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4497332445",
+      "description": "A layered paper T-Rex — framed wall art for the dinosaur lover or kids room."
+    },
+    {
+      "name": "Bluebird & Moon Shadowbox",
+      "slug": "bluebird-moon-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/f83c2a/8076559058/il_1080xN.8076559058_4d41.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4501129864",
+      "description": "A bluebird under a crescent moon — celestial, layered paper wall art for birders."
+    },
+    {
+      "name": "Calico Cat Shadowbox",
+      "slug": "calico-cat-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/83e584/8124657165/il_1080xN.8124657165_n537.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4492373778",
+      "description": "A calico cat in 3D cut-paper layers — framed wall art for the cat lover."
+    },
+    {
+      "name": "Horse Shadowbox",
+      "slug": "horse-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/7d90fb/8076633882/il_1080xN.8076633882_m2dm.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4492369470",
+      "description": "A horse in layered paper — equestrian wall art, framed and ready to hang."
+    },
+    {
+      "name": "Pitbull Shadowbox",
+      "slug": "pitbull-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/9da6e2/8076624144/il_1080xN.8076624144_ndru.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4479003272",
+      "description": "A pitbull portrait in cut-paper layers — framed pet art for the dog lover."
+    },
+    {
+      "name": "Bumble Bee Shadowbox",
+      "slug": "bumble-bee-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/159b17/8124607921/il_1080xN.8124607921_82ch.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4495635929",
+      "description": "A bumble bee and honeycomb in layered paper — framed nature art for beekeepers."
+    },
+    {
+      "name": "Breaching Whale Shadowbox",
+      "slug": "breaching-whale-shadowbox",
+      "category": "shadowbox",
+      "price": "21.50",
+      "image": "https://i.etsystatic.com/64754712/r/il/f4c8d6/8124605875/il_1080xN.8124605875_674j.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4492377950",
+      "description": "A breaching whale in layered ocean paper — nautical wall art, framed and ready to hang."
     }
   ],
-  "featuredWork": {
-    "heading": "Featured Paper Art",
-    "description": "A showcase of our most intricate and beloved paper art creations.",
-    "items": [
-      { "type": "video", "src": "/images/brand/paper/featured-video.mp4" },
-      { "type": "image", "src": "/images/brand/paper/featured-2.jpg" },
-      { "type": "image", "src": "/images/brand/paper/featured-3.jpg" }
-    ]
-  },
-  "recentProjects": [
-    "/images/brand/paper/recent-1.jpg",
-    "/images/brand/paper/recent-2.jpg",
-    "/images/brand/paper/recent-3.jpg"
-  ],
-  "etsyUrl": "https://www.etsy.com/shop/banwelldesignpaper"
+  "shopUrl": "https://banwelldesignspaper.etsy.com"
 }

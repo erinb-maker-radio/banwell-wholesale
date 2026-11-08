@@ -7,7 +7,43 @@ export const metadata = {
   description: paperData.subtitle,
 };
 
+type PaperItem = {
+  name: string;
+  slug: string;
+  category: string;
+  price: string;
+  image: string;
+  etsyUrl: string;
+  description: string;
+};
+
+function ProductCard({ item }: { item: PaperItem }) {
+  return (
+    <div className="flex flex-col bg-white/95 rounded-xl overflow-hidden shadow-lg border-4 border-white/60">
+      <a href={item.etsyUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-square block bg-gray-100">
+        <Image src={item.image} alt={item.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 300px" />
+      </a>
+      <div className="flex flex-col flex-1 p-4 text-center">
+        <h3 className="text-[16px] md:text-[18px] font-semibold text-gray-900 leading-tight">{item.name}</h3>
+        <p className="text-[13px] md:text-[14px] text-gray-600 mt-1 mb-2 leading-snug flex-1">{item.description}</p>
+        <p className="text-[18px] font-semibold text-gray-900 mb-3">${item.price}</p>
+        <a
+          href={item.etsyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block w-full px-4 py-2.5 text-[14px] font-medium text-white bg-[#F56400] rounded-lg hover:bg-[#d95800] transition-colors"
+        >
+          Shop on Etsy
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export default function PaperHomePage() {
+  const ornaments = (paperData.items as PaperItem[]).filter((i) => i.category === 'ornament');
+  const shadowboxes = (paperData.items as PaperItem[]).filter((i) => i.category === 'shadowbox');
+
   return (
     <div>
       {/* Section 1: Banner / Title */}
@@ -22,114 +58,65 @@ export default function PaperHomePage() {
         </div>
       </section>
 
-      {/* Section 2: Three Item Circles */}
-      <section className="py-12">
+      {/* Section 2: Ornaments */}
+      <section className="py-10">
         <div className="max-w-[1140px] mx-auto px-[8%]">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
-            {paperData.items.map((item) => (
-              <div key={item.slug} className="text-center">
-                <div className="relative w-full aspect-square max-w-[300px] mx-auto rounded-full overflow-hidden border-4 border-white/60 shadow-lg bg-gray-100">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            ))}
+          <div className="text-center mb-8">
+            <h2 className="text-[30px] md:text-[48px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-2">
+              Paper Cut Ornaments
+            </h2>
+            <p className="text-[15px] md:text-[20px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)]">
+              Personalize with a name and year. $18 each.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center mt-10">
-            {[
-              { src: '/images/brand/paper/circle-4.jpg', alt: 'Paper art 4' },
-              { src: '/images/brand/paper/circle-5.jpg', alt: 'Paper art 5' },
-              { src: '/images/brand/paper/circle-6.jpg', alt: 'Paper art 6' },
-            ].map((img, i) => (
-              <div key={i} className="text-center">
-                <div className="relative w-full aspect-square max-w-[300px] mx-auto rounded-full overflow-hidden border-4 border-white/60 shadow-lg bg-gray-100">
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {ornaments.map((item) => (
+              <ProductCard key={item.slug} item={item} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Section 3: Featured Work */}
-      <section className="py-12">
-        <div className="max-w-[1140px] mx-auto px-[8%] text-center mb-8">
-          <h2 className="text-[36px] md:text-[65px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-4">
-            {paperData.featuredWork.heading}
-          </h2>
-          <p className="text-[16px] md:text-[22px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] max-w-3xl mx-auto leading-relaxed">
-            {paperData.featuredWork.description}
-          </p>
-        </div>
+      {/* Section 3: Shadowboxes */}
+      <section className="py-10">
         <div className="max-w-[1140px] mx-auto px-[8%]">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-            {paperData.featuredWork.items.map((item: { type: string; src: string }, i: number) => (
-              <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-lg border-4 border-white/60">
-                {item.type === 'video' ? (
-                  <video
-                    src={item.src}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <Image
-                    src={item.src}
-                    alt={`Featured paper art ${i + 1}`}
-                    fill
-                    className="object-cover"
-                  />
-                )}
-              </div>
+          <div className="text-center mb-8">
+            <h2 className="text-[30px] md:text-[48px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-2">
+              Paper Cut Shadowboxes
+            </h2>
+            <p className="text-[15px] md:text-[20px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)]">
+              Layered, framed, ready to hang. $21.50 each.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {shadowboxes.map((item) => (
+              <ProductCard key={item.slug} item={item} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Section 4: Recent Projects */}
+      {/* Section 4: Shop-all CTA */}
       <section className="py-12">
-        <div className="max-w-[1140px] mx-auto px-[8%] text-center mb-6">
-          <h2 className="text-[36px] md:text-[65px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-4">
-            Recent Projects
-          </h2>
-          <p className="text-[16px] md:text-[22px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)]">
-            Our latest paper art creations.
-          </p>
-        </div>
-        <div className="max-w-[1140px] mx-auto px-[8%]">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
-            {paperData.recentProjects.map((img, i) => (
-              <div key={i} className="relative aspect-square rounded-xl overflow-hidden shadow-lg border-4 border-white/60">
-                <Image
-                  src={img}
-                  alt={`Recent paper project ${i + 1}`}
-                  fill
-                  className={`object-cover ${i === 0 ? 'scale-110 object-[center_calc(50%+30px)]' : i === 1 ? 'scale-105 object-[center_calc(50%+10px)]' : ''}`}
-                />
-              </div>
-            ))}
-          </div>
+        <div className="max-w-[1140px] mx-auto px-[8%] text-center">
+          <a
+            href={paperData.shopUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-8 py-3 text-base font-medium text-white bg-[#F56400] rounded-lg hover:bg-[#d95800] transition-colors"
+          >
+            Shop the full paper collection on Etsy
+          </a>
         </div>
       </section>
 
       {/* Section 5: Wholesale CTA */}
-      <section className="py-16">
+      <section className="pt-4 pb-16">
         <div className="max-w-[1140px] mx-auto px-[8%] text-center">
-          <h2 className="text-[36px] md:text-[65px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-4">
+          <h2 className="text-[30px] md:text-[48px] font-semibold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] mb-4">
             Wholesale
           </h2>
-          <p className="text-[16px] md:text-[22px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] max-w-3xl mx-auto mb-8 leading-relaxed">
+          <p className="text-[16px] md:text-[20px] font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,1)] drop-shadow-[0_0px_3px_rgba(0,0,0,0.9)] max-w-3xl mx-auto mb-8 leading-relaxed">
             Paper art pieces available for wholesale. Contact us for pricing and availability.
           </p>
           <Link
