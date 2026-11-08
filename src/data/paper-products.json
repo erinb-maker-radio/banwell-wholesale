@@ -66,6 +66,33 @@
       "description": "A campfire under a starry sky in layered paper — personalize with a name and year."
     },
     {
+      "name": "Breaching Whale Ornament",
+      "slug": "breaching-whale-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/a20191/8868697593/il_1080xN.8868697593_oxyx.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4612748146",
+      "description": "A breaching whale in layered ocean paper — personalize with a name and year."
+    },
+    {
+      "name": "Pit Bull Ornament",
+      "slug": "pit-bull-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/121036/8820674100/il_1080xN.8820674100_lggo.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4612714835",
+      "description": "A pit bull portrait in cut-paper layers — personalize with a name and year."
+    },
+    {
+      "name": "Full Moon Bluebird Ornament",
+      "slug": "full-moon-bluebird-ornament",
+      "category": "ornament",
+      "price": "18.00",
+      "image": "https://i.etsystatic.com/64754712/r/il/2188f8/8868427825/il_1080xN.8868427825_1tv3.jpg",
+      "etsyUrl": "https://www.etsy.com/listing/4612707729",
+      "description": "A bluebird under a full moon in layered paper — personalize with a name and year."
+    },
+    {
       "name": "Wildflower Shadowbox",
       "slug": "wildflower-shadowbox",
       "category": "shadowbox",
