@@ -1,44 +1,11 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import paperData from '@/data/paper-products.json';
+import ProductCard, { type PaperItem } from './ProductCard';
 
 export const metadata = {
   title: 'Paper Art - Banwell Designs',
   description: paperData.subtitle,
 };
-
-type PaperItem = {
-  name: string;
-  slug: string;
-  category: string;
-  price: string;
-  image: string;
-  etsyUrl: string;
-  description: string;
-};
-
-function ProductCard({ item }: { item: PaperItem }) {
-  return (
-    <div className="flex flex-col bg-white/95 rounded-xl overflow-hidden shadow-lg border-4 border-white/60">
-      <a href={item.etsyUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-square block bg-gray-100">
-        <Image src={item.image} alt={item.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 300px" />
-      </a>
-      <div className="flex flex-col flex-1 p-4 text-center">
-        <h3 className="text-[16px] md:text-[18px] font-semibold text-gray-900 leading-tight">{item.name}</h3>
-        <p className="text-[13px] md:text-[14px] text-gray-600 mt-1 mb-2 leading-snug flex-1">{item.description}</p>
-        <p className="text-[18px] font-semibold text-gray-900 mb-3">${item.price}</p>
-        <a
-          href={item.etsyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block w-full px-4 py-2.5 text-[14px] font-medium text-white bg-[#F56400] rounded-lg hover:bg-[#d95800] transition-colors"
-        >
-          Shop on Etsy
-        </a>
-      </div>
-    </div>
-  );
-}
 
 export default function PaperHomePage() {
   const ornaments = (paperData.items as PaperItem[]).filter((i) => i.category === 'ornament');
