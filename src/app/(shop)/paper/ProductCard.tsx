@@ -66,7 +66,9 @@ export default function ProductCard({ item }: { item: PaperItem }) {
       <div className="flex flex-col flex-1 p-4 text-center">
         <h3 className="text-[16px] md:text-[18px] font-semibold text-gray-900 leading-tight">{item.name}</h3>
         <p className="text-[13px] md:text-[14px] text-gray-600 mt-1 mb-2 leading-snug flex-1">{item.description}</p>
-        <p className="text-[18px] font-semibold text-gray-900 mb-3">${item.price}</p>
+        {item.category !== 'ornament' && (
+          <p className="text-[18px] font-semibold text-gray-900 mb-3">${item.price}</p>
+        )}
         <a
           href={item.etsyUrl}
           target="_blank"
