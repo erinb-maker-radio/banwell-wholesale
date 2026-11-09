@@ -58,7 +58,7 @@ function SubscribeForm() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href="https://www.etsy.com/shop/banwelldesigns"
+              href="https://banwelldesigns.etsy.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-[#A22020] hover:bg-[#8a1b1b] text-white font-semibold px-5 py-3 rounded-lg transition-colors text-sm"

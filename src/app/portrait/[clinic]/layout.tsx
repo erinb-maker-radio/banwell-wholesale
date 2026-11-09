@@ -39,7 +39,7 @@ export default function PortraitLayout({ children }: { children: React.ReactNode
           </a>
           &nbsp;&middot;&nbsp;
           <a
-            href="https://www.etsy.com/shop/BanwellDesigns"
+            href="https://banwelldesigns.etsy.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-600 transition-colors"

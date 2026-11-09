@@ -64,7 +64,7 @@ export default function LicensingPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-6">
           <a
-            href="https://www.etsy.com/shop/BanwellDesigns"
+            href="https://banwelldesigns.etsy.com"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block px-[35px] py-[16px] text-[16px] font-normal capitalize text-white bg-[#A22020] border border-white rounded-full hover:text-[#F74646] hover:bg-transparent transition-colors"

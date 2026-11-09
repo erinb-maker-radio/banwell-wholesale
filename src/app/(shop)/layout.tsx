@@ -12,7 +12,7 @@ import MobileCart from '@/components/MobileCart';
 
 const shopCategories = [
   { label: 'Leather', href: 'https://banwelldesignleather.etsy.com' },
-  { label: 'Art Glass', href: 'https://www.etsy.com/shop/BanwellDesigns' },
+  { label: 'Art Glass', href: 'https://banwelldesigns.etsy.com' },
   { label: 'Paper Art', href: 'https://banwelldesignspaper.etsy.com' },
 ];
 

@@ -80,7 +80,7 @@ export default function PortraitsLayout({ children }: { children: React.ReactNod
           </a>
           &nbsp;&middot;&nbsp;
           <a
-            href="https://www.etsy.com/shop/BanwellDesigns"
+            href="https://banwelldesigns.etsy.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#f5f1e6] transition-colors"

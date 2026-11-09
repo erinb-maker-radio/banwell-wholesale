@@ -46,7 +46,7 @@ export default function EmailSignup({ isDark = false }: { isDark?: boolean }) {
         <p className="text-lg font-bold text-[#A22020] tracking-wider mt-1">{discountCode}</p>
         <p className={`text-[11px] mt-1 ${mutedColor}`}>
           Use at checkout:{' '}
-          <a href="https://www.etsy.com/shop/BanwellDesigns" target="_blank" rel="noopener noreferrer" className="underline">Glass</a>
+          <a href="https://banwelldesigns.etsy.com" target="_blank" rel="noopener noreferrer" className="underline">Glass</a>
           {' · '}
           <a href="https://banwelldesignleather.etsy.com" target="_blank" rel="noopener noreferrer" className="underline">Leather</a>
           {' · '}

@@ -348,7 +348,7 @@ export async function sendWelcomeEmail(params: {
   discountCode: string;
 }): Promise<void> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const etsyShop = 'https://www.etsy.com/shop/BanwellDesigns';
+  const etsyShop = 'https://banwelldesigns.etsy.com';
   const greeting = params.name ? `Hi ${params.name},` : 'Hi there,';
   const unsubUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(params.email)}`;
   const code = params.discountCode;
@@ -356,7 +356,7 @@ export async function sendWelcomeEmail(params: {
   await sendEmail({
     to: params.email,
     subject: 'Your 25% Off Discount Code - Banwell Designs',
-    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${code}\n\nUse it at checkout in any of our Etsy shops:\n- Art Glass: https://www.etsy.com/shop/banwelldesigns\n- Paper Art: https://banwelldesignspaper.etsy.com\n- Leather: https://banwelldesignleather.etsy.com\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
+    text: `${greeting}\n\nThank you for subscribing! Here's your exclusive 25% discount code:\n\n${code}\n\nUse it at checkout in any of our Etsy shops:\n- Art Glass: https://banwelldesigns.etsy.com\n- Paper Art: https://banwelldesignspaper.etsy.com\n- Leather: https://banwelldesignleather.etsy.com\n\nHappy shopping!\nBanwell Designs\n\nUnsubscribe: ${unsubUrl}`,
     html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <h1 style="color: #A22020; text-align: center;">Welcome to Banwell Designs!</h1>
@@ -371,7 +371,7 @@ export async function sendWelcomeEmail(params: {
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 16px 0;">
     <tr>
       <td width="33%" align="center" valign="top" style="padding: 4px;">
-        <a href="https://www.etsy.com/shop/banwelldesigns" style="text-decoration: none;">
+        <a href="https://banwelldesigns.etsy.com" style="text-decoration: none;">
           <img src="${baseUrl}/images/brand/glass/glass-hero.jpg" alt="Art Glass" width="170" height="170" style="width: 170px; display: block; border-radius: 8px;" />
           <p style="margin: 8px 0 0; font-size: 13px; font-weight: bold; color: #333;">Art Glass</p>
         </a>
